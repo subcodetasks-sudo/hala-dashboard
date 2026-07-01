@@ -1,0 +1,54 @@
+{
+  "HomePage": {
+    "title": "مرحباً بالعالم!"
+  },
+  "Auth": {
+    "Login": {
+      "brand": "عقدي",
+      "title": "لوحة تحكم المحتوي",
+      "email": {
+        "label": "البريد الإلكتروني",
+        "placeholder": "أدخل بريدك الإلكتروني هنا..."
+      },
+      "password": {
+        "label": "كلمة المرور",
+        "placeholder": "أدخل كلمة المرور هنا...",
+        "show": "إظهار كلمة المرور",
+        "hide": "إخفاء كلمة المرور"
+      },
+      "rememberMe": "تذكرني",
+      "forgotPassword": "هل نسيت كلمة المرور؟",
+      "submit": "تسجيل الدخول",
+      "validation": {
+        "emailRequired": "البريد الإلكتروني مطلوب",
+        "emailInvalid": "يرجى إدخال بريد إلكتروني صالح",
+        "passwordRequired": "كلمة المرور مطلوبة",
+        "passwordMin": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل"
+      }
+    }
+  },
+  "Dashboard": {
+    "Sidebar": {
+      "brand": "عقدي لتقنيات العقارية",
+      "subtitle": "داشبورد",
+      "groups": {
+        "home": "الرئيسية",
+        "contracts": "العقود"
+      },
+      "links": {
+        "homeContent": "محتوى الصفحة الرئيسية",
+        "allRequests": "جميع الطلبات",
+        "completedRequest": "طلب مكتمل"
+      }
+    },
+    "Navbar": {
+      "userName": "ريان التركي",
+      "userRole": "admin",
+      "userInitials": "ر ت",
+      "toggleMenu": "فتح القائمة",
+      "toggleDropdown": "القائمة",
+      "notifications": "التنبيهات",
+      "messages": "الرسائل"
+    }
+  }
+}

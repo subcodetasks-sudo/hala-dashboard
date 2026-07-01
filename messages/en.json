@@ -1,0 +1,54 @@
+{
+  "HomePage": {
+    "title": "Hello world!"
+  },
+  "Auth": {
+    "Login": {
+      "brand": "Akkdi",
+      "title": "Content Control Panel",
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email here..."
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter your password here...",
+        "show": "Show password",
+        "hide": "Hide password"
+      },
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Log in",
+      "validation": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordRequired": "Password is required",
+        "passwordMin": "Password must be at least 8 characters"
+      }
+    }
+  },
+  "Dashboard": {
+    "Sidebar": {
+      "brand": "Akkdi Real Estate Technologies",
+      "subtitle": "Dashboard",
+      "groups": {
+        "home": "Home",
+        "contracts": "Contracts"
+      },
+      "links": {
+        "homeContent": "Homepage Content",
+        "allRequests": "All Requests",
+        "completedRequest": "Completed Request"
+      }
+    },
+    "Navbar": {
+      "userName": "Rayan Al-Turki",
+      "userRole": "admin",
+      "userInitials": "RT",
+      "toggleMenu": "Open menu",
+      "toggleDropdown": "Menu",
+      "notifications": "Notifications",
+      "messages": "Messages"
+    }
+  }
+}

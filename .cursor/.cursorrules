@@ -1,0 +1,20 @@
+# Global Project Rules
+
+Refer to the specialized rules in `.cursor/` for every task:
+- @architecture.md  : Folder structure, kebab-case naming, regular functions.
+- @server-first.md  : RSC defaults and the Hydration pattern.
+- @react-query.md   : Query Key factories, prefetching, and custom hooks.
+- @i18n.md          : Translation keys and RTL/Arabic styling.
+
+## The Workflow:
+1. Fetch data in Server Components via QueryClient.
+2. Hydrate the cache.
+3. Consume data in Client Components via custom hooks in `hooks/`.
+4. No hardcoded strings; use translation files for AR and EN.
+
+
+# MCP Tool Usage
+- Always prefer the `fetch` or `curl` MCP tools over guessing API structures.
+- Use the `shadcn-ui` MCP to install components rather than writing them from scratch.
+- When working on UI, check the `figma` MCP for design tokens if a URL is provided.
+- Use `next-intl` MCP to ensure all new text has a corresponding Arabic translation key.
