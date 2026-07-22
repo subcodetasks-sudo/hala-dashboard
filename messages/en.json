@@ -1,6 +1,52 @@
 {
   "HomePage": {
-    "title": "Hello world!"
+    "welcome": "Welcome, Dear Admin! 👋",
+    "welcomeSubtitle": "Overview of contract renewal requests.",
+    "manualOrder": "Manual Order Entry",
+    "sections": {
+      "indicators": "Key Indicators",
+      "employees": "Employees",
+      "latestOrders": "Latest Orders"
+    },
+    "period": "This week",
+    "indicators": {
+      "processing": "Orders for Processing",
+      "verification": "Orders Sent for Verification",
+      "payment": "Orders in Payment Stage",
+      "completed": "Completed Orders",
+      "cancelled": "Cancelled Orders",
+      "refund": "Refund Requests"
+    },
+    "employees": {
+      "review": "Number of 'Review' employees",
+      "dataProcessing": "Number of 'Data Processing' employees",
+      "contractFollowUp": "Number of 'Contract Follow-up' employees"
+    },
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by order number or customer name...",
+      "status": "Status",
+      "apply": "Apply Filter",
+      "statusNew": "New",
+      "statusPending": "Pending",
+      "statusProcessing": "Processing",
+      "statusCompleted": "Completed"
+    },
+    "table": {
+      "orderNumber": "Order Number",
+      "customer": "Customer Name / Mobile",
+      "handler": "Handler Name",
+      "createdAt": "Creation Date",
+      "source": "Source",
+      "executionDate": "Execution Date",
+      "status": "Order Status",
+      "action": "Action",
+      "startReview": "Start Review",
+      "sourceEform": "E-form",
+      "sourceManual": "Manual",
+      "statusNew": "New",
+      "empty": "No orders found"
+    }
   },
   "Auth": {
     "Login": {
@@ -29,16 +75,30 @@
   },
   "Dashboard": {
     "Sidebar": {
-      "brand": "Akkdi Real Estate Technologies",
-      "subtitle": "Dashboard",
+      "brand": "Hola Hoop",
       "groups": {
-        "home": "Home",
-        "contracts": "Contracts"
+        "dashboard": "Dashboard",
+        "platform": "Platform Management",
+        "operations": "Operations",
+        "account": "Account Settings"
       },
       "links": {
-        "homeContent": "Homepage Content",
-        "allRequests": "All Requests",
-        "completedRequest": "Completed Request"
+        "home": "Home",
+        "newOrders": "New Orders",
+        "pendingOrders": "Pending Orders",
+        "processedOrders": "Processed Orders",
+        "verificationOrders": "Orders Sent for Verification",
+        "paymentOrders": "Orders in Payment Stage",
+        "completedOrders": "Completed Orders",
+        "cancelledOrders": "Cancelled Orders",
+        "refundOrders": "Refund Requests",
+        "invoices": "Invoices",
+        "tracking": "Tracking Numbers",
+        "employees": "Employees",
+        "permissions": "Permissions",
+        "contentManagement": "Content Management",
+        "accountManagement": "Account Management",
+        "logout": "Log Out"
       }
     },
     "Navbar": {
@@ -48,7 +108,9 @@
       "toggleMenu": "Open menu",
       "toggleDropdown": "Menu",
       "notifications": "Notifications",
-      "messages": "Messages"
+      "messages": "Messages",
+      "refreshData": "Refresh Data",
+      "searchPlaceholder": "Search by order number or employer name..."
     }
   }
 }

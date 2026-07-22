@@ -1,6 +1,52 @@
 {
   "HomePage": {
-    "title": "مرحباً بالعالم!"
+    "welcome": "مرحباً عزيزنا الأدمن! 👋",
+    "welcomeSubtitle": "نظرة عامة على طلبات تجديد العقود.",
+    "manualOrder": "إدخال طلب يدوي",
+    "sections": {
+      "indicators": "المؤشرات الرئيسية",
+      "employees": "الموظفين",
+      "latestOrders": "آخر الطلبات"
+    },
+    "period": "هذا الأسبوع",
+    "indicators": {
+      "processing": "الطلبات للمعالجة",
+      "verification": "الطلبات المرسلة للمصادقة",
+      "payment": "الطلبات في مرحلة الدفع",
+      "completed": "الطلبات المكتملة",
+      "cancelled": "الطلبات الملغاة",
+      "refund": "طلبات الاسترداد"
+    },
+    "employees": {
+      "review": "عدد موظفي 'المراجعة'",
+      "dataProcessing": "عدد موظفي 'معالجة البيانات'",
+      "contractFollowUp": "عدد موظفي 'متابعة العقود'"
+    },
+    "filters": {
+      "searchLabel": "البحث",
+      "searchPlaceholder": "ابحث برقم الطلب أو اسم العميل...",
+      "status": "الحالة",
+      "apply": "تطبيق الفلترة",
+      "statusNew": "جديد",
+      "statusPending": "معلق",
+      "statusProcessing": "قيد المعالجة",
+      "statusCompleted": "مكتمل"
+    },
+    "table": {
+      "orderNumber": "رقم الطلب",
+      "customer": "اسم العميل / الجوال",
+      "handler": "اسم المسؤول",
+      "createdAt": "تاريخ الإنشاء",
+      "source": "المصدر",
+      "executionDate": "تاريخ التنفيذ",
+      "status": "حالة الطلب",
+      "action": "الإجراء",
+      "startReview": "بدء المراجعة",
+      "sourceEform": "نموذج إلكتروني",
+      "sourceManual": "يدوي",
+      "statusNew": "جديد",
+      "empty": "لا توجد طلبات"
+    }
   },
   "Auth": {
     "Login": {
@@ -29,16 +75,30 @@
   },
   "Dashboard": {
     "Sidebar": {
-      "brand": "عقدي لتقنيات العقارية",
-      "subtitle": "داشبورد",
+      "brand": "هولا هوب",
       "groups": {
-        "home": "الرئيسية",
-        "contracts": "العقود"
+        "dashboard": "لوحة التحكم",
+        "platform": "إدارة المنصة",
+        "operations": "العمليات",
+        "account": "إعدادات الحساب"
       },
       "links": {
-        "homeContent": "محتوى الصفحة الرئيسية",
-        "allRequests": "جميع الطلبات",
-        "completedRequest": "طلب مكتمل"
+        "home": "الرئيسية",
+        "newOrders": "الطلبات الجديدة",
+        "pendingOrders": "الطلبات المعلقة",
+        "processedOrders": "الطلبات المعالجة",
+        "verificationOrders": "الطلبات المرسلة للمصادقة",
+        "paymentOrders": "الطلبات في مرحلة الدفع",
+        "completedOrders": "الطلبات المكتملة",
+        "cancelledOrders": "الطلبات الملغاة",
+        "refundOrders": "طلبات الاسترداد",
+        "invoices": "الفواتير",
+        "tracking": "أرقام التتبع",
+        "employees": "للموظفين",
+        "permissions": "الصلاحيات",
+        "contentManagement": "إدارة المحتوى",
+        "accountManagement": "إدارة الحساب",
+        "logout": "تسجيل الخروج"
       }
     },
     "Navbar": {
@@ -48,7 +108,9 @@
       "toggleMenu": "فتح القائمة",
       "toggleDropdown": "القائمة",
       "notifications": "التنبيهات",
-      "messages": "الرسائل"
+      "messages": "الرسائل",
+      "refreshData": "تحديث البيانات",
+      "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل..."
     }
   }
 }

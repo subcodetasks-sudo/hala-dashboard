@@ -10,6 +10,14 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  /* Literal rgb values so slash-opacity utilities (e.g. bg-brand-primary/60) resolve correctly */
+  --color-brand-primary: rgb(68 150 171);
+  --color-brand-accent: rgb(219 86 92);
+  --color-brand-black: rgb(20 20 20);
+  --color-brand-white: rgb(255 255 255);
+  --color-brand-success: rgb(33 196 93);
+  --color-brand-background: rgb(235 246 247);
+  --color-brand-gris: rgb(120 120 120);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,6 +57,13 @@
 }
 
 :root {
+  --brand-primary: rgb(68 150 171);
+  --brand-accent: rgb(219 86 92);
+  --brand-black: rgb(20 20 20);
+  --brand-white: rgb(255 255 255);
+  --brand-success: rgb(33 196 93);
+  --brand-background: rgb(235 246 247);
+  --brand-gris: rgb(120 120 120);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -126,5 +141,111 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+@keyframes dashboard-sidebar-top-shadow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dashboard-sidebar-bottom-shadow {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Edge shadows on sidebar nav — reveal with scroll-driven animation */
+.dashboard-sidebar-content {
+  position: relative;
+}
+
+.dashboard-sidebar-content::before,
+.dashboard-sidebar-content::after {
+  content: "";
+  position: sticky;
+  z-index: 10;
+  display: block;
+  flex-shrink: 0;
+  width: calc(100% - 2.5rem);
+  height: 0.85rem;
+  margin-inline: auto;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.dashboard-sidebar-content::before {
+  top: 0;
+  margin-bottom: -0.85rem;
+  background: radial-gradient(
+    farthest-side at 50% 0%,
+    rgb(from var(--brand-black) r g b / 0.16),
+    transparent 75%
+  );
+}
+
+.dashboard-sidebar-content::after {
+  bottom: 0;
+  margin-top: -0.85rem;
+  background: radial-gradient(
+    farthest-side at 50% 100%,
+    rgb(from var(--brand-black) r g b / 0.16),
+    transparent 75%
+  );
+}
+
+@supports (animation-timeline: scroll()) {
+  .dashboard-sidebar-content::before {
+    animation: dashboard-sidebar-top-shadow linear both;
+    animation-timeline: scroll(nearest);
+    animation-range: 0px 2.5rem;
+  }
+
+  .dashboard-sidebar-content::after {
+    animation: dashboard-sidebar-bottom-shadow linear both;
+    animation-timeline: scroll(nearest);
+    animation-range: calc(100% - 2.5rem) 100%;
+  }
+}
+
+@keyframes dashboard-navbar-shadow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Bottom shadow under sticky navbar — reveal when scrolling down */
+.dashboard-navbar::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 10;
+  height: 0.85rem;
+  transform: translateY(100%);
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    farthest-side at 50% 0%,
+    rgb(from var(--brand-black) r g b / 0.16),
+    transparent 75%
+  );
+}
+
+@supports (animation-timeline: scroll()) {
+  .dashboard-navbar::after {
+    animation: dashboard-navbar-shadow linear both;
+    animation-timeline: scroll(nearest);
+    animation-range: 0px 2.5rem;
   }
 }
