@@ -29,6 +29,8 @@ type DataTableProps<T> = {
   selectable?: boolean;
   className?: string;
   emptyMessage?: string;
+  /** Rich empty UI (icon + title + description). Takes precedence over `emptyMessage`. */
+  emptyContent?: React.ReactNode;
 };
 
 export default function DataTable<T>({
@@ -38,6 +40,7 @@ export default function DataTable<T>({
   selectable = false,
   className,
   emptyMessage = "No data",
+  emptyContent,
 }: DataTableProps<T>) {
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
 
@@ -98,9 +101,12 @@ export default function DataTable<T>({
             <TableRow className="hover:bg-transparent">
               <TableCell
                 colSpan={columns.length + (selectable ? 1 : 0)}
-                className="h-24 px-4 text-center text-brand-gris"
+                className={cn(
+                  "px-4 text-center text-brand-gris",
+                  emptyContent ? "h-auto py-16" : "h-24"
+                )}
               >
-                {emptyMessage}
+                {emptyContent ?? emptyMessage}
               </TableCell>
             </TableRow>
           ) : (

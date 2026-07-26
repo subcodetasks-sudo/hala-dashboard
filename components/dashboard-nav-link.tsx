@@ -3,6 +3,7 @@
 import {
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,7 @@ type DashboardNavLinkProps = {
   icon: string;
   isActive: boolean;
   badge?: NavBadge;
+  onClick?: () => void;
 };
 
 const badgeToneClass: Record<NavBadge["tone"], string> = {
@@ -70,7 +72,15 @@ export default function DashboardNavLink({
   icon,
   isActive,
   badge,
+  onClick,
 }: DashboardNavLinkProps) {
+  const { setOpenMobile } = useSidebar();
+
+  const handleClick = () => {
+    setOpenMobile(false);
+    onClick?.();
+  };
+
   return (
     <SidebarMenuItem>
       {href ? (
@@ -81,6 +91,7 @@ export default function DashboardNavLink({
         >
           <Link
             href={href}
+            onClick={handleClick}
             className="flex w-full items-center justify-between gap-3"
           >
             <NavItemContent label={label} icon={icon} badge={badge} />
@@ -90,6 +101,7 @@ export default function DashboardNavLink({
         <SidebarMenuButton
           type="button"
           isActive={isActive}
+          onClick={handleClick}
           className={cn(
             buttonClassName(isActive),
             "flex w-full items-center justify-between gap-3",

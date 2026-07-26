@@ -14,6 +14,7 @@
   --color-brand-primary: rgb(68 150 171);
   --color-brand-accent: rgb(219 86 92);
   --color-brand-black: rgb(20 20 20);
+  --color-brand-dark-blue: rgb(0 49 66);
   --color-brand-white: rgb(255 255 255);
   --color-brand-success: rgb(33 196 93);
   --color-brand-background: rgb(235 246 247);
@@ -60,6 +61,7 @@
   --brand-primary: rgb(68 150 171);
   --brand-accent: rgb(219 86 92);
   --brand-black: rgb(20 20 20);
+  --brand-dark-blue: rgb(0 49 66);
   --brand-white: rgb(255 255 255);
   --brand-success: rgb(33 196 93);
   --brand-background: rgb(235 246 247);
@@ -247,5 +249,53 @@
     animation: dashboard-navbar-shadow linear both;
     animation-timeline: scroll(nearest);
     animation-range: 0px 2.5rem;
+  }
+}
+
+/* Confirm button chevrons — nudge smoothly with a subtle pulse effect */
+@keyframes confirm-chevron-nudge-end {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(0.45rem);
+    opacity: 0.9;
+  }
+}
+
+@keyframes confirm-chevron-nudge-start {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(-0.45rem);
+    opacity: 0.9;
+  }
+}
+
+.confirm-chevron-start {
+  animation: confirm-chevron-nudge-end 1.4s ease-in-out infinite;
+}
+
+.confirm-chevron-end {
+  animation: confirm-chevron-nudge-start 1.4s ease-in-out infinite;
+}
+
+[dir="rtl"] .confirm-chevron-start {
+  animation-name: confirm-chevron-nudge-start;
+}
+
+[dir="rtl"] .confirm-chevron-end {
+  animation-name: confirm-chevron-nudge-end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirm-chevron-start,
+  .confirm-chevron-end {
+    animation: none;
   }
 }

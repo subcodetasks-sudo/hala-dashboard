@@ -8,7 +8,7 @@ export default function DashboardNavProfile() {
   const t = useTranslations("Dashboard.Navbar");
 
   return (
-    <div className="flex h-12 items-center gap-2.5 rounded-full bg-brand-background py-0.5 ps-1 pe-3 transition-colors hover:bg-brand-background/80 cursor-pointer">
+    <div className="flex h-12 items-center gap-2 rounded-full bg-brand-background py-0.5 ps-1 pe-1 md:pe-3 transition-colors hover:bg-brand-background/80 cursor-pointer">
       <div className="relative size-10 shrink-0">
         <Avatar className="size-10 after:border-0">
           <AvatarImage
@@ -25,14 +25,14 @@ export default function DashboardNavProfile() {
         />
       </div>
 
-      <div className="min-w-0 text-start leading-tight">
+      <div className="hidden md:block min-w-0 text-start leading-tight">
         <p className="truncate text-sm font-semibold text-foreground">
           {t("userName")}
         </p>
         <p className="text-xs text-muted-foreground">{t("userRole")}</p>
       </div>
 
-      <ChevronDown className="size-4 text-brand-accent shrink-0" />
+      <ChevronDown className="hidden md:block size-4 text-brand-accent shrink-0" />
     </div>
   );
 }

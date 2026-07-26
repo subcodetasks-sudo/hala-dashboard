@@ -144,7 +144,7 @@ export default function DashboardSidebar() {
   return (
     <Sidebar
       side={locale === "ar" ? "right" : "left"}
-      className="border-none bg-brand-background p-8 **:data-[slot=sidebar-inner]:bg-brand-background"
+      className="border-none bg-brand-background p-0 **:data-[slot=sidebar-inner]:bg-brand-background **:data-[slot=sidebar-inner]:p-6"
     >
       <SidebarHeader className="mb-2 px-2 py-3">
         <Image

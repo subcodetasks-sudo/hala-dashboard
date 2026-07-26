@@ -25,7 +25,7 @@ const SearchBar = ({
   return (
     <div
       className={cn(
-        "relative flex h-12 w-[380px] max-w-full items-center rounded-full border border-black/5 bg-[#F5F5F5] px-4 transition-all focus-within:border-brand-primary/20 focus-within:bg-white focus-within:ring-2 focus-within:ring-brand-primary/20",
+        "relative flex h-12 w-full sm:w-[300px] md:w-[380px] max-w-[400px] items-center rounded-full border border-black/5 bg-[#F5F5F5] px-4 transition-all focus-within:border-brand-primary/20 focus-within:bg-white focus-within:ring-2 focus-within:ring-brand-primary/20",
         className
       )}
     >
