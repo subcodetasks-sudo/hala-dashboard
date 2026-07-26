@@ -73,6 +73,138 @@
       }
     }
   },
+  "Orders": {
+    "New": {
+      "title": "الطلبات الجديدة",
+      "listTitle": "قائمة الطلبات الجديدة",
+      "period": "هذا الأسبوع",
+      "manualOrder": "إدخال طلب يدوي",
+      "indicators": {
+        "total": "إجمالي الطلبات الجديدة",
+        "epayment": "طلبات من الدفع الإلكتروني",
+        "manual": "طلبات إدخال يدوي"
+      },
+      "filters": {
+        "fromDate": "من تاريخ",
+        "toDate": "إلى تاريخ",
+        "expectedExecution": "التاريخ المتوقع للتنفيذ",
+        "searchLabel": "البحث",
+        "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
+        "source": "المصدر",
+        "sourceAll": "الكل",
+        "sourceEform": "نموذج إلكتروني",
+        "sourceManual": "يدوي",
+        "apply": "تطبيق الفلترة",
+        "pickDate": "اختر التاريخ"
+      },
+      "table": {
+        "orderNumber": "رقم الطلب",
+        "customer": "صاحب العمل / الجوال",
+        "handler": "اسم العامل",
+        "createdAt": "تاريخ المنشأ",
+        "source": "المصدر",
+        "executionDate": "تاريخ التنفيذ",
+        "status": "حالة الطلب",
+        "action": "إجراء",
+        "startReview": "بدء المراجعة",
+        "sourceEform": "نموذج إلكتروني",
+        "sourceManual": "يدوي",
+        "statusNew": "جديد"
+      },
+      "empty": {
+        "title": "لا توجد طلبات جديدة",
+        "description": "لا توجد طلبات جديدة مطابقة للفلاتر الحالية، جرب تغيير معايير البحث أو إعادة التعيين."
+      },
+      "startReviewDialog": {
+        "title": "بدء مراجعة الطلب",
+        "heading": "بدء مراجعة الطلب!",
+        "description": "عند بدء المراجعة، سيتم تخصيص هذا الطلب لك ولن يكون متاحًا لباقي الموظفين حتى يتم الانتهاء.",
+        "orderNumber": "رقم الطلب",
+        "employerName": "اسم صاحب العمل",
+        "workerName": "اسم العامل",
+        "confirm": "تأكيد بدء المراجعة",
+        "cancel": "تراجع وإلغاء",
+        "close": "إغلاق",
+        "copy": "نسخ المعرف",
+        "copied": "تم النسخ!"
+      },
+      "Review": {
+        "title": "مراجعة الطلب",
+        "subtitle": "راجع بيانات الطلب والمرفقات قبل اعتماد للمعالجة أو تعليق الطلب.",
+        "orderStatus": "حالة الطلب :",
+        "statusNew": "جديد",
+        "refreshData": "تحديث البيانات",
+        "breadcrumbs": {
+          "home": "الرئيسية",
+          "newOrders": "الطلبات الجديدة",
+          "review": "مراجعة الطلب {orderNumber}"
+        },
+        "summary": {
+          "employerName": "اسم صاحب العمل",
+          "contactNumber": "رقم التواصل",
+          "city": "المدينة",
+          "workerName": "اسم العامل",
+          "expectedExecution": "التاريخ المتوقع للتنفيذ"
+        },
+        "tabs": {
+          "employer": "بيانات صاحب العمل",
+          "worker": "بيانات العامل",
+          "documents": "المستندات",
+          "workerPlaceholder": "بيانات العامل ستتوفر قريبًا.",
+          "documentsPlaceholder": "المستندات ستتوفر قريبًا."
+        },
+        "employer": {
+          "sectionTitle": "بيانات صاحب العمل",
+          "edit": "تعديل البيانات",
+          "save": "حفظ التغييرات",
+          "cancel": "إلغاء",
+          "employerName": "اسم صاحب العمل (المقصود الكفيل)",
+          "nationalId": "رقم الهوية الوطنية",
+          "phone": "رقم التواصل (المقصود رقم الجوال للكفيل)",
+          "phonePlaceholder": "5XXXXXXXX",
+          "city": "المدينة",
+          "address": "العنوان المدني (المقصود الموقع)",
+          "changeHistory": "سجل التعديلات",
+          "historyEmployee": "الموظف",
+          "historyAction": "نوع الإجراء",
+          "historyDateTime": "التاريخ والوقت",
+          "actionStartReview": "بدء المراجعة"
+        },
+        "sidebar": {
+          "orderInfo": "معلومات الطلب",
+          "orderNumber": "رقم الطلب",
+          "source": "مصدر الطلب",
+          "createdAt": "تاريخ الإنشاء",
+          "assignee": "الوظيفة",
+          "status": "الحالة",
+          "statusNew": "جديد",
+          "sourceEform": "E-form",
+          "sourceManual": "يدوي",
+          "relativeAgo": "منذ {time}",
+          "copy": "نسخ",
+          "copied": "تم النسخ!",
+          "checklist": "قائمة التحقق",
+          "checklistEmployer": "تم التحقق من بيانات صاحب العمل",
+          "checklistWorker": "تم التحقق من بيانات العامل",
+          "checklistAttachments": "تم التحقق من المرفقات",
+          "checklistContract": "تم التأكد من اكتمال بيانات العقد",
+          "checklistNoConflicts": "لا يوجد بيانات ناقصة أو متعارضة",
+          "actions": "إجراءات المراجعة",
+          "reviewed": "تمت المعالجة",
+          "suspend": "تعليق الطلب"
+        },
+        "validation": {
+          "employerNameRequired": "اسم صاحب العمل مطلوب",
+          "nationalIdRequired": "رقم الهوية الوطنية مطلوب",
+          "nationalIdFormat": "يجب أن يتكون رقم الهوية من 10 أرقام ويبدأ بـ 1 أو 2",
+          "phoneRequired": "رقم الجوال مطلوب",
+          "phoneFormat": "أدخل رقم جوال سعودي صحيح من 9 أرقام يبدأ بـ 5",
+          "cityRequired": "المدينة مطلوبة",
+          "addressRequired": "العنوان مطلوب"
+        }
+      }
+    }
+  },
   "Dashboard": {
     "Sidebar": {
       "brand": "هولا هوب",
@@ -107,10 +239,18 @@
       "userInitials": "ر ت",
       "toggleMenu": "فتح القائمة",
       "toggleDropdown": "القائمة",
-      "notifications": "التنبيهات",
+      "notifications": "الإشعارات",
+      "settings": "الإعدادات",
       "messages": "الرسائل",
       "refreshData": "تحديث البيانات",
       "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل..."
     }
+  },
+  "NotFound": {
+    "code": "404",
+    "title": "الصفحة غير موجودة",
+    "description": "عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها أو غير متاحة حالياً.",
+    "backHome": "العودة للرئيسية",
+    "previousPage": "الصفحة السابقة"
   }
 }

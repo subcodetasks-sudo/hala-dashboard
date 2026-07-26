@@ -1,5 +1,6 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import NewOrdersView from "@/features/orders/new/components/new-orders-view";
 
 export default function NewOrdersPage() {
-  return <DashboardPagePlaceholder titleKey="newOrders" />;
+  return <NewOrdersView />;
 }
+

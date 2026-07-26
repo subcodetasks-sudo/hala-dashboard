@@ -4,44 +4,47 @@ import { Eye, Phone, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
 import CustomIcon from "@/components/custom-svg";
-import SearchBar from "@/components/search-bar";
+import EmptyTableState from "@/components/empty-table-state";
+import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  MOCK_ORDERS,
-  type MockOrder,
-} from "@/features/home/mock-data";
+import OrdersFilters from "@/features/orders/components/orders-filters";
 import StartReviewDialog from "@/features/orders/new/components/start-review-dialog";
 import {
   StartReviewProvider,
   useStartReview,
 } from "@/features/orders/new/context/start-review-context";
+import {
+  DEFAULT_ORDERS_FILTERS,
+  filterNewOrders,
+  NEW_ORDER_INDICATORS,
+  NEW_ORDERS,
+  type NewOrderRow,
+  type OrdersFilterValues,
+} from "@/features/orders/mock-data";
 
-export default function LatestOrdersSection() {
+export default function NewOrdersView() {
   return (
     <StartReviewProvider>
-      <LatestOrdersSectionContent />
+      <NewOrdersViewContent />
       <StartReviewDialog />
     </StartReviewProvider>
   );
 }
 
-function LatestOrdersSectionContent() {
-  const t = useTranslations("HomePage");
+function NewOrdersViewContent() {
+  const t = useTranslations("Orders.New");
   const { openStartReview } = useStartReview();
-  const [status, setStatus] = useState("new");
+  const [draftFilters, setDraftFilters] =
+    useState<OrdersFilterValues>(DEFAULT_ORDERS_FILTERS);
+  const [appliedFilters, setAppliedFilters] =
+    useState<OrdersFilterValues>(DEFAULT_ORDERS_FILTERS);
 
-  const columns: DataTableColumn<MockOrder>[] = [
+  const rows = filterNewOrders(NEW_ORDERS, appliedFilters);
+
+  const columns: DataTableColumn<NewOrderRow>[] = [
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
@@ -86,8 +89,8 @@ function LatestOrdersSectionContent() {
         <Badge
           className={
             row.source === "eform"
-              ? "rounded-lg w-full  border-transparent bg-[#8B6BB5]/15 px-3 py-4 text-[#8B6BB5]"
-              : "rounded-lg w-full border-transparent bg-brand-success/15 px-3 py-4 text-brand-success"
+              ? "w-full rounded-lg border-transparent bg-[#8B6BB5]/15 px-3 py-4 text-[#8B6BB5]"
+              : "w-full rounded-lg border-transparent bg-brand-success/15 px-3 py-4 text-brand-success"
           }
         >
           {row.source === "eform"
@@ -136,75 +139,65 @@ function LatestOrdersSectionContent() {
   ];
 
   return (
-    <section className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <h2 className="flex items-center gap-2 text-lg font-bold text-brand-primary shrink-0 self-start lg:self-end lg:pb-1.5">
+    <div className="flex min-w-0 flex-col gap-8 p-4 pb-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <h1 className="text-2xl font-bold text-brand-black md:text-3xl">
+          {t("title")}
+        </h1>
+        <Button
+          type="button"
+          variant="outline"
+          className="h-11 gap-2 rounded-xl border-black/10 bg-brand-gris px-5 text-brand-white hover:bg-brand-gris/80 hover:text-brand-white"
+        >
+          <Plus className="size-4" strokeWidth={2} />
+          <span>{t("manualOrder")}</span>
+        </Button>
+      </div>
+
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {NEW_ORDER_INDICATORS.map((indicator) => (
+          <InfoCard
+            key={indicator.key}
+            title={t(`indicators.${indicator.key}`)}
+            value={indicator.value}
+            change={indicator.change}
+            period={t("period")}
+            iconSrc={indicator.iconSrc}
+            bgClassName={indicator.bgClassName}
+          />
+        ))}
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <h2 className="flex items-center gap-2 text-lg font-bold text-brand-primary">
           <CustomIcon
             src="/svg/tag-2.svg"
             size={20}
             className="text-brand-primary"
           />
-          {t("sections.latestOrders")}
+          <span>{t("listTitle")}</span>
         </h2>
 
-        <div className="flex flex-wrap items-end gap-3 flex-1 justify-end">
-          <div className="flex flex-col gap-1.5 flex-1 min-w-[240px] max-w-md">
-            <span className="text-xs font-semibold text-brand-black px-1">
-              {t("filters.searchLabel")}
-            </span>
-            <SearchBar
-              placeholder={t("filters.searchPlaceholder")}
-              className="h-11 w-full"
+        <OrdersFilters
+          value={draftFilters}
+          onChange={setDraftFilters}
+          onApply={() => setAppliedFilters(draftFilters)}
+        />
+
+        <DataTable
+          columns={columns}
+          data={rows}
+          getRowId={(row) => row.id}
+          selectable
+          emptyContent={
+            <EmptyTableState
+              iconSrc="/svg/receipt-item.svg"
+              title={t("empty.title")}
+              description={t("empty.description")}
             />
-          </div>
-
-          <div className="flex flex-col gap-1.5 w-full h-full sm:w-auto">
-            <span className="text-xs font-semibold text-brand-black px-1">
-              {t("filters.status")}
-            </span>
-            <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger className="!h-11 w-full rounded-full border-black/5 bg-[#F5F5F5] px-4 text-sm sm:w-44">
-                <SelectValue placeholder={t("filters.status")} />
-              </SelectTrigger>
-              <SelectContent position="popper" side="bottom" align="start">
-                <SelectItem value="new">{t("filters.statusNew")}</SelectItem>
-                <SelectItem value="pending">{t("filters.statusPending")}</SelectItem>
-                <SelectItem value="processing">
-                  {t("filters.statusProcessing")}
-                </SelectItem>
-                <SelectItem value="completed">
-                  {t("filters.statusCompleted")}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <ConfirmFilterButton label={t("filters.apply")} />
-        </div>
-      </div>
-
-      <DataTable
-        columns={columns}
-        data={MOCK_ORDERS}
-        getRowId={(row) => row.id}
-        selectable
-        emptyMessage={t("table.empty")}
-      />
-    </section>
-  );
-}
-
-export function ManualOrderButton() {
-  const t = useTranslations("HomePage");
-
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      className="h-11 gap-2 rounded-xl border-black/10 bg-brand-gris px-5 text-brand-white hover:bg-brand-gris/80 hover:text-brand-white"
-    >
-      <Plus className="size-4" strokeWidth={2} />
-      <span>{t("manualOrder")}</span>
-    </Button>
+          }
+        />
+      </section>
+    </div>
   );
 }

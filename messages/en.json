@@ -73,6 +73,138 @@
       }
     }
   },
+  "Orders": {
+    "New": {
+      "title": "New Orders",
+      "listTitle": "New Orders List",
+      "period": "This week",
+      "manualOrder": "Manual Order Entry",
+      "indicators": {
+        "total": "Total New Orders",
+        "epayment": "Orders from Electronic Payment",
+        "manual": "Manual Entry Orders"
+      },
+      "filters": {
+        "fromDate": "From Date",
+        "toDate": "To Date",
+        "expectedExecution": "Expected Execution Date",
+        "searchLabel": "Search",
+        "searchPlaceholder": "Search by order number or employer name...",
+        "source": "Source",
+        "sourceAll": "All",
+        "sourceEform": "E-form",
+        "sourceManual": "Manual",
+        "apply": "Apply Filter",
+        "pickDate": "Select date"
+      },
+      "table": {
+        "orderNumber": "Order Number",
+        "customer": "Employer / Mobile",
+        "handler": "Worker Name",
+        "createdAt": "Creation Date",
+        "source": "Source",
+        "executionDate": "Execution Date",
+        "status": "Order Status",
+        "action": "Action",
+        "startReview": "Start Review",
+        "sourceEform": "E-form",
+        "sourceManual": "Manual",
+        "statusNew": "New"
+      },
+      "empty": {
+        "title": "No new orders",
+        "description": "There are no new orders matching the current filters. Try changing the search criteria or resetting."
+      },
+      "startReviewDialog": {
+        "title": "Start Order Review",
+        "heading": "Start Order Review!",
+        "description": "When you start the review, this order will be assigned to you and will not be available to other employees until it is finished.",
+        "orderNumber": "Order Number",
+        "employerName": "Employer Name",
+        "workerName": "Worker Name",
+        "confirm": "Confirm Start Review",
+        "cancel": "Back and Cancel",
+        "close": "Close",
+        "copy": "Copy ID",
+        "copied": "Copied!"
+      },
+      "Review": {
+        "title": "Review Order",
+        "subtitle": "Review order details and attachments before approval for processing or suspending.",
+        "orderStatus": "Order Status:",
+        "statusNew": "New",
+        "refreshData": "Refresh Data",
+        "breadcrumbs": {
+          "home": "Home",
+          "newOrders": "New Orders",
+          "review": "Review Order {orderNumber}"
+        },
+        "summary": {
+          "employerName": "Employer Name",
+          "contactNumber": "Contact Number",
+          "city": "City",
+          "workerName": "Worker Name",
+          "expectedExecution": "Expected Execution Date"
+        },
+        "tabs": {
+          "employer": "Employer Data",
+          "worker": "Worker Data",
+          "documents": "Documents",
+          "workerPlaceholder": "Worker data will be available soon.",
+          "documentsPlaceholder": "Documents will be available soon."
+        },
+        "employer": {
+          "sectionTitle": "Employer Data",
+          "edit": "Edit Data",
+          "save": "Save Changes",
+          "cancel": "Cancel",
+          "employerName": "Employer Name (Sponsor)",
+          "nationalId": "National ID Number",
+          "phone": "Contact Number (Sponsor Mobile)",
+          "phonePlaceholder": "5XXXXXXXX",
+          "city": "City",
+          "address": "Civil Address (Location)",
+          "changeHistory": "Change History",
+          "historyEmployee": "Employee",
+          "historyAction": "Action Type",
+          "historyDateTime": "Date and Time",
+          "actionStartReview": "Start Review"
+        },
+        "sidebar": {
+          "orderInfo": "Order Information",
+          "orderNumber": "Order Number",
+          "source": "Order Source",
+          "createdAt": "Creation Date",
+          "assignee": "Role",
+          "status": "Status",
+          "statusNew": "New",
+          "sourceEform": "E-form",
+          "sourceManual": "Manual",
+          "relativeAgo": "{time} ago",
+          "copy": "Copy",
+          "copied": "Copied!",
+          "checklist": "Checklist",
+          "checklistEmployer": "Employer data verified",
+          "checklistWorker": "Worker data verified",
+          "checklistAttachments": "Attachments verified",
+          "checklistContract": "Contract data completion confirmed",
+          "checklistNoConflicts": "No missing or conflicting data",
+          "actions": "Review Actions",
+          "reviewed": "Processed",
+          "suspend": "Suspend Order"
+        },
+        "validation": {
+          "employerNameRequired": "Employer name is required",
+          "nationalIdRequired": "National ID is required",
+          "nationalIdFormat": "National ID must be 10 digits starting with 1 or 2",
+          "phoneRequired": "Mobile number is required",
+          "phoneFormat": "Enter a valid 9-digit Saudi mobile starting with 5",
+          "cityRequired": "City is required",
+          "addressRequired": "Address is required"
+        }
+      }
+    }
+  },
   "Dashboard": {
     "Sidebar": {
       "brand": "Hola Hoop",
@@ -108,9 +240,17 @@
       "toggleMenu": "Open menu",
       "toggleDropdown": "Menu",
       "notifications": "Notifications",
+      "settings": "Settings",
       "messages": "Messages",
       "refreshData": "Refresh Data",
       "searchPlaceholder": "Search by order number or employer name..."
     }
+  },
+  "NotFound": {
+    "code": "404",
+    "title": "Page Not Found",
+    "description": "Sorry, the page you are looking for doesn't exist, has been removed, or is temporarily unavailable.",
+    "backHome": "Back to Home",
+    "previousPage": "Go Back"
   }
 }
