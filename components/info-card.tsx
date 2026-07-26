@@ -3,21 +3,17 @@ import { ArrowUpRight } from "lucide-react";
 import CustomIcon from "@/components/custom-svg";
 import { cn } from "@/lib/utils";
 
-type InfoCardTone = "accent" | "primary";
-
 type InfoCardProps = {
   title: string;
   value: string | number;
   iconSrc: string;
   change: string;
   period: string;
-  tone?: InfoCardTone;
+  /** Background color class, e.g. `bg-brand-primary/10` */
+  bgClassName?: string;
+  /** Value text color class, e.g. `text-brand-accent` */
+  valueClassName?: string;
   className?: string;
-};
-
-const toneStyles: Record<InfoCardTone, string> = {
-  accent: "bg-brand-accent/10",
-  primary: "bg-brand-primary/10",
 };
 
 export default function InfoCard({
@@ -26,16 +22,15 @@ export default function InfoCard({
   iconSrc,
   change,
   period,
-  tone = "primary",
+  bgClassName = "bg-brand-primary/10",
+  valueClassName = "text-brand-black",
   className,
 }: InfoCardProps) {
-  const isAccent = tone === "accent";
-
   return (
     <article
       className={cn(
         "flex flex-col gap-5 rounded-[2.25rem] p-5 text-start",
-        toneStyles[tone],
+        bgClassName,
         className
       )}
     >
@@ -53,7 +48,7 @@ export default function InfoCard({
       <p
         className={cn(
           "text-3xl font-bold tracking-tight",
-          isAccent ? "text-brand-accent" : "text-brand-black"
+          valueClassName
         )}
       >
         {value}

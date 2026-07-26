@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import CustomIcon from "@/components/custom-svg";
-import InfoCard from "@/features/home/components/info-card";
+import InfoCard from "@/components/info-card";
 import EmployeesCard from "@/features/home/components/employees-card";
 import LatestOrdersSection, {
   ManualOrderButton,
@@ -44,7 +44,8 @@ export default async function HomePage() {
               change={indicator.change}
               period={t("period")}
               iconSrc={indicator.iconSrc}
-              tone={indicator.tone}
+              bgClassName={indicator.bgClassName}
+              valueClassName={indicator.valueClassName}
             />
           ))}
         </div>
