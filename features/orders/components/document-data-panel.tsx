@@ -1,0 +1,176 @@
+"use client";
+
+import { format, parseISO } from "date-fns";
+import { ar, enUS } from "date-fns/locale";
+import { Download, Eye } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+
+import CustomIcon from "@/components/custom-svg";
+import { Button } from "@/components/ui/button";
+import type {
+  OrderDocument,
+  OrderDocumentType,
+  OrderReviewDetail,
+} from "@/features/orders/types";
+import { cn } from "@/lib/utils";
+
+type DocumentDataPanelProps = {
+  order: OrderReviewDetail;
+};
+
+type DocumentVisual = {
+  iconSrc: string;
+  iconClassName: string;
+  bgClassName: string;
+};
+
+const DOCUMENT_VISUALS: Record<OrderDocumentType, DocumentVisual> = {
+  nationalId: {
+    iconSrc: "/svg/profile-tick.svg",
+    // Soft pink — not a brand token
+    bgClassName: "bg-[#FCE8EB]",
+    iconClassName: "text-brand-accent",
+  },
+  workerId: {
+    iconSrc: "/svg/person.svg",
+    // Soft blue — not a brand token
+    bgClassName: "bg-[#E8F1FF]",
+    iconClassName: "text-[#4A7FD4]",
+  },
+  passportFirstPage: {
+    iconSrc: "/svg/document-text.svg",
+    bgClassName: "bg-brand-primary/10",
+    iconClassName: "text-brand-primary",
+  },
+  passportVisa: {
+    iconSrc: "/svg/document-text.svg",
+    // Soft purple — not a brand token
+    bgClassName: "bg-[#EEE8FA]",
+    iconClassName: "text-[#7C6BC4]",
+  },
+  exitReentryVisa: {
+    iconSrc: "/svg/tag-2.svg",
+    bgClassName: "bg-brand-success/10",
+    iconClassName: "text-brand-success",
+  },
+  employerSignature: {
+    iconSrc: "/svg/brush.svg",
+    // Soft grey — not a brand token
+    bgClassName: "bg-[#F0F0F0]",
+    iconClassName: "text-brand-gris",
+  },
+  workerSignature: {
+    iconSrc: "/svg/brush.svg",
+    // Soft pink — not a brand token
+    bgClassName: "bg-[#FCE8EB]",
+    iconClassName: "text-brand-accent",
+  },
+};
+
+export default function DocumentDataPanel({ order }: DocumentDataPanelProps) {
+  const t = useTranslations("Orders.New.Review.documents");
+  const locale = useLocale();
+
+  return (
+    <div className="flex flex-col gap-6 rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
+      <h3 className="flex items-center gap-2 text-base font-bold text-brand-black">
+        <span className="inline-flex rounded-xl bg-brand-primary/10 p-3 text-brand-primary">
+          <CustomIcon src="/svg/shield-tick.svg" size={20} />
+        </span>
+        <span>{t("sectionTitle")}</span>
+      </h3>
+
+      <ul className="flex flex-col">
+        {order.documents.map((doc, index) => (
+          <li key={doc.id}>
+            <DocumentRow
+              document={doc}
+              title={t(`types.${doc.type}`)}
+              viewLabel={t("view")}
+              downloadLabel={t("download")}
+              meta={t("meta", {
+                date: formatUploadedAt(doc.uploadedAtIso, locale),
+                size: doc.sizeLabel,
+                format: doc.format,
+              })}
+              isLast={index === order.documents.length - 1}
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function DocumentRow({
+  document,
+  title,
+  meta,
+  viewLabel,
+  downloadLabel,
+  isLast,
+}: {
+  document: OrderDocument;
+  title: string;
+  meta: string;
+  viewLabel: string;
+  downloadLabel: string;
+  isLast: boolean;
+}) {
+  const visual = DOCUMENT_VISUALS[document.type];
+
+  return (
+    <div
+      className={cn(
+        "flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4",
+        !isLast && "border-b border-black/5"
+      )}
+    >
+      <div className="flex min-w-0 items-center gap-3">
+        <span
+          className={cn(
+            "inline-flex size-11 shrink-0 items-center justify-center rounded-xl",
+            visual.bgClassName,
+            visual.iconClassName
+          )}
+        >
+          <CustomIcon src={visual.iconSrc} size={20} />
+        </span>
+        <div className="min-w-0">
+          <p className="truncate text-sm font-bold text-brand-black">{title}</p>
+          <p className="mt-0.5 truncate text-xs text-brand-gris">{meta}</p>
+        </div>
+      </div>
+
+      <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
+        <Button
+          variant="ghost"
+          asChild
+          // Soft purple — not a brand token
+          className="h-9 gap-1.5 rounded-full bg-[#F3E8FF] px-4 font-semibold text-[#7C3AED] shadow-none hover:bg-[#EDE0FF] hover:text-[#7C3AED]"
+        >
+          <a href={document.url} target="_blank" rel="noopener noreferrer">
+            <Eye className="size-4" strokeWidth={1.75} />
+            {viewLabel}
+          </a>
+        </Button>
+        <Button
+          variant="ghost"
+          asChild
+          className="h-9 gap-1.5 rounded-full bg-brand-success/10 px-4 font-semibold text-brand-success shadow-none hover:bg-brand-success/15 hover:text-brand-success"
+        >
+          <a href={document.url} download>
+            <Download className="size-4" strokeWidth={1.75} />
+            {downloadLabel}
+          </a>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function formatUploadedAt(iso: string, locale: string) {
+  return format(parseISO(iso), "d MMM yyyy", {
+    locale: locale === "ar" ? ar : enUS,
+  });
+}

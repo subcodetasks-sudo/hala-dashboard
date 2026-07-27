@@ -13,8 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import DateField from "@/features/orders/components/date-field";
-import type { OrdersFilterValues } from "@/features/orders/mock-data";
+import DateField from "@/components/date-field";
+import type { OrdersFilterValues } from "@/features/orders/types";
 import { cn } from "@/lib/utils";
 
 type OrdersFiltersProps = {
@@ -56,22 +56,39 @@ export default function OrdersFilters({
         label={t("filters.fromDate")}
         placeholder={t("filters.pickDate")}
         value={value.fromDate}
-        onChange={(fromDate) => onChange({ ...value, fromDate })}
+        valueAs="date"
+        onChange={(fromDate) =>
+          onChange({
+            ...value,
+            fromDate: fromDate instanceof Date ? fromDate : undefined,
+          })
+        }
         className="min-w-[150px] flex-1 sm:flex-none sm:w-[160px]"
       />
       <DateField
         label={t("filters.toDate")}
         placeholder={t("filters.pickDate")}
         value={value.toDate}
-        onChange={(toDate) => onChange({ ...value, toDate })}
+        valueAs="date"
+        onChange={(toDate) =>
+          onChange({
+            ...value,
+            toDate: toDate instanceof Date ? toDate : undefined,
+          })
+        }
         className="min-w-[150px] flex-1 sm:flex-none sm:w-[160px]"
       />
       <DateField
         label={t("filters.expectedExecution")}
         placeholder={t("filters.pickDate")}
         value={value.expectedExecution}
+        valueAs="date"
         onChange={(expectedExecution) =>
-          onChange({ ...value, expectedExecution })
+          onChange({
+            ...value,
+            expectedExecution:
+              expectedExecution instanceof Date ? expectedExecution : undefined,
+          })
         }
         className="min-w-[180px] flex-1 sm:flex-none sm:w-[200px]"
       />

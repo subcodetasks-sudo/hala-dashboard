@@ -21,9 +21,11 @@ import {
   filterNewOrders,
   NEW_ORDER_INDICATORS,
   NEW_ORDERS,
-  type NewOrderRow,
-  type OrdersFilterValues,
 } from "@/features/orders/mock-data";
+import type {
+  NewOrderRow,
+  OrdersFilterValues,
+} from "@/features/orders/types";
 
 export default function NewOrdersView() {
   return (
@@ -141,9 +143,12 @@ function NewOrdersViewContent() {
   return (
     <div className="flex min-w-0 flex-col gap-8 p-4 pb-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <h1 className="text-2xl font-bold text-brand-black md:text-3xl">
-          {t("title")}
-        </h1>
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold text-brand-black md:text-3xl">
+            {t("title")}
+          </h1>
+          <p className="max-w-2xl text-sm text-brand-gris">{t("description")}</p>
+        </div>
         <Button
           type="button"
           variant="outline"

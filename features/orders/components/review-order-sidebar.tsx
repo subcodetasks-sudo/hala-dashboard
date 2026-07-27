@@ -29,6 +29,8 @@ export default function ReviewOrderSidebar() {
     canCompleteReview,
     checklist,
     toggleChecklistItem,
+    openApproveProcess,
+    openPendOrder,
   } = useNewOrderReview();
   const [copied, setCopied] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -125,12 +127,17 @@ export default function ReviewOrderSidebar() {
         <ul className="mt-1 divide-y divide-black/5">
           {NEW_ORDER_CHECKLIST_IDS.map((key) => {
             const checked = checklist[key];
+            const isNewStatus = order.status === "new";
             return (
               <li key={key}>
                 <button
                   type="button"
+                  disabled={!isNewStatus}
                   onClick={() => toggleChecklistItem(key)}
-                  className="flex w-full items-center justify-between gap-3 py-3 text-start"
+                  className={cn(
+                    "flex w-full items-center justify-between gap-3 py-3 text-start",
+                    !isNewStatus && "cursor-default opacity-80"
+                  )}
                 >
                   <span
                     className={cn(
@@ -168,6 +175,7 @@ export default function ReviewOrderSidebar() {
             <Button
               type="button"
               disabled={!canCompleteReview}
+              onClick={openApproveProcess}
               className={cn(
                 "h-12 gap-2 rounded-full border-none bg-brand-primary px-4 font-semibold text-brand-white shadow-sm",
                 canCompleteReview
@@ -180,6 +188,7 @@ export default function ReviewOrderSidebar() {
             </Button>
             <Button
               type="button"
+              onClick={openPendOrder}
               className="h-12 gap-2 rounded-full border-none bg-[#E8913A] px-4 font-semibold text-brand-white shadow-sm hover:bg-[#E8913A]/90"
             >
               <AlertTriangle className="size-5" strokeWidth={2} />

@@ -1,10 +1,5 @@
 "use client";
 
-import {
-  FileText,
-  UserRound,
-  Users,
-} from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import CustomIcon from "@/components/custom-svg";
@@ -17,21 +12,29 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ChangeHistoryTable from "@/features/orders/components/change-history-table";
+import DocumentDataPanel from "@/features/orders/components/document-data-panel";
 import EmployerDataPanel from "@/features/orders/components/employer-data-panel";
 import ReviewOrderSidebar from "@/features/orders/components/review-order-sidebar";
+import WorkerDataPanel from "@/features/orders/components/worker-data-panel";
+import ApproveProcessDialog from "@/features/orders/new/components/approve-process-dialog";
+import PendOrderDialog from "@/features/orders/new/components/pend-order-dialog";
 import {
   NewOrderReviewProvider,
   useNewOrderReview,
   type ReviewTabId,
 } from "@/features/orders/new/context/new-order-review-context";
-import type { OrderReviewDetail } from "@/features/orders/mock-data";
+import type { OrderReviewDetail } from "@/features/orders/types";
+import { useOrder } from "@/features/orders/queries/use-orders";
 import { Link } from "@/i18n/navigation";
 
 type OrderViewProps = {
   order: OrderReviewDetail;
 };
 
-export default function OrderView({ order }: OrderViewProps) {
+export default function OrderView({ order: initialOrder }: OrderViewProps) {
+  const { data: order = initialOrder } = useOrder(initialOrder.id);
+
   return (
     <NewOrderReviewProvider order={order}>
       <OrderViewContent />
@@ -43,14 +46,17 @@ function OrderViewContent() {
   const t = useTranslations("Orders.New.Review");
   const {
     order,
-    isEditing,
-    setIsEditing,
+    editingTab,
+    startEditing,
+    stopEditing,
     updateEmployer,
+    updateWorker,
     activeTab,
     setActiveTab,
   } = useNewOrderReview();
 
   const handleTabChange = (value: string) => {
+    stopEditing();
     setActiveTab(value as ReviewTabId);
   };
 
@@ -130,59 +136,71 @@ function OrderViewContent() {
       </div>
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-        <div className="min-w-0 flex-1 rounded-2xl border border-black/5 bg-white p-4 shadow-sm sm:p-5">
-          <Tabs
-            value={activeTab}
-            onValueChange={handleTabChange}
-            className="gap-4"
-          >
-            <TabsList className="grid! h-auto! w-full grid-cols-3 gap-3 rounded-none bg-transparent p-0 group-data-horizontal/tabs:h-auto!">
-              <TabsTrigger
-                value="employer"
-                className="h-11 w-full gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
-              >
-                <UserRound className="size-4" strokeWidth={1.75} />
-                {t("tabs.employer")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="worker"
-                className="h-11 w-full gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
-              >
-                <Users className="size-4" strokeWidth={1.75} />
-                {t("tabs.worker")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="documents"
-                className="h-11 w-full gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
-              >
-                <FileText className="size-4" strokeWidth={1.75} />
-                {t("tabs.documents")}
-              </TabsTrigger>
-            </TabsList>
+        <div className="min-w-0 flex-1 space-y-4">
+          <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm sm:p-5">
+            <Tabs
+              value={activeTab}
+              onValueChange={handleTabChange}
+              className="gap-4"
+            >
+              <TabsList className="flex h-auto w-full flex-wrap gap-3 rounded-none bg-transparent p-0 group-data-horizontal/tabs:h-auto!">
+                <TabsTrigger
+                  value="employer"
+                  className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
+                >
+                  <CustomIcon src="/svg/user-square.svg" size={16} />
+                  {t("tabs.employer")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="worker"
+                  className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
+                >
+                  <CustomIcon src="/svg/user-tag.svg" size={16} />
+                  {t("tabs.worker")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="documents"
+                  className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
+                >
+                  <CustomIcon src="/svg/receipt-2.svg" size={16} />
+                  {t("tabs.documents")}
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="employer" className="mt-2">
-              <EmployerDataPanel
-                order={order}
-                isEditing={isEditing}
-                onEditingChange={setIsEditing}
-                onSaved={updateEmployer}
-              />
-            </TabsContent>
-            <TabsContent value="worker" className="mt-2">
-              <p className="rounded-xl bg-brand-background/50 px-4 py-8 text-center text-sm text-brand-gris">
-                {t("tabs.workerPlaceholder")}
-              </p>
-            </TabsContent>
-            <TabsContent value="documents" className="mt-2">
-              <p className="rounded-xl bg-brand-background/50 px-4 py-8 text-center text-sm text-brand-gris">
-                {t("tabs.documentsPlaceholder")}
-              </p>
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="employer" className="mt-2">
+                <EmployerDataPanel
+                  order={order}
+                  isEditing={editingTab === "employer"}
+                  onEditingChange={(editing) =>
+                    editing ? startEditing("employer") : stopEditing()
+                  }
+                  onSaved={updateEmployer}
+                />
+              </TabsContent>
+              <TabsContent value="worker" className="mt-2">
+                <WorkerDataPanel
+                  order={order}
+                  isEditing={editingTab === "worker"}
+                  onEditingChange={(editing) =>
+                    editing ? startEditing("worker") : stopEditing()
+                  }
+                  onSaved={updateWorker}
+                />
+              </TabsContent>
+              <TabsContent value="documents" className="mt-2">
+                <DocumentDataPanel order={order} />
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          <ChangeHistoryTable rows={order.changeHistory} />
         </div>
 
         <ReviewOrderSidebar />
       </div>
+
+      <ApproveProcessDialog />
+      <PendOrderDialog />
     </div>
   );
 }
