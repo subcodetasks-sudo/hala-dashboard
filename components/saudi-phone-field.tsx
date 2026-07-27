@@ -11,6 +11,8 @@ import {
 import { toSaudiPhoneLocal } from "@/features/orders/mock-data";
 import { cn } from "@/lib/utils";
 
+import "react-country-state-city/dist/react-country-state-city.css";
+
 type Country = Awaited<ReturnType<typeof GetCountries>>[number];
 
 type SaudiPhoneFieldProps = {
@@ -66,12 +68,13 @@ export default function SaudiPhoneField({
         className="gap-1.5 border-e border-black/10 pe-2.5 ps-3 text-brand-black"
         aria-hidden
       >
-        <span className="text-base leading-none" aria-hidden>
-          {saudi?.emoji || "🇸🇦"}
+        <span
+          className="stdropdown-flag text-base leading-none"
+          aria-hidden
+        >
+          {flag}
         </span>
-        <span className="text-sm font-semibold tabular-nums">
-          {saudi?.phone_code ? `+${saudi.phone_code}` : "+966"}
-        </span>
+        <span className="text-sm font-semibold tabular-nums">{phoneCode}</span>
       </InputGroupAddon>
       <InputGroupInput
         id={id}
