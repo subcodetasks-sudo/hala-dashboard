@@ -1,18 +1,4 @@
-export type OrderSource = "eform" | "manual";
-export type OrderStatus = "new" | "pending" | "processing" | "completed";
-
-export type MockOrder = {
-  id: string;
-  orderNumber: string;
-  customerName: string;
-  customerPhone: string;
-  handlerName: string;
-  createdDate: string;
-  createdTime: string;
-  source: OrderSource;
-  executionDate: string;
-  status: OrderStatus;
-};
+import type { MockOrder } from "@/features/home/types";
 
 /** RTL: first item renders on the right (matches design order). */
 export const MOCK_INDICATORS = [

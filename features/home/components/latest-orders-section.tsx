@@ -17,10 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  MOCK_ORDERS,
-  type MockOrder,
-} from "@/features/home/mock-data";
+import { MOCK_ORDERS } from "@/features/home/mock-data";
+import type { MockOrder } from "@/features/home/types";
 import StartReviewDialog from "@/features/orders/new/components/start-review-dialog";
 import {
   StartReviewProvider,
