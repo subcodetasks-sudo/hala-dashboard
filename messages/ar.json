@@ -76,6 +76,7 @@
   "Orders": {
     "New": {
       "title": "الطلبات الجديدة",
+      "description": "طلبات تجديد العقود المنشأة حديثاً ولم يتم البدء في معالجتها بعد.",
       "listTitle": "قائمة الطلبات الجديدة",
       "period": "هذا الأسبوع",
       "manualOrder": "إدخال طلب يدوي",
@@ -128,6 +129,45 @@
         "copy": "نسخ المعرف",
         "copied": "تم النسخ!"
       },
+      "approveProcessDialog": {
+        "title": "اعتماد معالجة الطلب",
+        "heading": "اعتماد معالجة الطلب!",
+        "description": "هل أنت متأكد من اعتماد هذا الطلب؟ سيتم تغيير حالة الطلب إلى \"تمت المعالجة\" ونقله إلى المرحلة التالية.",
+        "orderNumber": "رقم الطلب",
+        "employerName": "اسم صاحب العمل",
+        "workerName": "اسم العامل",
+        "newStatus": "الحالة الجديدة",
+        "statusProcessed": "تمت المعالجة",
+        "confirm": "تأكيد الاعتماد",
+        "cancel": "تراجع وإلغاء",
+        "close": "إغلاق",
+        "copy": "نسخ المعرف",
+        "copied": "تم النسخ!",
+        "toastSuccess": "تم إعتماد هذا الطلب بنجاح"
+      },
+      "pendOrderDialog": {
+        "title": "تعليق الطلب",
+        "heading": "تعليق الطلب !",
+        "description": "استخدم هذا الإجراء في حال وجود بيانات ناقصة أو غير واضحة تحتاج إلى استكمال قبل متابعة المعالجة.",
+        "reasonLabel": "سبب التعليق",
+        "reasonPlaceholder": "اختر سببًا...",
+        "reasonsSelected": "{count} أسباب محددة",
+        "notesLabel": "ملاحظات التعليق",
+        "notesPlaceholder": "اكتب التفاصيل المطلوبة من العميل أو الفريق المختص...",
+        "infoBanner": "سيتم تحويل الطلب إلى حالة معلق – في انتظار استكمال البيانات.",
+        "confirm": "تأكيد التعليق",
+        "cancel": "تراجع وإلغاء",
+        "close": "إغلاق",
+        "toastSuccess": "تم تعليق الطلب بنجاح",
+        "reasons": {
+          "incompleteEmployerData": "بيانات صاحب العمل غير مكتملة",
+          "unclearWorkerData": "بيانات العامل غير واضحة",
+          "missingDocument": "مستند ناقص",
+          "unclearDocument": "مستند غير واضح",
+          "dataConflict": "تعارض في البيانات",
+          "other": "سبب آخر"
+        }
+      },
       "Review": {
         "title": "مراجعة الطلب",
         "subtitle": "راجع بيانات الطلب والمرفقات قبل اعتماد للمعالجة أو تعليق الطلب.",
@@ -170,6 +210,36 @@
           "historyDateTime": "التاريخ والوقت",
           "actionStartReview": "بدء المراجعة"
         },
+        "worker": {
+          "sectionTitle": "بيانات العامل",
+          "edit": "تعديل البيانات",
+          "save": "حفظ التغييرات",
+          "cancel": "إلغاء",
+          "workerName": "اسم العامل",
+          "workerPhone": "رقم التواصل (المقصود رقم الجوال للعامل)",
+          "phonePlaceholder": "5XXXXXXXX",
+          "birthDate": "تاريخ الميلاد",
+          "homeAddress": "العنوان في الفلبين",
+          "passportIssuePlace": "عنوان (المقصود مكان اصدار الجواز)",
+          "passportNumber": "رقم جواز السفر",
+          "passportIssueDate": "تاريخ الإصدار",
+          "passportExpiryDate": "تاريخ الانتهاء للجواز"
+        },
+        "documents": {
+          "sectionTitle": "المستندات",
+          "view": "عرض",
+          "download": "تحميل",
+          "meta": "رفع {date} • {size} • {format}",
+          "types": {
+            "nationalId": "صورة الهوية الوطنية",
+            "workerId": "صورة هوية العامل (الاقامة)",
+            "passportFirstPage": "صورة الجواز (الصفحة الأولى)",
+            "passportVisa": "صورة الجواز (التأشيرة)",
+            "exitReentryVisa": "تأشيرة الخروج والعودة",
+            "employerSignature": "توقيع صاحب العمل",
+            "workerSignature": "توقيع العامل"
+          }
+        },
         "sidebar": {
           "orderInfo": "معلومات الطلب",
           "orderNumber": "رقم الطلب",
@@ -200,8 +270,63 @@
           "phoneRequired": "رقم الجوال مطلوب",
           "phoneFormat": "أدخل رقم جوال سعودي صحيح من 9 أرقام يبدأ بـ 5",
           "cityRequired": "المدينة مطلوبة",
-          "addressRequired": "العنوان مطلوب"
+          "addressRequired": "العنوان مطلوب",
+          "workerNameRequired": "اسم العامل مطلوب",
+          "workerPhoneRequired": "رقم جوال العامل مطلوب",
+          "workerPhoneFormat": "أدخل رقم جوال سعودي صحيح من 9 أرقام يبدأ بـ 5",
+          "birthDateRequired": "تاريخ الميلاد مطلوب",
+          "homeAddressRequired": "العنوان مطلوب",
+          "passportIssuePlaceRequired": "مكان إصدار الجواز مطلوب",
+          "passportNumberRequired": "رقم جواز السفر مطلوب",
+          "passportIssueDateRequired": "تاريخ الإصدار مطلوب",
+          "passportExpiryDateRequired": "تاريخ انتهاء الجواز مطلوب"
         }
+      }
+    },
+    "Pending": {
+      "title": "الطلبات المعلقة",
+      "description": "جميع الطلبات التي تم تعليقها بسبب نقص في البيانات أو المستندات وتحتاج إلى استكمال.",
+      "listTitle": "قائمة الطلبات المعلقة",
+      "period": "هذا الأسبوع",
+      "indicators": {
+        "total": "إجمالي الطلبات المعلقة",
+        "incompleteData": "طلبات ذات بيانات غير مكتملة",
+        "missingDocuments": "طلبات ذات مستندات ناقصة"
+      },
+      "filters": {
+        "fromDate": "تاريخ التعليق من",
+        "toDate": "تاريخ التعليق إلى",
+        "searchLabel": "البحث",
+        "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
+        "suspensionType": "نوع التعليق",
+        "reasonAll": "الكل",
+        "apply": "تطبيق الفلترة",
+        "pickDate": "اختر التاريخ"
+      },
+      "reasons": {
+        "missingDocument": "مستند ناقص",
+        "incompleteWorkerData": "بيانات العامل ناقصة",
+        "incompleteEmployerData": "بيانات صاحب العمل غير مكتملة",
+        "unclearDocument": "مستند غير واضح",
+        "dataConflict": "تعارض في البيانات",
+        "other": "سبب آخر"
+      },
+      "table": {
+        "orderNumber": "رقم الطلب",
+        "employer": "صاحب العمل / الجوال",
+        "worker": "اسم العامل",
+        "createdAt": "تاريخ الإنشاء",
+        "suspensionReason": "سبب التعليق",
+        "suspendedAt": "تاريخ التعليق",
+        "status": "حالة الطلب",
+        "statusPending": "معلق",
+        "suspendedBy": "الموظف المعلق",
+        "action": "إجراء",
+        "viewOrder": "عرض الطلب"
+      },
+      "empty": {
+        "title": "لا توجد طلبات معلقة",
+        "description": "لا توجد حاليًا أي طلبات معلقة. جميع الطلبات تسير بشكل طبيعي ضمن دورة المعالجة."
       }
     }
   },

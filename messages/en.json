@@ -76,6 +76,7 @@
   "Orders": {
     "New": {
       "title": "New Orders",
+      "description": "Newly created contract renewal requests that have not yet started processing.",
       "listTitle": "New Orders List",
       "period": "This week",
       "manualOrder": "Manual Order Entry",
@@ -128,6 +129,45 @@
         "copy": "Copy ID",
         "copied": "Copied!"
       },
+      "approveProcessDialog": {
+        "title": "Confirm Order Processing",
+        "heading": "Confirm Order Processing!",
+        "description": "Are you sure you want to confirm this order? The order status will be changed to \"Processed\" and moved to the next stage.",
+        "orderNumber": "Order Number",
+        "employerName": "Employer Name",
+        "workerName": "Worker Name",
+        "newStatus": "New Status",
+        "statusProcessed": "Processed",
+        "confirm": "Confirm Approval",
+        "cancel": "Back and Cancel",
+        "close": "Close",
+        "copy": "Copy ID",
+        "copied": "Copied!",
+        "toastSuccess": "This order has been successfully approved"
+      },
+      "pendOrderDialog": {
+        "title": "Suspend Order",
+        "heading": "Suspend Order!",
+        "description": "Use this action when data is missing or unclear and needs to be completed before continuing processing.",
+        "reasonLabel": "Suspension Reason",
+        "reasonPlaceholder": "Choose a reason...",
+        "reasonsSelected": "{count} reasons selected",
+        "notesLabel": "Suspension Notes",
+        "notesPlaceholder": "Write the details required from the customer or the specialized team...",
+        "infoBanner": "The order will be moved to Pending status – waiting for data completion.",
+        "confirm": "Confirm Suspension",
+        "cancel": "Back and Cancel",
+        "close": "Close",
+        "toastSuccess": "Order has been successfully suspended",
+        "reasons": {
+          "incompleteEmployerData": "Employer data is incomplete",
+          "unclearWorkerData": "Worker data is unclear",
+          "missingDocument": "Missing document",
+          "unclearDocument": "Unclear document",
+          "dataConflict": "Data conflict",
+          "other": "Other reason"
+        }
+      },
       "Review": {
         "title": "Review Order",
         "subtitle": "Review order details and attachments before approval for processing or suspending.",
@@ -170,6 +210,36 @@
           "historyDateTime": "Date and Time",
           "actionStartReview": "Start Review"
         },
+        "worker": {
+          "sectionTitle": "Worker Data",
+          "edit": "Edit Data",
+          "save": "Save Changes",
+          "cancel": "Cancel",
+          "workerName": "Worker Name",
+          "workerPhone": "Contact Number (Worker Mobile)",
+          "phonePlaceholder": "5XXXXXXXX",
+          "birthDate": "Date of Birth",
+          "homeAddress": "Address in the Philippines",
+          "passportIssuePlace": "Passport Issue Place",
+          "passportNumber": "Passport Number",
+          "passportIssueDate": "Issue Date",
+          "passportExpiryDate": "Passport Expiry Date"
+        },
+        "documents": {
+          "sectionTitle": "Documents",
+          "view": "View",
+          "download": "Download",
+          "meta": "Uploaded {date} • {size} • {format}",
+          "types": {
+            "nationalId": "National ID Copy",
+            "workerId": "Worker ID Copy (Iqama)",
+            "passportFirstPage": "Passport Copy (First Page)",
+            "passportVisa": "Passport Copy (Visa)",
+            "exitReentryVisa": "Exit and Re-entry Visa",
+            "employerSignature": "Employer Signature",
+            "workerSignature": "Worker Signature"
+          }
+        },
         "sidebar": {
           "orderInfo": "Order Information",
           "orderNumber": "Order Number",
@@ -200,8 +270,63 @@
           "phoneRequired": "Mobile number is required",
           "phoneFormat": "Enter a valid 9-digit Saudi mobile starting with 5",
           "cityRequired": "City is required",
-          "addressRequired": "Address is required"
+          "addressRequired": "Address is required",
+          "workerNameRequired": "Worker name is required",
+          "workerPhoneRequired": "Worker mobile number is required",
+          "workerPhoneFormat": "Enter a valid 9-digit Saudi mobile starting with 5",
+          "birthDateRequired": "Birth date is required",
+          "homeAddressRequired": "Home address is required",
+          "passportIssuePlaceRequired": "Passport issue place is required",
+          "passportNumberRequired": "Passport number is required",
+          "passportIssueDateRequired": "Passport issue date is required",
+          "passportExpiryDateRequired": "Passport expiry date is required"
         }
+      }
+    },
+    "Pending": {
+      "title": "Pending Orders",
+      "description": "All orders suspended due to incomplete data or documents that need to be completed.",
+      "listTitle": "Pending Orders List",
+      "period": "This week",
+      "indicators": {
+        "total": "Total Pending Orders",
+        "incompleteData": "Orders with Incomplete Data",
+        "missingDocuments": "Orders with Missing Documents"
+      },
+      "filters": {
+        "fromDate": "Suspension Date From",
+        "toDate": "Suspension Date To",
+        "searchLabel": "Search",
+        "searchPlaceholder": "Search by order number or employer name...",
+        "suspensionType": "Suspension Type",
+        "reasonAll": "All",
+        "apply": "Apply Filter",
+        "pickDate": "Select date"
+      },
+      "reasons": {
+        "missingDocument": "Missing document",
+        "incompleteWorkerData": "Incomplete worker data",
+        "incompleteEmployerData": "Incomplete employer data",
+        "unclearDocument": "Unclear document",
+        "dataConflict": "Data conflict",
+        "other": "Other reason"
+      },
+      "table": {
+        "orderNumber": "Order Number",
+        "employer": "Employer / Mobile",
+        "worker": "Worker Name",
+        "createdAt": "Creation Date",
+        "suspensionReason": "Suspension Reason",
+        "suspendedAt": "Suspension Date",
+        "status": "Order Status",
+        "statusPending": "Pending",
+        "suspendedBy": "Suspended By",
+        "action": "Action",
+        "viewOrder": "View order"
+      },
+      "empty": {
+        "title": "No pending orders",
+        "description": "There are currently no pending orders. All orders are proceeding normally in the processing cycle."
       }
     }
   },
