@@ -17,6 +17,7 @@
   --color-brand-dark-blue: rgb(0 49 66);
   --color-brand-white: rgb(255 255 255);
   --color-brand-success: rgb(33 196 93);
+  --color-brand-warning: rgb(219 119 6);
   --color-brand-background: rgb(235 246 247);
   --color-brand-gris: rgb(120 120 120);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -64,6 +65,7 @@
   --brand-dark-blue: rgb(0 49 66);
   --brand-white: rgb(255 255 255);
   --brand-success: rgb(33 196 93);
+  --brand-warning: hsla(32, 95%, 44%, 1);
   --brand-background: rgb(235 246 247);
   --brand-gris: rgb(120 120 120);
   --background: oklch(1 0 0);
@@ -298,4 +300,36 @@
   .confirm-chevron-end {
     animation: none;
   }
+}
+
+/* Sonner Custom Toast Styling Override */
+[data-sonner-toast] {
+  background-color: var(--color-brand-success) !important;
+  color: var(--color-brand-white) !important;
+  border-radius: 9999px !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 20px 25px -5px rgba(27, 150, 74, 0.6), 0 8px 10px -6px rgba(27, 150, 74, 0.6) !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+}
+
+[data-sonner-toast] [data-icon] {
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+[data-sonner-toast] [data-icon] svg {
+  margin: 0 !important;
+}
+
+[data-sonner-toast] [data-content] {
+  flex: none !important;
+  width: max-content !important;
+}
+
+[data-sonner-toast] [data-title],
+[data-sonner-toast] [data-description] {
+  color: var(--color-brand-white) !important;
+  text-align: start !important;
 }

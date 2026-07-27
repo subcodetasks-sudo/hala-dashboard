@@ -4,6 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { DirectionProvider } from "@/components/ui/direction";
+import { Toaster } from "@/components/ui/sonner";
 import Providers from "@/app/providers";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
@@ -59,6 +60,7 @@ export default async function LocaleLayout({
           <DirectionProvider dir={direction} direction={direction}>
             <NextIntlClientProvider locale={locale} messages={messages}>
               {children}
+              <Toaster position="top-center" />
             </NextIntlClientProvider>
           </DirectionProvider>
         </Providers>
