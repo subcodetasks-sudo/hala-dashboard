@@ -1,5 +1,5 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import PendingOrdersView from "@/features/orders/pending/components/pending-orders-view";
 
 export default function PendingOrdersPage() {
-  return <DashboardPagePlaceholder titleKey="pendingOrders" />;
+  return <PendingOrdersView />;
 }
