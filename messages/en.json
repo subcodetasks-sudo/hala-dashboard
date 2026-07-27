@@ -334,10 +334,10 @@
     "Sidebar": {
       "brand": "Hola Hoop",
       "groups": {
-        "dashboard": "Dashboard",
-        "platform": "Platform Management",
-        "operations": "Operations",
-        "account": "Account Settings"
+        "dashboard": "🎯 Dashboard",
+        "platform": "👥 Platform Management",
+        "operations": "⚙️ Operations",
+        "account": "⚙️ Account Settings"
       },
       "links": {
         "home": "Home",

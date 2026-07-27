@@ -334,10 +334,10 @@
     "Sidebar": {
       "brand": "هولا هوب",
       "groups": {
-        "dashboard": "لوحة التحكم",
-        "platform": "إدارة المنصة",
-        "operations": "العمليات",
-        "account": "إعدادات الحساب"
+        "dashboard": "🎯 لوحة التحكم",
+        "platform": "👥 إدارة المنصة",
+        "operations": "⚙️ العمليات",
+        "account": "⚙️ إعدادات الحساب"
       },
       "links": {
         "home": "الرئيسية",
