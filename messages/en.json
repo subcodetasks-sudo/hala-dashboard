@@ -328,6 +328,78 @@
         "title": "No pending orders",
         "description": "There are currently no pending orders. All orders are proceeding normally in the processing cycle."
       }
+    },
+    "Processed": {
+      "title": "Processed Orders",
+      "description": "Orders that have been reviewed and approved, ready for contract preparation or authentication.",
+      "listTitle": "Processed Orders List",
+      "periodWeek": "This week",
+      "periodEformShare": "67% of total",
+      "periodManualShare": "33% of total",
+      "manualOrder": "Manual Order Entry",
+      "indicators": {
+        "total": "Total Processed Orders",
+        "eform": "Orders from E-form",
+        "manual": "Manual / WhatsApp Entry Orders"
+      },
+      "filters": {
+        "fromDate": "Start Date From",
+        "toDate": "End Date To",
+        "expectedExecution": "Expected Execution Date",
+        "searchLabel": "Search",
+        "searchPlaceholder": "Search by order number or employer name...",
+        "orderType": "Order Type",
+        "typeAll": "All",
+        "typeEform": "E-form",
+        "typeManual": "Manual",
+        "apply": "Apply Filter",
+        "pickDate": "Select date"
+      },
+      "table": {
+        "orderNumber": "Order Number",
+        "contractNumber": "Contract Number",
+        "employer": "Employer / Mobile",
+        "worker": "Worker Name",
+        "createdAt": "Creation Date",
+        "approvedAt": "Approval Date",
+        "type": "Type",
+        "typeEform": "E-form",
+        "typeManual": "Manual",
+        "reviewer": "Reviewer",
+        "status": "Order Status",
+        "statusProcessed": "Processed",
+        "action": "Action",
+        "actions": "Order actions",
+        "viewDetails": "View Order Details",
+        "viewDownloadContract": "View and Download Contract",
+        "sendForVerification": "Send Contract for Authentication"
+      },
+      "empty": {
+        "title": "No processed orders",
+        "description": "There are currently no orders ready for contract preparation or authentication. They will appear here once processing is complete."
+      },
+      "viewDownloadContractDialog": {
+        "title": "View and Download Contract",
+        "description": "Contract preview is loading. You can print, download as PDF, or confirm sending for authentication.",
+        "close": "Close",
+        "print": "Print",
+        "downloadPdf": "Download PDF",
+        "confirmSend": "Confirm Send for Authentication"
+      },
+      "sendForAuthDialog": {
+        "title": "Send Contract for Authentication",
+        "heading": "Send Contract for Authentication!",
+        "description": "After confirmation, the order will be moved to the \"Send Contract for Authentication\" stage and the relevant authority will be notified to complete the formal approval procedures.",
+        "orderNumber": "Order Number",
+        "employerName": "Employer Name",
+        "workerName": "Worker Name",
+        "confirm": "Confirm Send for Authentication",
+        "cancel": "Back and Cancel",
+        "close": "Close",
+        "copy": "Copy ID",
+        "copied": "Copied!",
+        "toastSuccess": "Contract {orderNumber} has been sent for authentication successfully."
+      }
     }
   },
   "Dashboard": {

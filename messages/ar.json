@@ -328,6 +328,78 @@
         "title": "لا توجد طلبات معلقة",
         "description": "لا توجد حاليًا أي طلبات معلقة. جميع الطلبات تسير بشكل طبيعي ضمن دورة المعالجة."
       }
+    },
+    "Processed": {
+      "title": "الطلبات المعالجة",
+      "description": "الطلبات التي تمت مراجعتها واعتمادها وأصبحت جاهزة لإعداد العقد أو المصادقة.",
+      "listTitle": "قائمة الطلبات المعالجة",
+      "periodWeek": "هذا الأسبوع",
+      "periodEformShare": "67% من الإجمالي",
+      "periodManualShare": "33% من الإجمالي",
+      "manualOrder": "إدخال طلب يدوي",
+      "indicators": {
+        "total": "إجمالي الطلبات المعالجة",
+        "eform": "طلبات من E-form",
+        "manual": "طلبات إدخال يدوي / واتساب"
+      },
+      "filters": {
+        "fromDate": "تاريخ الابتداء من",
+        "toDate": "تاريخ الانتهاء إلى",
+        "expectedExecution": "التاريخ المتوقع للتنفيذ",
+        "searchLabel": "البحث",
+        "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
+        "orderType": "نوع الطلب",
+        "typeAll": "الكل",
+        "typeEform": "E-form",
+        "typeManual": "يدوي",
+        "apply": "تطبيق الفلترة",
+        "pickDate": "اختر التاريخ"
+      },
+      "table": {
+        "orderNumber": "رقم الطلب",
+        "contractNumber": "رقم العقد",
+        "employer": "صاحب العمل / الجوال",
+        "worker": "اسم العامل",
+        "createdAt": "تاريخ الإنشاء",
+        "approvedAt": "تاريخ الاعتماد",
+        "type": "النوع",
+        "typeEform": "E-form",
+        "typeManual": "يدوي",
+        "reviewer": "موظف المراجعة",
+        "status": "حالة الطلب",
+        "statusProcessed": "تمت المعالجة",
+        "action": "إجراء",
+        "actions": "إجراءات الطلب",
+        "viewDetails": "عرض تفاصيل الطلب",
+        "viewDownloadContract": "عرض و تحميل العقد",
+        "sendForVerification": "ارسال العقد للمصادقة"
+      },
+      "empty": {
+        "title": "لا توجد طلبات معالجة",
+        "description": "لا توجد حاليًا أي طلبات جاهزة لإعداد العقد أو المصادقة. ستظهر هنا عند اكتمال معالجة الطلب."
+      },
+      "viewDownloadContractDialog": {
+        "title": "عرض و تحميل العقد",
+        "description": "معاينة العقد قيد التحميل. يمكنك الطباعة أو التحميل كـ PDF أو تأكيد الإرسال للمصادقة.",
+        "close": "إغلاق",
+        "print": "طباعة",
+        "downloadPdf": "تحميل PDF",
+        "confirmSend": "تأكيد الإرسال للمصادقة"
+      },
+      "sendForAuthDialog": {
+        "title": "إرسال العقد للمصادقة",
+        "heading": "إرسال العقد للمصادقة !",
+        "description": "بعد التأكيد سيتم نقل الطلب إلى مرحلة \"إرسال العقد للمصادقة\" وإشعار الجهة المعنية لاستكمال إجراءات الاعتماد الرسمي.",
+        "orderNumber": "رقم الطلب",
+        "employerName": "اسم صاحب العمل",
+        "workerName": "اسم العامل",
+        "confirm": "تأكيد الإرسال للمصادقة",
+        "cancel": "تراجع وإلغاء",
+        "close": "إغلاق",
+        "copy": "نسخ المعرف",
+        "copied": "تم النسخ!",
+        "toastSuccess": "تم إرسال عقد {orderNumber} للمصادقة بنجاح."
+      }
     }
   },
   "Dashboard": {
