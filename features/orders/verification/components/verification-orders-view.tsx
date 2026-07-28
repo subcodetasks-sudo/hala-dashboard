@@ -9,31 +9,61 @@ import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import ProcessedOrderActions from "@/features/orders/processed/components/processed-order-actions";
-import ProcessedOrdersFilters from "@/features/orders/processed/components/processed-orders-filters";
-import {
-  DEFAULT_PROCESSED_ORDERS_FILTERS,
-  filterProcessedOrders,
-  PROCESSED_ORDER_INDICATORS,
-  PROCESSED_ORDERS,
-} from "@/features/orders/processed/mock-data";
 import type {
-  ProcessedOrderRow,
-  ProcessedOrdersFilterValues,
+  VerificationOrderRow,
+  VerificationOrdersFilterValues,
 } from "@/features/orders/types";
+import VerificationOrderActions from "@/features/orders/verification/components/verification-order-actions";
+import VerificationOrdersFilters from "@/features/orders/verification/components/verification-orders-filters";
+import VerificationStatusBadge from "@/features/orders/verification/components/verification-status-badge";
+import { DEFAULT_VERIFICATION_ORDERS_FILTERS } from "@/features/orders/verification/mock-data";
+import {
+  useVerificationIndicators,
+  useVerificationOrders,
+} from "@/features/orders/verification/queries/use-verification-orders";
 
-export default function ProcessedOrdersView() {
-  const t = useTranslations("Orders.Processed");
+/** RTL: first item renders on the right (matches design order). */
+const INDICATOR_CARDS = [
+  {
+    key: "total" as const,
+    periodKey: "periodToday" as const,
+    iconSrc: "/svg/wallet.svg",
+    bgClassName: "bg-brand-primary/10",
+  },
+  {
+    key: "awaitingContract" as const,
+    periodKey: "periodWeek" as const,
+    iconSrc: "/svg/scan.svg",
+    bgClassName: "bg-brand-light-yellow",
+  },
+  {
+    key: "uploadedToday" as const,
+    periodKey: "periodWeek" as const,
+    iconSrc: "/svg/export-squred.svg",
+    bgClassName: "bg-brand-success-light",
+  },
+];
+
+function formatIndicatorValue(value: number) {
+  return String(value).padStart(2, "0");
+}
+
+export default function VerificationOrdersView() {
+  const t = useTranslations("Orders.Verification");
   const [draftFilters, setDraftFilters] =
-    useState<ProcessedOrdersFilterValues>(DEFAULT_PROCESSED_ORDERS_FILTERS);
+    useState<VerificationOrdersFilterValues>(
+      DEFAULT_VERIFICATION_ORDERS_FILTERS
+    );
   const [appliedFilters, setAppliedFilters] =
-    useState<ProcessedOrdersFilterValues>(DEFAULT_PROCESSED_ORDERS_FILTERS);
+    useState<VerificationOrdersFilterValues>(
+      DEFAULT_VERIFICATION_ORDERS_FILTERS
+    );
 
-  const rows = filterProcessedOrders(PROCESSED_ORDERS, appliedFilters);
+  const { data: rows = [], isLoading } = useVerificationOrders(appliedFilters);
+  const { data: indicators } = useVerificationIndicators();
 
-  const columns: DataTableColumn<ProcessedOrderRow>[] = [
+  const columns: DataTableColumn<VerificationOrderRow>[] = [
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
@@ -81,50 +111,20 @@ export default function ProcessedOrdersView() {
       ),
     },
     {
-      id: "approvedAt",
-      header: t("table.approvedAt"),
-      cell: (row) => (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-brand-black">{row.approvedDate}</span>
-          <span className="text-xs text-brand-gris">{row.approvedTime}</span>
-        </div>
-      ),
-    },
-    {
-      id: "type",
-      header: t("table.type"),
-      cell: (row) => (
-        <Badge
-          className={
-            row.source === "eform"
-              ? "w-full rounded-lg border-transparent bg-[#8B6BB5]/15 px-3 py-4 text-[#8B6BB5]"
-              : "w-full rounded-lg border-transparent bg-brand-success/15 px-3 py-4 text-brand-success"
-          }
-        >
-          {row.source === "eform"
-            ? t("table.typeEform")
-            : t("table.typeManual")}
-        </Badge>
-      ),
-    },
-    {
-      id: "reviewer",
-      header: t("table.reviewer"),
+      id: "handler",
+      header: t("table.handler"),
       cell: (row) => (
         <div className="flex items-center gap-2">
           <Avatar size="sm" className="size-8">
-            {row.reviewerAvatarUrl ? (
-              <AvatarImage
-                src={row.reviewerAvatarUrl}
-                alt={row.reviewerName}
-              />
+            {row.handlerAvatarUrl ? (
+              <AvatarImage src={row.handlerAvatarUrl} alt={row.handlerName} />
             ) : null}
             <AvatarFallback className="bg-brand-primary/15 text-xs font-semibold text-brand-primary">
-              {row.reviewerInitials}
+              {row.handlerInitials}
             </AvatarFallback>
           </Avatar>
           <span className="whitespace-nowrap text-brand-black">
-            {row.reviewerName}
+            {row.handlerName}
           </span>
         </div>
       ),
@@ -132,25 +132,16 @@ export default function ProcessedOrdersView() {
     {
       id: "status",
       header: t("table.status"),
-      cell: () => (
-        <Badge className="inline-flex items-center gap-1.5 rounded-xl border-transparent bg-brand-success/15 p-5 text-xs font-medium text-brand-success">
-          <span
-            className="size-1.5 shrink-0 rounded-full bg-brand-success"
-            aria-hidden
-          />
-          <span>{t("table.statusProcessed")}</span>
-        </Badge>
-      ),
+      cell: (row) => <VerificationStatusBadge status={row.status} />,
     },
     {
       id: "action",
       header: t("table.action"),
       cell: (row) => (
-        <ProcessedOrderActions
+        <VerificationOrderActions
           orderId={row.id}
           orderNumber={row.orderNumber}
-          employerName={row.employerName}
-          workerName={row.workerName}
+          status={row.status}
         />
       ),
     },
@@ -176,15 +167,15 @@ export default function ProcessedOrdersView() {
       </div>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {PROCESSED_ORDER_INDICATORS.map((indicator) => (
+        {INDICATOR_CARDS.map((card) => (
           <InfoCard
-            key={indicator.key}
-            title={t(`indicators.${indicator.key}`)}
-            value={indicator.value}
-            change={indicator.change}
-            period={t(indicator.periodKey)}
-            iconSrc={indicator.iconSrc}
-            bgClassName={indicator.bgClassName}
+            key={card.key}
+            title={t(`indicators.${card.key}`)}
+            value={formatIndicatorValue(indicators?.[card.key] ?? 0)}
+            change={indicators?.change ?? "+24%"}
+            period={t(card.periodKey)}
+            iconSrc={card.iconSrc}
+            bgClassName={card.bgClassName}
           />
         ))}
       </section>
@@ -199,7 +190,7 @@ export default function ProcessedOrdersView() {
           <span>{t("listTitle")}</span>
         </h2>
 
-        <ProcessedOrdersFilters
+        <VerificationOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={() => setAppliedFilters(draftFilters)}
@@ -207,12 +198,12 @@ export default function ProcessedOrdersView() {
 
         <DataTable
           columns={columns}
-          data={rows}
+          data={isLoading ? [] : rows}
           getRowId={(row) => row.id}
           selectable
           emptyContent={
             <EmptyTableState
-              iconSrc="/svg/check.svg"
+              iconSrc="/svg/export.svg"
               title={t("empty.title")}
               description={t("empty.description")}
             />

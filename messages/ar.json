@@ -400,6 +400,124 @@
         "copied": "تم النسخ!",
         "toastSuccess": "تم إرسال عقد {orderNumber} للمصادقة بنجاح."
       }
+    },
+    "Verification": {
+      "title": "الطلبات المرسلة للمصادقة",
+      "description": "الطلبات التي تم إرسال عقودها للمصادقة الخارجية وبانتظار رفع العقد النهائي لاستكمال الاعتماد وتفعيل الدفع.",
+      "listTitle": "قائمة الطلبات المرسلة للمصادقة",
+      "periodToday": "هذا اليوم",
+      "periodWeek": "هذا الأسبوع",
+      "manualOrder": "إدخال طلب يدوي",
+      "indicators": {
+        "total": "إجمالي الطلبات المرسلة للمصادقة",
+        "awaitingContract": "طلبات بانتظار رفع العقد النهائي",
+        "uploadedToday": "عقود رفعت اليوم"
+      },
+      "filters": {
+        "fromDate": "تاريخ الابتداء من",
+        "toDate": "تاريخ الانتهاء إلى",
+        "searchLabel": "البحث",
+        "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
+        "status": "الحالة",
+        "statusAll": "الكل",
+        "statusSentForVerification": "تم الإرسال للمصادقة",
+        "statusFinalContractUploaded": "العقد النهائي مرفوع",
+        "apply": "تطبيق الفلترة",
+        "pickDate": "اختر التاريخ"
+      },
+      "table": {
+        "orderNumber": "رقم الطلب",
+        "contractNumber": "رقم العقد",
+        "employer": "صاحب العمل / الجوال",
+        "worker": "اسم العامل",
+        "createdAt": "تاريخ الإنشاء",
+        "handler": "الموظف المعالج",
+        "status": "حالة الطلب",
+        "statusSentForVerification": "تم الإرسال للمصادقة",
+        "statusFinalContractUploaded": "العقد النهائي مرفوع",
+        "action": "إجراء",
+        "actions": "إجراءات الطلب",
+        "viewDetails": "عرض بيانات الطلب",
+        "viewDownloadContract": "عرض و تحميل العقد",
+        "uploadFinalContract": "رفع العقد النهائي",
+        "uploadFinalContractSuccess": "تم رفع عقد {orderNumber} النهائي بنجاح."
+      },
+      "empty": {
+        "title": "لا توجد طلبات مرسلة للمصادقة",
+        "description": "لا توجد حاليًا أي طلبات بانتظار رفع العقد. ستظهر هنا بمجرد إرسال العقود للمصادقة."
+      }
+    },
+    "Payment": {
+      "title": "الطلبات في مرحلة الدفع",
+      "description": "الطلبات التي تم رفع العقد النهائي لها وأصبحت بانتظار سداد الرسوم المستحقة من العميل",
+      "listTitle": "قائمة طلبات الدفع",
+      "periodPaidShare": "33% من الإجمالي",
+      "periodAwaitingShare": "12% من الإجمالي",
+      "manualOrder": "إدخال طلب يدوي",
+      "indicators": {
+        "paidToday": "تم دفعها اليوم",
+        "awaitingConfirmation": "بانتظار تأكيد الدفع"
+      },
+      "filters": {
+        "createdAt": "تاريخ الإنشاء",
+        "contractUploadedAt": "تاريخ رفع العقد النهائي",
+        "searchLabel": "البحث",
+        "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
+        "orderType": "نوع الطلب",
+        "typeAll": "الكل",
+        "typeEform": "E-form",
+        "typeManual": "يدوي",
+        "deliveryStatus": "حالة التوصيل",
+        "deliveryAll": "الكل",
+        "deliveryRequired": "مطلوب",
+        "deliveryNotRequired": "غير مطلوب",
+        "apply": "تطبيق الفلترة",
+        "pickDate": "اختر التاريخ"
+      },
+      "table": {
+        "orderNumber": "رقم الطلب",
+        "employer": "صاحب العمل / الجوال",
+        "worker": "اسم العامل",
+        "createdAt": "تاريخ الإنشاء",
+        "processedAt": "تاريخ المعالجة",
+        "contractUploadedAt": "تاريخ رفع العقد النهائي",
+        "type": "النوع",
+        "typeEform": "E-form",
+        "typeManual": "يدوي",
+        "dueFees": "الرسوم المستحقة",
+        "deliveryStatus": "حالة التوصيل",
+        "deliveryRequired": "مطلوب",
+        "deliveryNotRequired": "غير مطلوب",
+        "action": "إجراء",
+        "actions": "إجراءات الطلب",
+        "viewDetails": "عرض بيانات الطلب",
+        "viewDownloadContract": "عرض و تحميل العقد",
+        "confirmPayment": "تأكيد الدفع",
+        "confirmPaymentSuccess": "تم تأكيد دفع {orderNumber} بنجاح."
+      },
+      "confirmPaymentDialog": {
+        "title": "إثبات الدفع",
+        "close": "إغلاق",
+        "heading": "اسحب صورة التحويل هنا أو اختر الملف من جهازك",
+        "description": "يجب رفع نسخة واضحة من إثبات الدفع قبل اعتماد العملية.",
+        "dropzoneLabel": "اسحب صورة التحويل هنا",
+        "fileConstraints": "(JPEG, PNG, WEBP - Max file size : 3MB)",
+        "invalidType": "يُسمح فقط بصور JPEG أو PNG أو WEBP.",
+        "invalidSize": "يجب ألا يتجاوز حجم الملف 3 ميجابايت.",
+        "uploadSuccess": "تم الرفع بنجاح",
+        "viewFile": "عرض الملف",
+        "removeFile": "حذف الملف",
+        "notificationLabel": "نص الإشعار الذي سيرسل للعميل",
+        "notificationDefault": "تم تأكيد استلام الدفع لطلب تجديد العقد الخاص بك بنجاح. يمكنك الآن الاطلاع على العقد النهائي والفاتورة من خلال المنصة.",
+        "confirmLinked": "تم التأكد من ربط إثبات الدفع بالطلب الصحيح.",
+        "cancel": "تراجع وإلغاء",
+        "approve": "اعتماد الدفع",
+        "toastSuccess": "تم تأكيد الدفع بنجاح!"
+      },
+      "empty": {
+        "title": "لا توجد طلبات دفع",
+        "description": "لا توجد طلبات بانتظار السداد حالياً"
+      }
     }
   },
   "Dashboard": {

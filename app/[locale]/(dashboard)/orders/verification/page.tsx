@@ -1,5 +1,5 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import VerificationOrdersView from "@/features/orders/verification/components/verification-orders-view";
 
 export default function VerificationOrdersPage() {
-  return <DashboardPagePlaceholder titleKey="verificationOrders" />;
+  return <VerificationOrdersView />;
 }

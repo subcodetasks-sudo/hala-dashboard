@@ -135,61 +135,59 @@ export default function OrderView({ order: initialOrder }: OrderViewProps) {
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
         <div className="min-w-0 flex-1 space-y-4">
-          <div className="rounded-2xl border border-black/5 bg-white p-4 shadow-sm sm:p-5">
-            <Tabs
-              value={activeTab}
-              onValueChange={handleTabChange}
-              className="gap-4"
-            >
-              <TabsList className="flex h-auto w-full flex-wrap gap-3 rounded-none bg-transparent p-0 group-data-horizontal/tabs:h-auto!">
-                <TabsTrigger
-                  value="employer"
-                  className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
-                >
-                  <CustomIcon src="/svg/user-square.svg" size={16} />
-                  {t("tabs.employer")}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="worker"
-                  className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
-                >
-                  <CustomIcon src="/svg/user-tag.svg" size={16} />
-                  {t("tabs.worker")}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="documents"
-                  className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
-                >
-                  <CustomIcon src="/svg/receipt-2.svg" size={16} />
-                  {t("tabs.documents")}
-                </TabsTrigger>
-              </TabsList>
+          <Tabs
+            value={activeTab}
+            onValueChange={handleTabChange}
+            className="gap-4"
+          >
+            <TabsList className="flex h-auto w-full flex-wrap gap-3 rounded-none bg-transparent p-0 group-data-horizontal/tabs:h-auto!">
+              <TabsTrigger
+                value="employer"
+                className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
+              >
+                <CustomIcon src="/svg/user-square.svg" size={16} />
+                {t("tabs.employer")}
+              </TabsTrigger>
+              <TabsTrigger
+                value="worker"
+                className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
+              >
+                <CustomIcon src="/svg/user-tag.svg" size={16} />
+                {t("tabs.worker")}
+              </TabsTrigger>
+              <TabsTrigger
+                value="documents"
+                className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
+              >
+                <CustomIcon src="/svg/receipt-2.svg" size={16} />
+                {t("tabs.documents")}
+              </TabsTrigger>
+            </TabsList>
 
-              <TabsContent value="employer" className="mt-2">
-                <EmployerDataPanel
-                  order={order}
-                  isEditing={editingTab === "employer"}
-                  onEditingChange={(editing) =>
-                    setEditingTab(editing ? "employer" : null)
-                  }
-                  onSaved={handleEmployerSaved}
-                />
-              </TabsContent>
-              <TabsContent value="worker" className="mt-2">
-                <WorkerDataPanel
-                  order={order}
-                  isEditing={editingTab === "worker"}
-                  onEditingChange={(editing) =>
-                    setEditingTab(editing ? "worker" : null)
-                  }
-                  onSaved={handleWorkerSaved}
-                />
-              </TabsContent>
-              <TabsContent value="documents" className="mt-2">
-                <DocumentDataPanel order={order} />
-              </TabsContent>
-            </Tabs>
-          </div>
+            <TabsContent value="employer" className="mt-2 p-4 rounded-2xl border border-black/5">
+              <EmployerDataPanel
+                order={order}
+                isEditing={editingTab === "employer"}
+                onEditingChange={(editing) =>
+                  setEditingTab(editing ? "employer" : null)
+                }
+                onSaved={handleEmployerSaved}
+              />
+            </TabsContent>
+            <TabsContent value="worker" className="mt-2">
+              <WorkerDataPanel
+                order={order}
+                isEditing={editingTab === "worker"}
+                onEditingChange={(editing) =>
+                  setEditingTab(editing ? "worker" : null)
+                }
+                onSaved={handleWorkerSaved}
+              />
+            </TabsContent>
+            <TabsContent value="documents" className="mt-2">
+              <DocumentDataPanel order={order} />
+            </TabsContent>
+          </Tabs>
 
           <ChangeHistoryTable rows={order.changeHistory} />
         </div>

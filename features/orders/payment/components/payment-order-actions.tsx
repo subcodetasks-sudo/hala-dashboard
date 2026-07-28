@@ -12,20 +12,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import SendContractForAuthDialog from "@/features/orders/processed/components/send-contract-for-auth-dialog";
-import ViewDownloadContractDialog from "@/features/orders/components/view-download-contract-dialog";
+import ConfirmPaymentDialog from "@/features/orders/payment/components/confirm-payment-dialog";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-type ProcessedOrderActionsProps = {
+type PaymentOrderActionsProps = {
   orderId: string;
   orderNumber: string;
-  employerName: string;
-  workerName: string;
 };
 
 const ITEM_CLASS =
-  "cursor-pointer gap-3 rounded-2xl border-none bg-brand-primary/8 px-3.5 py-3 text-sm font-semibold text-brand-black focus:bg-brand-primary/15 data-highlighted:bg-brand-primary/15";
+  "cursor-pointer gap-3 rounded-2xl border-none bg-brand-primary/8 px-3.5 py-3.5 text-sm font-bold text-brand-dark-blue focus:bg-brand-primary/15 data-highlighted:bg-brand-primary/15";
 
 function ActionItemContent({
   icon,
@@ -36,12 +33,12 @@ function ActionItemContent({
 }) {
   return (
     <span className="flex w-full items-center gap-3">
-      <span className="flex size-5 shrink-0 items-center justify-center text-brand-black">
+      <span className="flex size-5 shrink-0 items-center justify-center text-brand-dark-blue">
         {icon}
       </span>
       <span className="min-w-0 flex-1 text-start">{label}</span>
       <ChevronLeft
-        className="size-4 shrink-0 text-brand-black ltr:rotate-180"
+        className="size-4 shrink-0 text-brand-dark-blue ltr:rotate-180"
         strokeWidth={1.75}
         aria-hidden
       />
@@ -49,15 +46,12 @@ function ActionItemContent({
   );
 }
 
-export default function ProcessedOrderActions({
+export default function PaymentOrderActions({
   orderId,
   orderNumber,
-  employerName,
-  workerName,
-}: ProcessedOrderActionsProps) {
-  const t = useTranslations("Orders.Processed.table");
-  const [isContractDialogOpen, setContractDialogOpen] = useState(false);
-  const [isSendForAuthOpen, setSendForAuthOpen] = useState(false);
+}: PaymentOrderActionsProps) {
+  const t = useTranslations("Orders.Payment.table");
+  const [isConfirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   return (
     <>
@@ -75,8 +69,8 @@ export default function ProcessedOrderActions({
           align="end"
           sideOffset={8}
           className={cn(
-            "w-auto min-w-66 rounded-3xl border border-brand-primary/15 bg-white p-3",
-            "shadow-[0_0_0_1px_rgba(14,165,180,0.08),0_12px_28px_rgba(14,165,180,0.12)] ring-0"
+            "w-auto min-w-64 rounded-4xl border-none bg-white p-3",
+            "shadow-[0_8px_28px_rgba(0,49,66,0.12)] ring-0"
           )}
         >
           <div className="flex flex-col gap-2">
@@ -91,50 +85,28 @@ export default function ProcessedOrderActions({
 
             <DropdownMenuItem
               className={ITEM_CLASS}
-              onSelect={() => setContractDialogOpen(true)}
+              onSelect={() => setConfirmDialogOpen(true)}
             >
               <ActionItemContent
                 icon={
                   <CustomIcon
-                    src="/svg/receipt-item.svg"
+                    src="/svg/money-send.svg"
                     size={20}
-                    className="text-brand-black"
+                    className="text-brand-dark-blue"
                   />
                 }
-                label={t("viewDownloadContract")}
-              />
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              className={ITEM_CLASS}
-              onSelect={() => setSendForAuthOpen(true)}
-            >
-              <ActionItemContent
-                icon={
-                  <CustomIcon
-                    src="/svg/maximize.svg"
-                    size={20}
-                    className="text-brand-black"
-                  />
-                }
-                label={t("sendForVerification")}
+                label={t("confirmPayment")}
               />
             </DropdownMenuItem>
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ViewDownloadContractDialog
-        open={isContractDialogOpen}
-        onOpenChange={setContractDialogOpen}
-      />
-
-      <SendContractForAuthDialog
-        open={isSendForAuthOpen}
-        onOpenChange={setSendForAuthOpen}
+      <ConfirmPaymentDialog
+        open={isConfirmDialogOpen}
+        onOpenChange={setConfirmDialogOpen}
+        orderId={orderId}
         orderNumber={orderNumber}
-        employerName={employerName}
-        workerName={workerName}
       />
     </>
   );

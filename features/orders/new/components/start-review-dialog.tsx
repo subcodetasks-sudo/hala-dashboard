@@ -76,7 +76,7 @@ export default function StartReviewDialog({
       <DialogContent
         showCloseButton={false}
         overlayClassName="bg-black/50 supports-backdrop-filter:backdrop-blur-sm"
-        className="gap-0 overflow-hidden rounded-[1.75rem] border-none bg-white p-6 ring-0 sm:max-w-md"
+        className="no-scrollbar gap-0 overflow-hidden rounded-[1.75rem] border-none bg-white p-6 ring-0 sm:max-w-md"
       >
         <div className="flex items-center justify-between gap-3 border-b border-black/10 px-5 py-4">
           <DialogTitle className="text-base font-bold text-brand-black">

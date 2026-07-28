@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, Plus } from "lucide-react";
+import { Phone, Plus, SaudiRiyal } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -8,46 +8,58 @@ import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import ProcessedOrderActions from "@/features/orders/processed/components/processed-order-actions";
-import ProcessedOrdersFilters from "@/features/orders/processed/components/processed-orders-filters";
+import PaymentDeliveryStatusBadge from "@/features/orders/payment/components/payment-delivery-status-badge";
+import PaymentOrderActions from "@/features/orders/payment/components/payment-order-actions";
+import PaymentOrdersFilters from "@/features/orders/payment/components/payment-orders-filters";
+import { DEFAULT_PAYMENT_ORDERS_FILTERS } from "@/features/orders/payment/mock-data";
 import {
-  DEFAULT_PROCESSED_ORDERS_FILTERS,
-  filterProcessedOrders,
-  PROCESSED_ORDER_INDICATORS,
-  PROCESSED_ORDERS,
-} from "@/features/orders/processed/mock-data";
+  usePaymentIndicators,
+  usePaymentOrders,
+} from "@/features/orders/payment/queries/use-payment-orders";
 import type {
-  ProcessedOrderRow,
-  ProcessedOrdersFilterValues,
+  PaymentOrderRow,
+  PaymentOrdersFilterValues,
 } from "@/features/orders/types";
 
-export default function ProcessedOrdersView() {
-  const t = useTranslations("Orders.Processed");
-  const [draftFilters, setDraftFilters] =
-    useState<ProcessedOrdersFilterValues>(DEFAULT_PROCESSED_ORDERS_FILTERS);
+/** RTL: first item renders on the right (matches design order). */
+const INDICATOR_CARDS = [
+  {
+    key: "awaitingConfirmation" as const,
+    periodKey: "periodAwaitingShare" as const,
+    iconSrc: "/svg/info-circle.svg",
+    bgClassName: "bg-brand-accent/10",
+  },
+  {
+    key: "paidToday" as const,
+    periodKey: "periodPaidShare" as const,
+    iconSrc: "/svg/warning-2.svg",
+    bgClassName: "bg-brand-success-light",
+  },
+] as const;
+
+function formatIndicatorValue(value: number) {
+  return String(value).padStart(2, "0");
+}
+
+export default function PaymentOrdersView() {
+  const t = useTranslations("Orders.Payment");
+  const [draftFilters, setDraftFilters] = useState<PaymentOrdersFilterValues>(
+    DEFAULT_PAYMENT_ORDERS_FILTERS
+  );
   const [appliedFilters, setAppliedFilters] =
-    useState<ProcessedOrdersFilterValues>(DEFAULT_PROCESSED_ORDERS_FILTERS);
+    useState<PaymentOrdersFilterValues>(DEFAULT_PAYMENT_ORDERS_FILTERS);
 
-  const rows = filterProcessedOrders(PROCESSED_ORDERS, appliedFilters);
+  const { data: rows = [], isLoading } = usePaymentOrders(appliedFilters);
+  const { data: indicators } = usePaymentIndicators();
 
-  const columns: DataTableColumn<ProcessedOrderRow>[] = [
+  const columns: DataTableColumn<PaymentOrderRow>[] = [
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
       cell: (row) => (
         <span className="font-semibold text-brand-black">{row.orderNumber}</span>
-      ),
-    },
-    {
-      id: "contractNumber",
-      header: t("table.contractNumber"),
-      cell: (row) => (
-        <span className="whitespace-nowrap text-brand-black">
-          {row.contractNumber}
-        </span>
       ),
     },
     {
@@ -81,12 +93,24 @@ export default function ProcessedOrdersView() {
       ),
     },
     {
-      id: "approvedAt",
-      header: t("table.approvedAt"),
+      id: "processedAt",
+      header: t("table.processedAt"),
       cell: (row) => (
         <div className="flex flex-col gap-0.5">
-          <span className="text-brand-black">{row.approvedDate}</span>
-          <span className="text-xs text-brand-gris">{row.approvedTime}</span>
+          <span className="text-brand-black">{row.processedDate}</span>
+          <span className="text-xs text-brand-gris">{row.processedTime}</span>
+        </div>
+      ),
+    },
+    {
+      id: "contractUploadedAt",
+      header: t("table.contractUploadedAt"),
+      cell: (row) => (
+        <div className="flex flex-col gap-0.5">
+          <span className="text-brand-black">{row.contractUploadedDate}</span>
+          <span className="text-xs text-brand-gris">
+            {row.contractUploadedTime}
+          </span>
         </div>
       ),
     },
@@ -108,49 +132,29 @@ export default function ProcessedOrdersView() {
       ),
     },
     {
-      id: "reviewer",
-      header: t("table.reviewer"),
+      id: "dueFees",
+      header: t("table.dueFees"),
       cell: (row) => (
-        <div className="flex items-center gap-2">
-          <Avatar size="sm" className="size-8">
-            {row.reviewerAvatarUrl ? (
-              <AvatarImage
-                src={row.reviewerAvatarUrl}
-                alt={row.reviewerName}
-              />
-            ) : null}
-            <AvatarFallback className="bg-brand-primary/15 text-xs font-semibold text-brand-primary">
-              {row.reviewerInitials}
-            </AvatarFallback>
-          </Avatar>
-          <span className="whitespace-nowrap text-brand-black">
-            {row.reviewerName}
-          </span>
-        </div>
+        <span className="inline-flex items-center gap-1 whitespace-nowrap font-semibold text-brand-black">
+          <span>+{row.dueFees}</span>
+          <SaudiRiyal className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
+        </span>
       ),
     },
     {
-      id: "status",
-      header: t("table.status"),
-      cell: () => (
-        <Badge className="inline-flex items-center gap-1.5 rounded-xl border-transparent bg-brand-success/15 p-5 text-xs font-medium text-brand-success">
-          <span
-            className="size-1.5 shrink-0 rounded-full bg-brand-success"
-            aria-hidden
-          />
-          <span>{t("table.statusProcessed")}</span>
-        </Badge>
+      id: "deliveryStatus",
+      header: t("table.deliveryStatus"),
+      cell: (row) => (
+        <PaymentDeliveryStatusBadge status={row.deliveryStatus} />
       ),
     },
     {
       id: "action",
       header: t("table.action"),
       cell: (row) => (
-        <ProcessedOrderActions
+        <PaymentOrderActions
           orderId={row.id}
           orderNumber={row.orderNumber}
-          employerName={row.employerName}
-          workerName={row.workerName}
         />
       ),
     },
@@ -175,16 +179,16 @@ export default function ProcessedOrdersView() {
         </Button>
       </div>
 
-      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {PROCESSED_ORDER_INDICATORS.map((indicator) => (
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {INDICATOR_CARDS.map((card) => (
           <InfoCard
-            key={indicator.key}
-            title={t(`indicators.${indicator.key}`)}
-            value={indicator.value}
-            change={indicator.change}
-            period={t(indicator.periodKey)}
-            iconSrc={indicator.iconSrc}
-            bgClassName={indicator.bgClassName}
+            key={card.key}
+            title={t(`indicators.${card.key}`)}
+            value={formatIndicatorValue(indicators?.[card.key] ?? 0)}
+            change={indicators?.change ?? "+24%"}
+            period={t(card.periodKey)}
+            iconSrc={card.iconSrc}
+            bgClassName={card.bgClassName}
           />
         ))}
       </section>
@@ -192,14 +196,14 @@ export default function ProcessedOrdersView() {
       <section className="flex flex-col gap-4">
         <h2 className="flex items-center gap-2 text-lg font-bold text-brand-primary">
           <CustomIcon
-            src="/svg/location.svg"
+            src="/svg/dollar-circle.svg"
             size={20}
             className="text-brand-primary"
           />
           <span>{t("listTitle")}</span>
         </h2>
 
-        <ProcessedOrdersFilters
+        <PaymentOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={() => setAppliedFilters(draftFilters)}
@@ -207,12 +211,12 @@ export default function ProcessedOrdersView() {
 
         <DataTable
           columns={columns}
-          data={rows}
+          data={isLoading ? [] : rows}
           getRowId={(row) => row.id}
           selectable
           emptyContent={
             <EmptyTableState
-              iconSrc="/svg/check.svg"
+              iconSrc="/svg/dollar-circle.svg"
               title={t("empty.title")}
               description={t("empty.description")}
             />

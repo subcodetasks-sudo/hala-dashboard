@@ -186,7 +186,7 @@ export default function PendingOrdersView() {
           selectable
           emptyContent={
             <EmptyTableState
-              iconSrc="/svg/receipt-item.svg"
+              iconSrc="/svg/check.svg"
               title={t("empty.title")}
               description={t("empty.description")}
             />

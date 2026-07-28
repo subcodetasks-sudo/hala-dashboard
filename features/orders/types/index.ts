@@ -76,6 +76,63 @@ export type ProcessedOrdersFilterValues = {
   orderType: "all" | OrderSource;
 };
 
+export type VerificationOrderStatus =
+  | "sentForVerification"
+  | "finalContractUploaded";
+
+export type VerificationOrderRow = {
+  id: string;
+  orderNumber: string;
+  contractNumber: string;
+  employerName: string;
+  employerPhone: string;
+  workerName: string;
+  createdDate: string;
+  createdTime: string;
+  createdAtIso: string;
+  handlerName: string;
+  handlerInitials: string;
+  handlerAvatarUrl?: string;
+  status: VerificationOrderStatus;
+};
+
+export type VerificationOrdersFilterValues = {
+  fromDate: Date | undefined;
+  toDate: Date | undefined;
+  search: string;
+  status: "all" | VerificationOrderStatus;
+};
+
+export type DeliveryStatus = "required" | "notRequired";
+
+export type PaymentOrderRow = {
+  id: string;
+  orderNumber: string;
+  employerName: string;
+  employerPhone: string;
+  workerName: string;
+  createdDate: string;
+  createdTime: string;
+  createdAtIso: string;
+  processedDate: string;
+  processedTime: string;
+  processedAtIso: string;
+  contractUploadedDate: string;
+  contractUploadedTime: string;
+  contractUploadedAtIso: string;
+  source: OrderSource;
+  dueFees: number;
+  deliveryStatus: DeliveryStatus;
+};
+
+export type PaymentOrdersFilterValues = {
+  createdAt: Date | undefined;
+  contractUploadedAt: Date | undefined;
+  search: string;
+  orderType: "all" | OrderSource;
+  deliveryStatus: "all" | DeliveryStatus;
+};
+
 export type ChangeHistoryRow = {
   id: string;
   employee: string;

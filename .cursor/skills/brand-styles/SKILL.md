@@ -27,7 +27,10 @@ snapshot in this skill.
 | `--brand-black` | `brand-black` | `rgb(20 20 20)` | Strong text / high contrast |
 | `--brand-dark-blue` | `brand-dark-blue` | `rgb(0 49 66)` | Dark teal — section headings, dark surfaces |
 | `--brand-white` | `brand-white` | `rgb(255 255 255)` | Light text / surfaces on dark |
-| `--brand-success` | `brand-success` | `rgb(33 196 93)` | Positive / success states |
+| `--brand-success` | `brand-success` | `hsla(153, 66%, 31%, 1)` | Positive / success states |
+| `--brand-success-light` | `brand-success-light` | `rgb(224 255 239)` | Soft success wash / badge bg |
+| `--brand-light-yellow` | `brand-light-yellow` | `rgb(255 251 235)` | Soft warning / highlight wash |
+| `--brand-warning` | `brand-warning` | `rgb(219 119 6)` | Warning / caution states |
 | `--brand-background` | `brand-background` | `rgb(235 246 247)` | Page / soft brand wash, table header bg |
 | `--brand-gris` | `brand-gris` | `rgb(120 120 120)` | Secondary / muted text |
 
@@ -44,6 +47,8 @@ When reviewing existing code, replace these hard-coded values with tokens:
 | `#141414` / `rgb(20 20 20)` | `brand-black` |
 | `#787878` / `rgb(120 120 120)` | `brand-gris` |
 | `#21C45D` / `rgb(33 196 93)` | `brand-success` |
+| `#E0FFEF` / `rgb(224 255 239)` | `brand-success-light` |
+| `#FFFBEB` / `rgb(255 251 235)` | `brand-light-yellow` |
 | `#EBF6F7` / `#E6F3F5` / `rgb(235 246 247)` | `brand-background` |
 | `#FFFFFF` / `rgb(255 255 255)` | `brand-white` or `white` |
 

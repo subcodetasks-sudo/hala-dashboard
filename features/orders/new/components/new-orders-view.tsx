@@ -174,7 +174,7 @@ export default function NewOrdersView() {
           selectable
           emptyContent={
             <EmptyTableState
-              iconSrc="/svg/receipt-item.svg"
+              iconSrc="/svg/receipt-2.svg"
               title={t("empty.title")}
               description={t("empty.description")}
             />

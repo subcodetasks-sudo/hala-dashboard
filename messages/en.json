@@ -400,6 +400,124 @@
         "copied": "Copied!",
         "toastSuccess": "Contract {orderNumber} has been sent for authentication successfully."
       }
+    },
+    "Verification": {
+      "title": "Orders Sent for Verification",
+      "description": "Orders whose contracts have been sent for external verification and are awaiting final contract upload to complete approval and activate payment.",
+      "listTitle": "List of Orders Sent for Verification",
+      "periodToday": "Today",
+      "periodWeek": "This week",
+      "manualOrder": "Manual Order Entry",
+      "indicators": {
+        "total": "Total Orders Sent for Verification",
+        "awaitingContract": "Orders Waiting for Final Contract Upload",
+        "uploadedToday": "Contracts Uploaded Today"
+      },
+      "filters": {
+        "fromDate": "Start Date From",
+        "toDate": "End Date To",
+        "searchLabel": "Search",
+        "searchPlaceholder": "Search by order number or employer name...",
+        "status": "Status",
+        "statusAll": "All",
+        "statusSentForVerification": "Sent for Verification",
+        "statusFinalContractUploaded": "Final Contract Uploaded",
+        "apply": "Apply Filter",
+        "pickDate": "Select date"
+      },
+      "table": {
+        "orderNumber": "Order Number",
+        "contractNumber": "Contract Number",
+        "employer": "Employer / Mobile",
+        "worker": "Worker Name",
+        "createdAt": "Creation Date",
+        "handler": "Processing Employee",
+        "status": "Order Status",
+        "statusSentForVerification": "Sent for Verification",
+        "statusFinalContractUploaded": "Final Contract Uploaded",
+        "action": "Action",
+        "actions": "Order actions",
+        "viewDetails": "View Order Data",
+        "viewDownloadContract": "View and Download Contract",
+        "uploadFinalContract": "Upload Final Contract",
+        "uploadFinalContractSuccess": "Final contract {orderNumber} uploaded successfully."
+      },
+      "empty": {
+        "title": "No orders sent for verification",
+        "description": "No orders are currently waiting for contract upload. They will appear here once contracts are sent for verification."
+      }
+    },
+    "Payment": {
+      "title": "Orders in Payment Stage",
+      "description": "Orders for which the final contract has been uploaded and are awaiting payment of due fees from the client.",
+      "listTitle": "Payment Orders List",
+      "periodPaidShare": "33% of total",
+      "periodAwaitingShare": "12% of total",
+      "manualOrder": "Manual Order Entry",
+      "indicators": {
+        "paidToday": "Paid Today",
+        "awaitingConfirmation": "Awaiting Payment Confirmation"
+      },
+      "filters": {
+        "createdAt": "Creation Date",
+        "contractUploadedAt": "Final Contract Upload Date",
+        "searchLabel": "Search",
+        "searchPlaceholder": "Search by order number or employer name...",
+        "orderType": "Order Type",
+        "typeAll": "All",
+        "typeEform": "E-form",
+        "typeManual": "Manual",
+        "deliveryStatus": "Delivery Status",
+        "deliveryAll": "All",
+        "deliveryRequired": "Required",
+        "deliveryNotRequired": "Not Required",
+        "apply": "Apply Filter",
+        "pickDate": "Select date"
+      },
+      "table": {
+        "orderNumber": "Order Number",
+        "employer": "Employer / Mobile",
+        "worker": "Worker Name",
+        "createdAt": "Creation Date",
+        "processedAt": "Processing Date",
+        "contractUploadedAt": "Final Contract Upload Date",
+        "type": "Type",
+        "typeEform": "E-form",
+        "typeManual": "Manual",
+        "dueFees": "Due Fees",
+        "deliveryStatus": "Delivery Status",
+        "deliveryRequired": "Required",
+        "deliveryNotRequired": "Not Required",
+        "action": "Action",
+        "actions": "Order actions",
+        "viewDetails": "View Order Data",
+        "viewDownloadContract": "View and Download Contract",
+        "confirmPayment": "Confirm Payment",
+        "confirmPaymentSuccess": "Payment for {orderNumber} confirmed successfully."
+      },
+      "confirmPaymentDialog": {
+        "title": "Proof of Payment",
+        "close": "Close",
+        "heading": "Drag the transfer image here or choose the file from your device",
+        "description": "A clear copy of the proof of payment must be uploaded before approving the process.",
+        "dropzoneLabel": "Drag the transfer image here",
+        "fileConstraints": "(JPEG, PNG, WEBP - Max file size : 3MB)",
+        "invalidType": "Only JPEG, PNG, or WEBP images are allowed.",
+        "invalidSize": "File size must be 3MB or less.",
+        "uploadSuccess": "Uploaded successfully",
+        "viewFile": "View file",
+        "removeFile": "Remove file",
+        "notificationLabel": "Notification text that will be sent to the client",
+        "notificationDefault": "Payment receipt for your contract renewal request has been confirmed successfully. You can now view the final contract and invoice through the platform.",
+        "confirmLinked": "It has been confirmed that the proof of payment is linked to the correct order.",
+        "cancel": "Back and Cancel",
+        "approve": "Approve Payment",
+        "toastSuccess": "Payment confirmed successfully!"
+      },
+      "empty": {
+        "title": "No payment orders",
+        "description": "There are currently no orders awaiting payment."
+      }
     }
   },
   "Dashboard": {

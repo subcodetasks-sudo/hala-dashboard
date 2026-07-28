@@ -109,7 +109,7 @@ export default function PendOrderDialog({
       <DialogContent
         showCloseButton={false}
         overlayClassName="bg-black/50 supports-backdrop-filter:backdrop-blur-sm"
-        className="w-[calc(100%-2rem)] gap-0 overflow-visible rounded-[1.75rem] border-none bg-white p-0 ring-0 sm:max-w-md"
+        className="no-scrollbar w-[calc(100%-2rem)] gap-0 overflow-visible rounded-[1.75rem] border-none bg-white p-0 ring-0 sm:max-w-md"
       >
         <div className="flex min-w-0 items-center justify-between gap-3 border-b border-black/10 px-5 py-4">
           <DialogTitle className="min-w-0 truncate text-base font-bold text-brand-black">

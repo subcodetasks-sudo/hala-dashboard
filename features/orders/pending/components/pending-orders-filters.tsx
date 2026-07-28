@@ -113,6 +113,7 @@ export default function PendingOrdersFilters({
         placeholder={t("filters.pickDate")}
         value={value.fromDate}
         valueAs="date"
+        maxDate={value.toDate}
         onChange={(fromDate) =>
           onChange({
             ...value,
@@ -126,6 +127,7 @@ export default function PendingOrdersFilters({
         placeholder={t("filters.pickDate")}
         value={value.toDate}
         valueAs="date"
+        minDate={value.fromDate}
         onChange={(toDate) =>
           onChange({
             ...value,

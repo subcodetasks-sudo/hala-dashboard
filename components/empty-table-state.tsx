@@ -29,7 +29,7 @@ export default function EmptyTableState({
         <EmptyMedia
           variant="icon"
           className={cn(
-            "mb-1 size-16 rounded-2xl bg-brand-primary/10 text-brand-primary [&_svg:not([class*='size-'])]:size-8",
+            "mb-1 size-16 rounded-2xl bg-brand-primary/5 text-brand-primary [&_svg:not([class*='size-'])]:size-8",
             iconClassName
           )}
         >

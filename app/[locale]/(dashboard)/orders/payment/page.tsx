@@ -1,5 +1,5 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import PaymentOrdersView from "@/features/orders/payment/components/payment-orders-view";
 
 export default function PaymentOrdersPage() {
-  return <DashboardPagePlaceholder titleKey="paymentOrders" />;
+  return <PaymentOrdersView />;
 }

@@ -25,6 +25,10 @@ type DateFieldProps = {
   onChange: (value: Date | string | undefined) => void;
   /** Keep ISO string (`yyyy-MM-dd`) instead of `Date` when editing. */
   valueAs?: "date" | "iso";
+  /** Dates before this day are not selectable. */
+  minDate?: Date | string;
+  /** Dates after this day are not selectable. */
+  maxDate?: Date | string;
   readOnly?: boolean;
   error?: { message?: string };
   className?: string;
@@ -46,6 +50,8 @@ export default function DateField({
   value,
   onChange,
   valueAs,
+  minDate,
+  maxDate,
   readOnly = false,
   error,
   className,
@@ -56,6 +62,8 @@ export default function DateField({
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const selectedDate = toDate(value);
+  const min = toDate(minDate);
+  const max = toDate(maxDate);
   const isForm = variant === "form";
   const emitIso =
     valueAs === "iso" || (valueAs !== "date" && typeof value === "string");
@@ -63,6 +71,11 @@ export default function DateField({
   const displayDate = selectedDate
     ? format(selectedDate, locale === "ar" ? "dd/MM/yyyy" : "MMM d, yyyy")
     : "";
+
+  const disabledMatchers = [
+    ...(min ? [{ before: min }] : []),
+    ...(max ? [{ after: max }] : []),
+  ];
 
   const handleSelect = (date: Date | undefined) => {
     if (emitIso) {
@@ -137,6 +150,8 @@ export default function DateField({
             mode="single"
             selected={selectedDate}
             onSelect={handleSelect}
+            disabled={disabledMatchers.length ? disabledMatchers : undefined}
+            defaultMonth={selectedDate ?? max ?? min}
             initialFocus
           />
         </PopoverContent>
