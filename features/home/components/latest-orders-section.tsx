@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Phone, Plus } from "lucide-react";
+import { Phone, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -19,24 +19,10 @@ import {
 } from "@/components/ui/select";
 import { MOCK_ORDERS } from "@/features/home/mock-data";
 import type { MockOrder } from "@/features/home/types";
-import StartReviewDialog from "@/features/orders/new/components/start-review-dialog";
-import {
-  StartReviewProvider,
-  useStartReview,
-} from "@/features/orders/new/context/start-review-context";
+import StartReviewAction from "@/features/orders/new/components/start-review-action";
 
 export default function LatestOrdersSection() {
-  return (
-    <StartReviewProvider>
-      <LatestOrdersSectionContent />
-      <StartReviewDialog />
-    </StartReviewProvider>
-  );
-}
-
-function LatestOrdersSectionContent() {
   const t = useTranslations("HomePage");
-  const { openStartReview } = useStartReview();
   const [status, setStatus] = useState("new");
 
   const columns: DataTableColumn<MockOrder>[] = [
@@ -114,21 +100,13 @@ function LatestOrdersSectionContent() {
       id: "action",
       header: t("table.action"),
       cell: (row) => (
-        <Button
-          type="button"
-          onClick={() =>
-            openStartReview({
-              id: row.id,
-              orderNumber: row.orderNumber,
-              customerName: row.customerName,
-              handlerName: row.handlerName,
-            })
-          }
-          className="h-9 gap-2 rounded-full border-none bg-brand-primary px-4 text-brand-white hover:bg-brand-primary/90"
-        >
-          <Eye className="size-4" strokeWidth={1.75} />
-          <span>{t("table.startReview")}</span>
-        </Button>
+        <StartReviewAction
+          orderId={row.id}
+          orderNumber={row.orderNumber}
+          customerName={row.customerName}
+          handlerName={row.handlerName}
+          label={t("table.startReview")}
+        />
       ),
     },
   ];
