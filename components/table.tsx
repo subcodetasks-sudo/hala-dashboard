@@ -73,9 +73,9 @@ export default function DataTable<T>({
     <div className={cn("w-full overflow-hidden rounded-2xl bg-white", className)}>
       <Table>
         <TableHeader>
-          <TableRow className="border-b border-black/5 bg-brand-background/40 hover:bg-brand-background/40">
+          <TableRow className="border-b border-black/5 bg-brand-background hover:bg-brand-background">
             {selectable ? (
-              <TableHead className="w-10 px-4 text-start">
+              <TableHead className="w-10 ps-6 text-start">
                 <Checkbox
                   checked={allSelected}
                   onCheckedChange={(value) => toggleAll(Boolean(value))}
@@ -83,11 +83,12 @@ export default function DataTable<T>({
                 />
               </TableHead>
             ) : null}
-            {columns.map((column) => (
+            {columns.map((column, columnIndex) => (
               <TableHead
                 key={column.id}
                 className={cn(
                   "h-12 px-4 text-start text-xs font-bold text-brand-black",
+                  !selectable && columnIndex === 0 && "ps-6",
                   column.headerClassName
                 )}
               >
@@ -121,7 +122,7 @@ export default function DataTable<T>({
                   className="border-b border-black/5 hover:bg-brand-background/40 data-[state=selected]:bg-brand-background/50"
                 >
                   {selectable ? (
-                    <TableCell className="px-4">
+                    <TableCell className="ps-6">
                       <Checkbox
                         checked={isSelected}
                         onCheckedChange={(value) =>
@@ -131,10 +132,14 @@ export default function DataTable<T>({
                       />
                     </TableCell>
                   ) : null}
-                  {columns.map((column) => (
+                  {columns.map((column, columnIndex) => (
                     <TableCell
                       key={column.id}
-                      className={cn("px-4 py-4 text-start", column.className)}
+                      className={cn(
+                        "px-4 py-4 text-start",
+                        !selectable && columnIndex === 0 && "ps-6",
+                        column.className
+                      )}
                     >
                       {column.cell
                         ? column.cell(row)
