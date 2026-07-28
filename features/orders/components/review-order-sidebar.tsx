@@ -13,27 +13,40 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ApproveProcessDialog from "@/features/orders/new/components/approve-process-dialog";
+import PendOrderDialog from "@/features/orders/new/components/pend-order-dialog";
 import {
   NEW_ORDER_CHECKLIST_IDS,
-  useNewOrderReview,
-} from "@/features/orders/new/context/new-order-review-context";
+  useReviewChecklist,
+} from "@/features/orders/new/queries/use-review-checklist";
+import { useOrder } from "@/features/orders/queries/use-orders";
 import { copyTextWithFeedback } from "@/features/orders/utils";
 import { cn } from "@/lib/utils";
 
-export default function ReviewOrderSidebar() {
+type ReviewOrderSidebarProps = {
+  orderId: string;
+  isEditing?: boolean;
+};
+
+export default function ReviewOrderSidebar({
+  orderId,
+  isEditing = false,
+}: ReviewOrderSidebarProps) {
   const t = useTranslations("Orders.New.Review.sidebar");
   const locale = useLocale();
-  const {
-    order,
-    showReviewActions,
-    canCompleteReview,
-    checklist,
-    toggleChecklistItem,
-    openApproveProcess,
-    openPendOrder,
-  } = useNewOrderReview();
+  const { data: order } = useOrder(orderId);
+  const { checklist, toggleChecklistItem, canCompleteReview } =
+    useReviewChecklist(orderId);
   const [copied, setCopied] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [isApproveProcessOpen, setApproveProcessOpen] = useState(false);
+  const [isPendOrderOpen, setPendOrderOpen] = useState(false);
+
+  if (!order) {
+    return null;
+  }
+
+  const showReviewActions = order.status === "new" && !isEditing;
 
   const relativeTime = locale.startsWith("ar")
     ? "10د"
@@ -175,7 +188,7 @@ export default function ReviewOrderSidebar() {
             <Button
               type="button"
               disabled={!canCompleteReview}
-              onClick={openApproveProcess}
+              onClick={() => setApproveProcessOpen(true)}
               className={cn(
                 "h-12 gap-2 rounded-full border-none bg-brand-primary px-4 font-semibold text-brand-white shadow-sm",
                 canCompleteReview
@@ -188,7 +201,7 @@ export default function ReviewOrderSidebar() {
             </Button>
             <Button
               type="button"
-              onClick={openPendOrder}
+              onClick={() => setPendOrderOpen(true)}
               className="h-12 gap-2 rounded-full border-none bg-[#E8913A] px-4 font-semibold text-brand-white shadow-sm hover:bg-[#E8913A]/90"
             >
               <AlertTriangle className="size-5" strokeWidth={2} />
@@ -197,6 +210,21 @@ export default function ReviewOrderSidebar() {
           </div>
         </section>
       ) : null}
+
+      <ApproveProcessDialog
+        open={isApproveProcessOpen}
+        onOpenChange={setApproveProcessOpen}
+        orderId={order.id}
+        orderNumber={order.orderNumber}
+        employerName={order.employerName}
+        workerName={order.workerName}
+      />
+
+      <PendOrderDialog
+        open={isPendOrderOpen}
+        onOpenChange={setPendOrderOpen}
+        orderId={order.id}
+      />
     </aside>
   );
 }

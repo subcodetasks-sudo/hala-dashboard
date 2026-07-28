@@ -48,6 +48,34 @@ export type PendingOrdersFilterValues = {
   suspensionReason: "all" | SuspensionReason;
 };
 
+export type ProcessedOrderRow = {
+  id: string;
+  orderNumber: string;
+  contractNumber: string;
+  employerName: string;
+  employerPhone: string;
+  workerName: string;
+  createdDate: string;
+  createdTime: string;
+  createdAtIso: string;
+  approvedDate: string;
+  approvedTime: string;
+  approvedAtIso: string;
+  executionDateIso: string;
+  source: OrderSource;
+  reviewerName: string;
+  reviewerInitials: string;
+  reviewerAvatarUrl?: string;
+};
+
+export type ProcessedOrdersFilterValues = {
+  fromDate: Date | undefined;
+  toDate: Date | undefined;
+  expectedExecution: Date | undefined;
+  search: string;
+  orderType: "all" | OrderSource;
+};
+
 export type ChangeHistoryRow = {
   id: string;
   employee: string;

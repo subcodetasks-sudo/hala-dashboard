@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
+import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
 import { Button } from "@/components/ui/button";
@@ -25,28 +26,24 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { copyTextWithFeedback } from "@/features/orders/utils";
-import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-type StartReviewDialogProps = {
+type SendContractForAuthDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  orderId: string;
   orderNumber: string;
-  customerName: string;
-  handlerName: string;
+  employerName: string;
+  workerName: string;
 };
 
-export default function StartReviewDialog({
+export default function SendContractForAuthDialog({
   open,
   onOpenChange,
-  orderId,
   orderNumber,
-  customerName,
-  handlerName,
-}: StartReviewDialogProps) {
-  const t = useTranslations("Orders.New.startReviewDialog");
-  const router = useRouter();
+  employerName,
+  workerName,
+}: SendContractForAuthDialogProps) {
+  const t = useTranslations("Orders.Processed.sendForAuthDialog");
   const [copied, setCopied] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -59,8 +56,8 @@ export default function StartReviewDialog({
   };
 
   const handleConfirm = () => {
+    toast.success(t("toastSuccess", { orderNumber: orderNumber ?? "" }));
     onOpenChange(false);
-    router.push(`/orders/${orderId}`);
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -158,7 +155,7 @@ export default function StartReviewDialog({
                 />
               }
               label={t("employerName")}
-              value={customerName}
+              value={employerName}
             />
             <DetailRow
               icon={
@@ -169,7 +166,7 @@ export default function StartReviewDialog({
                 />
               }
               label={t("workerName")}
-              value={handlerName}
+              value={workerName}
               showDivider={false}
             />
           </div>

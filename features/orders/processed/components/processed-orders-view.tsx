@@ -8,31 +8,32 @@ import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import OrdersFilters from "@/features/orders/components/orders-filters";
-import StartReviewAction from "@/features/orders/new/components/start-review-action";
+import ProcessedOrderActions from "@/features/orders/processed/components/processed-order-actions";
+import ProcessedOrdersFilters from "@/features/orders/processed/components/processed-orders-filters";
 import {
-  DEFAULT_ORDERS_FILTERS,
-  filterNewOrders,
-  NEW_ORDER_INDICATORS,
-  NEW_ORDERS,
-} from "@/features/orders/mock-data";
+  DEFAULT_PROCESSED_ORDERS_FILTERS,
+  filterProcessedOrders,
+  PROCESSED_ORDER_INDICATORS,
+  PROCESSED_ORDERS,
+} from "@/features/orders/processed/mock-data";
 import type {
-  NewOrderRow,
-  OrdersFilterValues,
+  ProcessedOrderRow,
+  ProcessedOrdersFilterValues,
 } from "@/features/orders/types";
 
-export default function NewOrdersView() {
-  const t = useTranslations("Orders.New");
+export default function ProcessedOrdersView() {
+  const t = useTranslations("Orders.Processed");
   const [draftFilters, setDraftFilters] =
-    useState<OrdersFilterValues>(DEFAULT_ORDERS_FILTERS);
+    useState<ProcessedOrdersFilterValues>(DEFAULT_PROCESSED_ORDERS_FILTERS);
   const [appliedFilters, setAppliedFilters] =
-    useState<OrdersFilterValues>(DEFAULT_ORDERS_FILTERS);
+    useState<ProcessedOrdersFilterValues>(DEFAULT_PROCESSED_ORDERS_FILTERS);
 
-  const rows = filterNewOrders(NEW_ORDERS, appliedFilters);
+  const rows = filterProcessedOrders(PROCESSED_ORDERS, appliedFilters);
 
-  const columns: DataTableColumn<NewOrderRow>[] = [
+  const columns: DataTableColumn<ProcessedOrderRow>[] = [
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
@@ -41,23 +42,32 @@ export default function NewOrdersView() {
       ),
     },
     {
-      id: "customer",
-      header: t("table.customer"),
+      id: "contractNumber",
+      header: t("table.contractNumber"),
+      cell: (row) => (
+        <span className="whitespace-nowrap text-brand-black">
+          {row.contractNumber}
+        </span>
+      ),
+    },
+    {
+      id: "employer",
+      header: t("table.employer"),
       cell: (row) => (
         <div className="flex flex-col gap-1">
-          <span className="font-semibold text-brand-black">{row.customerName}</span>
+          <span className="font-semibold text-brand-black">{row.employerName}</span>
           <span className="inline-flex items-center gap-1.5 text-xs text-brand-gris">
             <Phone className="size-3.5 shrink-0" strokeWidth={1.75} />
-            <span dir="ltr">{row.customerPhone}</span>
+            <span dir="ltr">{row.employerPhone}</span>
           </span>
         </div>
       ),
     },
     {
-      id: "handler",
-      header: t("table.handler"),
+      id: "worker",
+      header: t("table.worker"),
       cell: (row) => (
-        <span className="text-brand-black">{row.handlerName}</span>
+        <span className="whitespace-nowrap text-brand-black">{row.workerName}</span>
       ),
     },
     {
@@ -71,8 +81,18 @@ export default function NewOrdersView() {
       ),
     },
     {
-      id: "source",
-      header: t("table.source"),
+      id: "approvedAt",
+      header: t("table.approvedAt"),
+      cell: (row) => (
+        <div className="flex flex-col gap-0.5">
+          <span className="text-brand-black">{row.approvedDate}</span>
+          <span className="text-xs text-brand-gris">{row.approvedTime}</span>
+        </div>
+      ),
+    },
+    {
+      id: "type",
+      header: t("table.type"),
       cell: (row) => (
         <Badge
           className={
@@ -82,24 +102,43 @@ export default function NewOrdersView() {
           }
         >
           {row.source === "eform"
-            ? t("table.sourceEform")
-            : t("table.sourceManual")}
+            ? t("table.typeEform")
+            : t("table.typeManual")}
         </Badge>
       ),
     },
     {
-      id: "executionDate",
-      header: t("table.executionDate"),
+      id: "reviewer",
+      header: t("table.reviewer"),
       cell: (row) => (
-        <span className="text-brand-black">{row.executionDate}</span>
+        <div className="flex items-center gap-2">
+          <Avatar size="sm" className="size-8">
+            {row.reviewerAvatarUrl ? (
+              <AvatarImage
+                src={row.reviewerAvatarUrl}
+                alt={row.reviewerName}
+              />
+            ) : null}
+            <AvatarFallback className="bg-brand-primary/15 text-xs font-semibold text-brand-primary">
+              {row.reviewerInitials}
+            </AvatarFallback>
+          </Avatar>
+          <span className="whitespace-nowrap text-brand-black">
+            {row.reviewerName}
+          </span>
+        </div>
       ),
     },
     {
       id: "status",
       header: t("table.status"),
       cell: () => (
-        <Badge className="rounded-full border-transparent bg-[#E8913A]/15 px-3 py-1 text-[#E8913A]">
-          {t("table.statusNew")}
+        <Badge className="inline-flex items-center gap-1.5 rounded-xl border-transparent bg-brand-success/15 p-5 text-xs font-medium text-brand-success">
+          <span
+            className="size-1.5 shrink-0 rounded-full bg-brand-success"
+            aria-hidden
+          />
+          <span>{t("table.statusProcessed")}</span>
         </Badge>
       ),
     },
@@ -107,12 +146,11 @@ export default function NewOrdersView() {
       id: "action",
       header: t("table.action"),
       cell: (row) => (
-        <StartReviewAction
+        <ProcessedOrderActions
           orderId={row.id}
           orderNumber={row.orderNumber}
-          customerName={row.customerName}
-          handlerName={row.handlerName}
-          label={t("table.startReview")}
+          employerName={row.employerName}
+          workerName={row.workerName}
         />
       ),
     },
@@ -138,13 +176,13 @@ export default function NewOrdersView() {
       </div>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {NEW_ORDER_INDICATORS.map((indicator) => (
+        {PROCESSED_ORDER_INDICATORS.map((indicator) => (
           <InfoCard
             key={indicator.key}
             title={t(`indicators.${indicator.key}`)}
             value={indicator.value}
             change={indicator.change}
-            period={t("period")}
+            period={t(indicator.periodKey)}
             iconSrc={indicator.iconSrc}
             bgClassName={indicator.bgClassName}
           />
@@ -154,14 +192,14 @@ export default function NewOrdersView() {
       <section className="flex flex-col gap-4">
         <h2 className="flex items-center gap-2 text-lg font-bold text-brand-primary">
           <CustomIcon
-            src="/svg/tag-2.svg"
+            src="/svg/location.svg"
             size={20}
             className="text-brand-primary"
           />
           <span>{t("listTitle")}</span>
         </h2>
 
-        <OrdersFilters
+        <ProcessedOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={() => setAppliedFilters(draftFilters)}

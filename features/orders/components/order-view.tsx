@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 import CustomIcon from "@/components/custom-svg";
@@ -17,47 +18,44 @@ import DocumentDataPanel from "@/features/orders/components/document-data-panel"
 import EmployerDataPanel from "@/features/orders/components/employer-data-panel";
 import ReviewOrderSidebar from "@/features/orders/components/review-order-sidebar";
 import WorkerDataPanel from "@/features/orders/components/worker-data-panel";
-import ApproveProcessDialog from "@/features/orders/new/components/approve-process-dialog";
-import PendOrderDialog from "@/features/orders/new/components/pend-order-dialog";
-import {
-  NewOrderReviewProvider,
-  useNewOrderReview,
-  type ReviewTabId,
-} from "@/features/orders/new/context/new-order-review-context";
+import type { EmployerFormValues } from "@/features/orders/schemas/employer-schema";
+import type { WorkerFormValues } from "@/features/orders/schemas/worker-schema";
 import type { OrderReviewDetail } from "@/features/orders/types";
-import { useOrder } from "@/features/orders/queries/use-orders";
+import {
+  useOrder,
+  useUpdateOrderEmployer,
+  useUpdateOrderWorker,
+} from "@/features/orders/queries/use-orders";
 import { Link } from "@/i18n/navigation";
+
+export type ReviewTabId = "employer" | "worker" | "documents";
 
 type OrderViewProps = {
   order: OrderReviewDetail;
 };
 
 export default function OrderView({ order: initialOrder }: OrderViewProps) {
-  const { data: order = initialOrder } = useOrder(initialOrder.id);
-
-  return (
-    <NewOrderReviewProvider order={order}>
-      <OrderViewContent />
-    </NewOrderReviewProvider>
-  );
-}
-
-function OrderViewContent() {
   const t = useTranslations("Orders.New.Review");
-  const {
-    order,
-    editingTab,
-    startEditing,
-    stopEditing,
-    updateEmployer,
-    updateWorker,
-    activeTab,
-    setActiveTab,
-  } = useNewOrderReview();
+  const { data: order = initialOrder } = useOrder(initialOrder.id);
+  const updateEmployer = useUpdateOrderEmployer();
+  const updateWorker = useUpdateOrderWorker();
+
+  const [activeTab, setActiveTab] = useState<ReviewTabId>("employer");
+  const [editingTab, setEditingTab] = useState<ReviewTabId | null>(null);
+
+  const isEditing = editingTab !== null;
 
   const handleTabChange = (value: string) => {
-    stopEditing();
+    setEditingTab(null);
     setActiveTab(value as ReviewTabId);
+  };
+
+  const handleEmployerSaved = (values: EmployerFormValues) => {
+    updateEmployer.mutate({ id: order.id, values });
+  };
+
+  const handleWorkerSaved = (values: WorkerFormValues) => {
+    updateWorker.mutate({ id: order.id, values });
   };
 
   return (
@@ -172,9 +170,9 @@ function OrderViewContent() {
                   order={order}
                   isEditing={editingTab === "employer"}
                   onEditingChange={(editing) =>
-                    editing ? startEditing("employer") : stopEditing()
+                    setEditingTab(editing ? "employer" : null)
                   }
-                  onSaved={updateEmployer}
+                  onSaved={handleEmployerSaved}
                 />
               </TabsContent>
               <TabsContent value="worker" className="mt-2">
@@ -182,9 +180,9 @@ function OrderViewContent() {
                   order={order}
                   isEditing={editingTab === "worker"}
                   onEditingChange={(editing) =>
-                    editing ? startEditing("worker") : stopEditing()
+                    setEditingTab(editing ? "worker" : null)
                   }
-                  onSaved={updateWorker}
+                  onSaved={handleWorkerSaved}
                 />
               </TabsContent>
               <TabsContent value="documents" className="mt-2">
@@ -196,11 +194,8 @@ function OrderViewContent() {
           <ChangeHistoryTable rows={order.changeHistory} />
         </div>
 
-        <ReviewOrderSidebar />
+        <ReviewOrderSidebar orderId={order.id} isEditing={isEditing} />
       </div>
-
-      <ApproveProcessDialog />
-      <PendOrderDialog />
     </div>
   );
 }

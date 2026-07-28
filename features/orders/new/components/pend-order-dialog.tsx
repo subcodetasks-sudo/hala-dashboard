@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useNewOrderReview } from "@/features/orders/new/context/new-order-review-context";
 import { useUpdateOrder } from "@/features/orders/queries/use-orders";
 import { cn } from "@/lib/utils";
 
@@ -37,14 +36,18 @@ const PEND_REASON_IDS = [
 
 type PendReasonId = (typeof PEND_REASON_IDS)[number];
 
-export default function PendOrderDialog() {
+type PendOrderDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  orderId: string;
+};
+
+export default function PendOrderDialog({
+  open,
+  onOpenChange,
+  orderId,
+}: PendOrderDialogProps) {
   const t = useTranslations("Orders.New.pendOrderDialog");
-  const {
-    order,
-    isPendOrderOpen,
-    setPendOrderOpen,
-    closePendOrder,
-  } = useNewOrderReview();
   const [reasons, setReasons] = useState<PendReasonId[]>([]);
   const [notes, setNotes] = useState("");
   const [reasonError, setReasonError] = useState(false);
@@ -76,22 +79,22 @@ export default function PendOrderDialog() {
       return;
     }
 
-    if (order.id) {
+    if (orderId) {
       updateOrderMutation.mutate({
-        id: order.id,
+        id: orderId,
         updates: { status: "pending" },
       });
     }
     toast.success(t("toastSuccess"));
     resetForm();
-    closePendOrder();
+    onOpenChange(false);
   };
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
       resetForm();
     }
-    setPendOrderOpen(open);
+    onOpenChange(nextOpen);
   };
 
   const selectedSummary =
@@ -102,7 +105,7 @@ export default function PendOrderDialog() {
         : t("reasonsSelected", { count: reasons.length });
 
   return (
-    <Dialog open={isPendOrderOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
         overlayClassName="bg-black/50 supports-backdrop-filter:backdrop-blur-sm"
@@ -160,7 +163,7 @@ export default function PendOrderDialog() {
                   aria-expanded={reasonsOpen}
                   aria-controls="pend-reason-list"
                   data-invalid={reasonError || undefined}
-                  onClick={() => setReasonsOpen((open) => !open)}
+                  onClick={() => setReasonsOpen((next) => !next)}
                   className={cn(
                     "flex h-12 w-full min-w-0 items-center justify-between gap-3 overflow-hidden rounded-full border border-black/10 bg-white px-4 text-sm transition-colors outline-none focus-visible:border-brand-primary focus-visible:ring-3 focus-visible:ring-brand-primary/20",
                     reasonError && "border-brand-accent"
@@ -265,7 +268,7 @@ export default function PendOrderDialog() {
           <Button
             type="button"
             variant="ghost"
-            onClick={closePendOrder}
+            onClick={() => onOpenChange(false)}
             className="h-12 w-full flex-1 rounded-2xl bg-brand-background font-semibold text-brand-black hover:bg-brand-background/80 sm:w-auto"
           >
             {t("cancel")}
@@ -275,14 +278,20 @@ export default function PendOrderDialog() {
             onClick={handleConfirm}
             className="group relative h-12 w-full flex-[1.4] items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-warning px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-warning/90 hover:shadow-md hover:shadow-brand-warning/20 active:scale-[0.98] sm:w-auto"
           >
-            <span className="confirm-chevron-start inline-flex items-center" aria-hidden>
+            <span
+              className="confirm-chevron-start inline-flex items-center"
+              aria-hidden
+            >
               <ChevronsLeft
                 className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
                 strokeWidth={2.25}
               />
             </span>
             <span className="tracking-wide">{t("confirm")}</span>
-            <span className="confirm-chevron-end inline-flex items-center" aria-hidden>
+            <span
+              className="confirm-chevron-end inline-flex items-center"
+              aria-hidden
+            >
               <ChevronsRight
                 className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
                 strokeWidth={2.25}

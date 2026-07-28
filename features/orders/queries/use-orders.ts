@@ -9,19 +9,15 @@ import type {
   OrderReviewDetail,
   OrdersFilterValues,
 } from "../types";
+import type { EmployerFormValues } from "@/features/orders/schemas/employer-schema";
+import type { WorkerFormValues } from "@/features/orders/schemas/worker-schema";
+import { orderKeys } from "@/features/orders/query-keys";
+
+export { orderKeys };
 
 // In-memory store for initial state and mutations (enables instant client-side query updates)
 let ordersStore: NewOrderRow[] = [...NEW_ORDERS];
 const orderDetailsStore: Record<string, OrderReviewDetail> = {};
-
-// Query Key Factory
-export const orderKeys = {
-  all: ["orders"] as const,
-  lists: () => [...orderKeys.all, "list"] as const,
-  list: (filters?: OrdersFilterValues) => [...orderKeys.lists(), { filters }] as const,
-  details: () => [...orderKeys.all, "detail"] as const,
-  detail: (id: string) => [...orderKeys.details(), id] as const,
-};
 
 // API Fetch / Post Simulation handlers
 export async function fetchOrders(filters?: OrdersFilterValues): Promise<NewOrderRow[]> {
@@ -68,6 +64,58 @@ export async function updateOrder(id: string, updates: Partial<NewOrderRow>): Pr
     throw new Error(`Order with ID ${id} not found`);
   }
   return updatedOrder;
+}
+
+function ensureOrderDetail(id: string): OrderReviewDetail {
+  if (orderDetailsStore[id]) {
+    return orderDetailsStore[id];
+  }
+  const detail = getOrderReviewByOrderId(id);
+  if (!detail) {
+    throw new Error(`Order detail with ID ${id} not found`);
+  }
+  orderDetailsStore[id] = detail;
+  return detail;
+}
+
+export async function updateOrderReviewDetail(
+  id: string,
+  updates: Partial<OrderReviewDetail>
+): Promise<OrderReviewDetail> {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const current = ensureOrderDetail(id);
+  const updated = { ...current, ...updates };
+  orderDetailsStore[id] = updated;
+  return updated;
+}
+
+export async function updateOrderEmployer(
+  id: string,
+  values: EmployerFormValues
+): Promise<OrderReviewDetail> {
+  return updateOrderReviewDetail(id, {
+    employerName: values.employerName,
+    nationalId: values.nationalId,
+    phoneLocal: values.phoneLocal,
+    city: values.city,
+    address: values.address,
+  });
+}
+
+export async function updateOrderWorker(
+  id: string,
+  values: WorkerFormValues
+): Promise<OrderReviewDetail> {
+  return updateOrderReviewDetail(id, {
+    workerName: values.workerName,
+    workerPhoneLocal: values.workerPhoneLocal,
+    workerBirthDate: values.birthDate,
+    workerHomeAddress: values.homeAddress,
+    workerPassportIssuePlace: values.passportIssuePlace,
+    workerPassportNumber: values.passportNumber,
+    workerPassportIssueDate: values.passportIssueDate,
+    workerPassportExpiryDate: values.passportExpiryDate,
+  });
 }
 
 // React Query Hooks
@@ -119,6 +167,38 @@ export function useUpdateOrder() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
       queryClient.invalidateQueries({ queryKey: orderKeys.detail(data.id) });
+    },
+  });
+}
+
+/**
+ * Updates employer fields on the order review detail cache.
+ */
+export function useUpdateOrderEmployer() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, values }: { id: string; values: EmployerFormValues }) =>
+      updateOrderEmployer(id, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(orderKeys.detail(data.id), data);
+      queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
+    },
+  });
+}
+
+/**
+ * Updates worker fields on the order review detail cache.
+ */
+export function useUpdateOrderWorker() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, values }: { id: string; values: WorkerFormValues }) =>
+      updateOrderWorker(id, values),
+    onSuccess: (data) => {
+      queryClient.setQueryData(orderKeys.detail(data.id), data);
+      queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
     },
   });
 }

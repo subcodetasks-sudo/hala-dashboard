@@ -25,55 +25,62 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useNewOrderReview } from "@/features/orders/new/context/new-order-review-context";
 import { useUpdateOrder } from "@/features/orders/queries/use-orders";
 import { copyTextWithFeedback } from "@/features/orders/utils";
-import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-export default function ApproveProcessDialog() {
+type ApproveProcessDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  orderId: string;
+  orderNumber: string;
+  employerName: string;
+  workerName: string;
+};
+
+export default function ApproveProcessDialog({
+  open,
+  onOpenChange,
+  orderId,
+  orderNumber,
+  employerName,
+  workerName,
+}: ApproveProcessDialogProps) {
   const t = useTranslations("Orders.New.approveProcessDialog");
-  const router = useRouter();
-  const {
-    order,
-    isApproveProcessOpen,
-    setApproveProcessOpen,
-    closeApproveProcess,
-  } = useNewOrderReview();
   const [copied, setCopied] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
   const updateOrderMutation = useUpdateOrder();
 
   const handleCopy = () => {
-    if (!order.orderNumber) return;
-    void copyTextWithFeedback(order.orderNumber, {
+    if (!orderNumber) return;
+    void copyTextWithFeedback(orderNumber, {
       setCopied,
       setTooltipOpen,
     });
   };
 
   const handleConfirm = () => {
-    if (order.id) {
+    if (orderId) {
       updateOrderMutation.mutate({
-        id: order.id,
+        id: orderId,
         updates: { status: "processed" },
       });
     }
     toast.success(t("toastSuccess"));
-    closeApproveProcess();
+    onOpenChange(false);
   };
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
       setCopied(false);
       setTooltipOpen(false);
     }
-    setApproveProcessOpen(open);
+    onOpenChange(nextOpen);
   };
 
   return (
-    <Dialog open={isApproveProcessOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
         overlayClassName="bg-black/50 supports-backdrop-filter:backdrop-blur-sm"
@@ -123,13 +130,13 @@ export default function ApproveProcessDialog() {
               label={t("orderNumber")}
               value={
                 <span className="inline-flex items-center gap-2 font-semibold text-brand-black">
-                  <span dir="ltr">{order.orderNumber}</span>
+                  <span dir="ltr">{orderNumber}</span>
                   <TooltipProvider>
                     <Tooltip
                       open={tooltipOpen}
-                      onOpenChange={(open) => {
+                      onOpenChange={(nextOpen) => {
                         if (copied) return;
-                        setTooltipOpen(open);
+                        setTooltipOpen(nextOpen);
                       }}
                     >
                       <TooltipTrigger asChild>
@@ -159,7 +166,7 @@ export default function ApproveProcessDialog() {
                 />
               }
               label={t("employerName")}
-              value={order.employerName}
+              value={employerName}
             />
             <DetailRow
               icon={
@@ -170,7 +177,7 @@ export default function ApproveProcessDialog() {
                 />
               }
               label={t("workerName")}
-              value={order.workerName}
+              value={workerName}
             />
             <DetailRow
               icon={
@@ -199,7 +206,7 @@ export default function ApproveProcessDialog() {
           <Button
             type="button"
             variant="ghost"
-            onClick={closeApproveProcess}
+            onClick={() => onOpenChange(false)}
             className="h-12 flex-1 rounded-2xl bg-brand-background font-semibold text-brand-black hover:bg-brand-background/80"
           >
             {t("cancel")}
@@ -209,14 +216,20 @@ export default function ApproveProcessDialog() {
             onClick={handleConfirm}
             className="group relative h-12 flex-[1.4] items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-primary px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-primary/90 hover:shadow-md hover:shadow-brand-primary/20 active:scale-[0.98]"
           >
-            <span className="confirm-chevron-start inline-flex items-center" aria-hidden>
+            <span
+              className="confirm-chevron-start inline-flex items-center"
+              aria-hidden
+            >
               <ChevronsLeft
                 className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
                 strokeWidth={2.25}
               />
             </span>
             <span className="tracking-wide">{t("confirm")}</span>
-            <span className="confirm-chevron-end inline-flex items-center" aria-hidden>
+            <span
+              className="confirm-chevron-end inline-flex items-center"
+              aria-hidden
+            >
               <ChevronsRight
                 className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
                 strokeWidth={2.25}
