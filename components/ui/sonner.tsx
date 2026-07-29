@@ -13,7 +13,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps["theme"]}
       dir={direction}
-      richColors
       className="toaster group"
       icons={{
         success: (
@@ -34,6 +33,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }}
       style={
         {
+          /* Widest the pill may grow before its text wraps */
+          "--width": "min(92vw, 26rem)",
           "--normal-bg": "var(--popover)",
           "--normal-text": "var(--popover-foreground)",
           "--normal-border": "var(--border)",
@@ -41,24 +42,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
         } as React.CSSProperties
       }
       toastOptions={{
-        style: {
-          backgroundColor: "#042417",
-          color: "#ffffff",
-          borderRadius: "9999px",
-          padding: "12px 24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          gap: "8px",
-          boxShadow: "0 20px 25px -5px rgba(4, 36, 23, 0.6), 0 8px 10px -6px rgba(4, 36, 23, 0.6)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-        },
         classNames: {
-          toast:
-            "flex items-center justify-start gap-2 px-6 py-3.5 rounded-full text-brand-white text-sm font-semibold",
-          content: "w-max flex-none",
+          toast: "flex items-center justify-start text-brand-white",
           icon: "m-0 size-auto",
-          title: "text-white font-semibold text-sm text-start",
+          title: "text-start",
         },
       }}
       {...props}

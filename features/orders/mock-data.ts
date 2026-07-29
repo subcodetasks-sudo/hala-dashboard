@@ -1,4 +1,5 @@
 import { MOCK_ORDERS } from "@/features/home/mock-data";
+import { getOrderReviewFromApiMock } from "@/features/orders/api-mock-data";
 import type {
   NewOrderRow,
   OrderDocument,
@@ -296,6 +297,10 @@ export const PASSPORT_ISSUE_PLACES = [
 export function getOrderReviewByOrderId(
   orderId: string
 ): OrderReviewDetail | undefined {
+  // Temp: prefer API-shaped mock details when present for this ID.
+  const apiReview = getOrderReviewFromApiMock(orderId);
+  if (apiReview) return apiReview;
+
   const order = NEW_ORDERS.find((row) => row.id === orderId);
   if (!order) return undefined;
 
@@ -324,10 +329,12 @@ export function getOrderReviewByOrderId(
     expectedExecutionLabel: order.executionDate,
     source: order.source,
     status: "new",
+    statusLabel: "New",
     assignee: "System Admin",
     createdAtLabel: order.createdDate,
     createdTimeLabel: order.createdTime,
     relativeTimeLabel: "10m",
+    hold: null,
     changeHistory: [
       {
         id: `${order.id}-h1`,

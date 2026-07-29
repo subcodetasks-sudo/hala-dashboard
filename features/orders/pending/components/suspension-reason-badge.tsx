@@ -4,34 +4,34 @@ import {
   FileWarning,
   RefreshCw,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import type { SuspensionReason } from "@/features/orders/types";
+import { useHoldReasons } from "@/features/orders/pending/queries/use-hold-reasons";
+import type { HoldReasonValue } from "@/features/orders/types";
 import { cn } from "@/lib/utils";
 
 const REASON_META: Record<
-  SuspensionReason,
+  HoldReasonValue,
   { className: string; icon: ReactNode }
 > = {
-  missingDocument: {
+  missing_document: {
     className: "bg-[#F3E8FF] text-[#8B5CF6]",
     icon: <FileText className="size-4 shrink-0" strokeWidth={1.75} />,
   },
-  incompleteWorkerData: {
+  worker_data_unclear: {
     className: "bg-[#FEF6E0] text-[#B8860B]",
     icon: <FileUser className="size-4 shrink-0" strokeWidth={1.75} />,
   },
-  incompleteEmployerData: {
+  employer_data_incomplete: {
     className: "bg-[#FEF6E0] text-[#B8860B]",
     icon: <FileUser className="size-4 shrink-0" strokeWidth={1.75} />,
   },
-  unclearDocument: {
+  unclear_document: {
     className: "bg-[#FDECEC] text-[#E5484D]",
     icon: <FileWarning className="size-4 shrink-0" strokeWidth={1.75} />,
   },
-  dataConflict: {
+  data_conflict: {
     className: "bg-[#E8F4FC] text-[#3B82F6]",
     icon: <RefreshCw className="size-4 shrink-0" strokeWidth={1.75} />,
   },
@@ -41,17 +41,29 @@ const REASON_META: Record<
   },
 };
 
+const FALLBACK_META = {
+  className: "bg-[#F5F5F5] text-brand-gris",
+  icon: <FileText className="size-4 shrink-0" strokeWidth={1.75} />,
+};
+
 type SuspensionReasonBadgeProps = {
-  reason: SuspensionReason;
+  reason: HoldReasonValue | string;
+  label?: string | null;
   className?: string;
 };
 
 export default function SuspensionReasonBadge({
   reason,
+  label,
   className,
 }: SuspensionReasonBadgeProps) {
-  const t = useTranslations("Orders.Pending.reasons");
-  const meta = REASON_META[reason];
+  const { data: holdReasons } = useHoldReasons();
+  const meta =
+    REASON_META[reason as HoldReasonValue] ?? FALLBACK_META;
+  const resolvedLabel =
+    label ||
+    holdReasons?.find((item) => item.value === reason)?.label ||
+    reason;
 
   return (
     <Badge
@@ -62,7 +74,7 @@ export default function SuspensionReasonBadge({
       )}
     >
       {meta.icon}
-      <span>{t(reason)}</span>
+      <span>{resolvedLabel}</span>
     </Badge>
   );
 }

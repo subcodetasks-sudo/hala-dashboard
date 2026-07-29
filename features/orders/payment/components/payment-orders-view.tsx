@@ -2,7 +2,6 @@
 
 import { Phone, Plus, SaudiRiyal } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
@@ -18,10 +17,12 @@ import {
   usePaymentIndicators,
   usePaymentOrders,
 } from "@/features/orders/payment/queries/use-payment-orders";
-import type {
-  PaymentOrderRow,
-  PaymentOrdersFilterValues,
-} from "@/features/orders/types";
+import type { PaymentOrderRow } from "@/features/orders/types";
+import {
+  parsePaymentOrdersFilters,
+  serializePaymentOrdersFilters,
+  useOrderFilters,
+} from "@/features/orders/utils";
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -45,11 +46,12 @@ function formatIndicatorValue(value: number) {
 
 export default function PaymentOrdersView() {
   const t = useTranslations("Orders.Payment");
-  const [draftFilters, setDraftFilters] = useState<PaymentOrdersFilterValues>(
-    DEFAULT_PAYMENT_ORDERS_FILTERS
-  );
-  const [appliedFilters, setAppliedFilters] =
-    useState<PaymentOrdersFilterValues>(DEFAULT_PAYMENT_ORDERS_FILTERS);
+  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
+    useOrderFilters({
+      defaults: DEFAULT_PAYMENT_ORDERS_FILTERS,
+      serialize: serializePaymentOrdersFilters,
+      parse: parsePaymentOrdersFilters,
+    });
 
   const { data: rows = [], isLoading } = usePaymentOrders(appliedFilters);
   const { data: indicators } = usePaymentIndicators();
@@ -135,7 +137,7 @@ export default function PaymentOrdersView() {
       id: "dueFees",
       header: t("table.dueFees"),
       cell: (row) => (
-        <span className="inline-flex items-center gap-1 whitespace-nowrap font-semibold text-brand-black">
+        <span className="inline-flex items-center gap-1 whitespace-nowrap font-semibold text-brand-success">
           <span>+{row.dueFees}</span>
           <SaudiRiyal className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
         </span>
@@ -206,7 +208,7 @@ export default function PaymentOrdersView() {
         <PaymentOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
-          onApply={() => setAppliedFilters(draftFilters)}
+          onApply={applyFilters}
         />
 
         <DataTable

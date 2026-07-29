@@ -50,11 +50,12 @@
   },
   "Auth": {
     "Login": {
-      "brand": "Akkdi",
-      "title": "Content Control Panel",
-      "email": {
-        "label": "Email",
-        "placeholder": "Enter your email here..."
+      "brand": "Hala wa Hala",
+      "title": "Welcome back",
+      "subtitle": "Sign in to the control panel",
+      "idNumber": {
+        "label": "ID Number",
+        "placeholder": "Enter your ID number here..."
       },
       "password": {
         "label": "Password",
@@ -65,12 +66,37 @@
       "rememberMe": "Remember me",
       "forgotPassword": "Forgot your password?",
       "submit": "Log in",
+      "submitting": "Signing in...",
+      "welcomeToast": "Welcome, {name}",
+      "fallbackEmployeeName": "Employee",
+      "errorToast": "Unable to sign in. Please check your credentials and try again.",
+      "route": {
+        "invalidJson": "Invalid JSON body",
+        "required": "ID number and password are required",
+        "loginFailed": "Login failed",
+        "invalidCredentials": "Invalid credentials. Please try again.",
+        "unableToSignIn": "Unable to sign in. Please try again."
+      },
       "validation": {
-        "emailRequired": "Email is required",
-        "emailInvalid": "Please enter a valid email address",
+        "idNumberRequired": "ID number is required",
+        "idNumberFormat": "ID number must be 10 digits starting with 1 or 2",
         "passwordRequired": "Password is required",
-        "passwordMin": "Password must be at least 8 characters"
+        "passwordMin": "Password must be at least 6 characters"
       }
+    },
+    "Logout": {
+      "confirmMessage": "Are you sure you want to log out?",
+      "confirmAction": "Log out",
+      "errorToast": "Unable to log out. Please try again.",
+      "route": {
+        "success": "Logged out successfully"
+      }
+    }
+  },
+  "Profile": {
+    "route": {
+      "unauthorized": "Unauthorized",
+      "success": "Profile loaded successfully"
     }
   },
   "Orders": {
@@ -193,6 +219,10 @@
           "workerPlaceholder": "Worker data will be available soon.",
           "documentsPlaceholder": "Documents will be available soon."
         },
+        "hold": {
+          "reasonLabel": "Suspension reason:",
+          "notesLabel": "Staff note for client"
+        },
         "employer": {
           "sectionTitle": "Employer Data",
           "edit": "Edit Data",
@@ -230,6 +260,11 @@
           "view": "View",
           "download": "Download",
           "meta": "Uploaded {date} • {size} • {format}",
+          "uploadLabel": "Click here to choose file",
+          "uploadFormats": "png - pdf",
+          "uploadAria": "Upload document {title}",
+          "metaIssue": "{issue} • {date} • {format}",
+          "issueUnclear": "Unclear image",
           "types": {
             "nationalId": "National ID Copy",
             "workerId": "Worker ID Copy (Iqama)",
@@ -304,11 +339,11 @@
         "pickDate": "Select date"
       },
       "reasons": {
-        "missingDocument": "Missing document",
-        "incompleteWorkerData": "Incomplete worker data",
-        "incompleteEmployerData": "Incomplete employer data",
-        "unclearDocument": "Unclear document",
-        "dataConflict": "Data conflict",
+        "employer_data_incomplete": "Employer data is incomplete",
+        "worker_data_unclear": "Worker data is unclear",
+        "missing_document": "Missing document",
+        "unclear_document": "Unclear document",
+        "data_conflict": "Data conflict",
         "other": "Other reason"
       },
       "table": {
@@ -327,6 +362,10 @@
       "empty": {
         "title": "No pending orders",
         "description": "There are currently no pending orders. All orders are proceeding normally in the processing cycle."
+      },
+      "route": {
+        "unauthorized": "Unauthorized",
+        "unableToFetch": "Unable to load hold reasons. Please try again."
       }
     },
     "Processed": {
@@ -517,6 +556,61 @@
       "empty": {
         "title": "No payment orders",
         "description": "There are currently no orders awaiting payment."
+      }
+    },
+    "Completed": {
+      "title": "Completed Orders",
+      "description": "Orders that have completed the full process after payment confirmation and reached the final stage.",
+      "listTitle": "Completed Orders List",
+      "periodWeek": "from last week",
+      "manualOrder": "Manual Order Entry",
+      "indicators": {
+        "total": "Total Completed Orders",
+        "paidOnline": "Online Paid Orders",
+        "paidManual": "Manually Paid Orders",
+        "withDelivery": "Delivery Orders",
+        "pickup": "Pickup Orders"
+      },
+      "filters": {
+        "fromDate": "Creation Date",
+        "toDate": "End Date",
+        "searchLabel": "Search",
+        "searchPlaceholder": "Search by order number or employer name...",
+        "orderType": "Order Type",
+        "typeAll": "All",
+        "typeEform": "E-form",
+        "typeManual": "Manual",
+        "deliveryStatus": "Delivery Status",
+        "deliveryAll": "All",
+        "deliveryRequired": "Required",
+        "deliveryNotRequired": "Not Required",
+        "paymentMethod": "Payment Status",
+        "paymentAll": "All",
+        "paymentOnline": "Online",
+        "paymentManual": "Manual",
+        "apply": "Apply Filter",
+        "pickDate": "Select date"
+      },
+      "table": {
+        "orderNumber": "Order Number",
+        "employer": "Employer / Mobile",
+        "worker": "Worker Name",
+        "createdAt": "Creation Date",
+        "contractUploadedAt": "Contract Upload Date",
+        "paidAt": "Payment Date",
+        "paymentMethod": "Payment Type",
+        "paymentOnline": "Online",
+        "paymentManual": "Manual",
+        "dueFees": "Due Fees",
+        "deliveryStatus": "Delivery Status",
+        "deliveryRequired": "Required",
+        "deliveryNotRequired": "Not Required",
+        "action": "Action",
+        "viewDetails": "View Order Data"
+      },
+      "empty": {
+        "title": "No completed orders",
+        "description": "Completed orders will appear here once the full process is finished."
       }
     }
   },

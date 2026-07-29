@@ -2,7 +2,6 @@
 
 import { Phone, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
@@ -18,17 +17,21 @@ import {
   NEW_ORDER_INDICATORS,
   NEW_ORDERS,
 } from "@/features/orders/mock-data";
-import type {
-  NewOrderRow,
-  OrdersFilterValues,
-} from "@/features/orders/types";
+import type { NewOrderRow } from "@/features/orders/types";
+import {
+  parseOrdersFilters,
+  serializeOrdersFilters,
+  useOrderFilters,
+} from "@/features/orders/utils";
 
 export default function NewOrdersView() {
   const t = useTranslations("Orders.New");
-  const [draftFilters, setDraftFilters] =
-    useState<OrdersFilterValues>(DEFAULT_ORDERS_FILTERS);
-  const [appliedFilters, setAppliedFilters] =
-    useState<OrdersFilterValues>(DEFAULT_ORDERS_FILTERS);
+  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
+    useOrderFilters({
+      defaults: DEFAULT_ORDERS_FILTERS,
+      serialize: serializeOrdersFilters,
+      parse: parseOrdersFilters,
+    });
 
   const rows = filterNewOrders(NEW_ORDERS, appliedFilters);
 
@@ -164,7 +167,7 @@ export default function NewOrdersView() {
         <OrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
-          onApply={() => setAppliedFilters(draftFilters)}
+          onApply={applyFilters}
         />
 
         <DataTable

@@ -2,7 +2,6 @@
 
 import { Phone, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
@@ -19,17 +18,21 @@ import {
   PROCESSED_ORDER_INDICATORS,
   PROCESSED_ORDERS,
 } from "@/features/orders/processed/mock-data";
-import type {
-  ProcessedOrderRow,
-  ProcessedOrdersFilterValues,
-} from "@/features/orders/types";
+import type { ProcessedOrderRow } from "@/features/orders/types";
+import {
+  parseProcessedOrdersFilters,
+  serializeProcessedOrdersFilters,
+  useOrderFilters,
+} from "@/features/orders/utils";
 
 export default function ProcessedOrdersView() {
   const t = useTranslations("Orders.Processed");
-  const [draftFilters, setDraftFilters] =
-    useState<ProcessedOrdersFilterValues>(DEFAULT_PROCESSED_ORDERS_FILTERS);
-  const [appliedFilters, setAppliedFilters] =
-    useState<ProcessedOrdersFilterValues>(DEFAULT_PROCESSED_ORDERS_FILTERS);
+  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
+    useOrderFilters({
+      defaults: DEFAULT_PROCESSED_ORDERS_FILTERS,
+      serialize: serializeProcessedOrdersFilters,
+      parse: parseProcessedOrdersFilters,
+    });
 
   const rows = filterProcessedOrders(PROCESSED_ORDERS, appliedFilters);
 
@@ -202,7 +205,7 @@ export default function ProcessedOrdersView() {
         <ProcessedOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
-          onApply={() => setAppliedFilters(draftFilters)}
+          onApply={applyFilters}
         />
 
         <DataTable

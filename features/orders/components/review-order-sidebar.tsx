@@ -46,7 +46,9 @@ export default function ReviewOrderSidebar({
     return null;
   }
 
-  const showReviewActions = order.status === "new" && !isEditing;
+  // Held orders are re-reviewed, so they keep the checklist and the process action.
+  const canReview = order.status === "new" || order.status === "held";
+  const showReviewActions = canReview && !isEditing;
 
   const relativeTime = locale.startsWith("ar")
     ? "10د"
@@ -128,7 +130,7 @@ export default function ReviewOrderSidebar({
                 className="size-1.5 rounded-full bg-[#E8913A]"
                 aria-hidden
               />
-              {t("statusNew")}
+              {order.statusLabel}
             </Badge>
           </InfoRow>
         </dl>
@@ -140,16 +142,15 @@ export default function ReviewOrderSidebar({
         <ul className="mt-1 divide-y divide-black/5">
           {NEW_ORDER_CHECKLIST_IDS.map((key) => {
             const checked = checklist[key];
-            const isNewStatus = order.status === "new";
             return (
               <li key={key}>
                 <button
                   type="button"
-                  disabled={!isNewStatus}
+                  disabled={!canReview}
                   onClick={() => toggleChecklistItem(key)}
                   className={cn(
                     "flex w-full items-center justify-between gap-3 py-3 text-start",
-                    !isNewStatus && "cursor-default opacity-80"
+                    !canReview && "cursor-default opacity-80"
                   )}
                 >
                   <span
@@ -199,14 +200,16 @@ export default function ReviewOrderSidebar({
               <CircleCheck className="size-5" strokeWidth={2} />
               {t("reviewed")}
             </Button>
-            <Button
-              type="button"
-              onClick={() => setPendOrderOpen(true)}
-              className="h-12 gap-2 rounded-full border-none bg-[#E8913A] px-4 font-semibold text-brand-white shadow-sm hover:bg-[#E8913A]/90"
-            >
-              <AlertTriangle className="size-5" strokeWidth={2} />
-              {t("suspend")}
-            </Button>
+            {order.status === "new" ? (
+              <Button
+                type="button"
+                onClick={() => setPendOrderOpen(true)}
+                className="h-12 gap-2 rounded-full border-none bg-[#E8913A] px-4 font-semibold text-brand-white shadow-sm hover:bg-[#E8913A]/90"
+              >
+                <AlertTriangle className="size-5" strokeWidth={2} />
+                {t("suspend")}
+              </Button>
+            ) : null}
           </div>
         </section>
       ) : null}

@@ -92,7 +92,7 @@ export default function DashboardNavLink({
           <Link
             href={href}
             onClick={handleClick}
-            className="flex w-full items-center justify-between gap-3"
+            className="flex w-full items-center justify-between gap-3 cursor-pointer"
           >
             <NavItemContent label={label} icon={icon} badge={badge} />
           </Link>
@@ -104,7 +104,7 @@ export default function DashboardNavLink({
           onClick={handleClick}
           className={cn(
             buttonClassName(isActive),
-            "flex w-full items-center justify-between gap-3",
+            "flex w-full items-center justify-between gap-3 cursor-pointer",
           )}
         >
           <NavItemContent label={label} icon={icon} badge={badge} />

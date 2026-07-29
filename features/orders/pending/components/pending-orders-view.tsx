@@ -2,7 +2,6 @@
 
 import { Eye, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
@@ -19,19 +18,22 @@ import {
   PENDING_ORDER_INDICATORS,
   PENDING_ORDERS,
 } from "@/features/orders/pending/mock-data";
-import type {
-  PendingOrderRow,
-  PendingOrdersFilterValues,
-} from "@/features/orders/types";
+import type { PendingOrderRow } from "@/features/orders/types";
+import {
+  parsePendingOrdersFilters,
+  serializePendingOrdersFilters,
+  useOrderFilters,
+} from "@/features/orders/utils";
 import { Link } from "@/i18n/navigation";
 
 export default function PendingOrdersView() {
   const t = useTranslations("Orders.Pending");
-  const [draftFilters, setDraftFilters] = useState<PendingOrdersFilterValues>(
-    DEFAULT_PENDING_ORDERS_FILTERS
-  );
-  const [appliedFilters, setAppliedFilters] =
-    useState<PendingOrdersFilterValues>(DEFAULT_PENDING_ORDERS_FILTERS);
+  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
+    useOrderFilters({
+      defaults: DEFAULT_PENDING_ORDERS_FILTERS,
+      serialize: serializePendingOrdersFilters,
+      parse: parsePendingOrdersFilters,
+    });
 
   const rows = filterPendingOrders(PENDING_ORDERS, appliedFilters);
 
@@ -176,7 +178,7 @@ export default function PendingOrdersView() {
         <PendingOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
-          onApply={() => setAppliedFilters(draftFilters)}
+          onApply={applyFilters}
         />
 
         <DataTable

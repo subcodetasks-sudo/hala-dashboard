@@ -1,4 +1,5 @@
 import type {
+  CompletedOrdersFilterValues,
   OrdersFilterValues,
   PaymentOrdersFilterValues,
   VerificationOrdersFilterValues,
@@ -11,6 +12,7 @@ export const orderKeys = {
     [...orderKeys.lists(), { filters }] as const,
   details: () => [...orderKeys.all, "detail"] as const,
   detail: (id: string) => [...orderKeys.details(), id] as const,
+  holdReasons: () => [...orderKeys.all, "hold-reasons"] as const,
 };
 
 export const newOrderReviewKeys = {
@@ -34,4 +36,12 @@ export const paymentOrderKeys = {
   list: (filters?: PaymentOrdersFilterValues) =>
     [...paymentOrderKeys.lists(), { filters }] as const,
   indicators: () => [...paymentOrderKeys.all, "indicators"] as const,
+};
+
+export const completedOrderKeys = {
+  all: [...orderKeys.all, "completed"] as const,
+  lists: () => [...completedOrderKeys.all, "list"] as const,
+  list: (filters?: CompletedOrdersFilterValues) =>
+    [...completedOrderKeys.lists(), { filters }] as const,
+  indicators: () => [...completedOrderKeys.all, "indicators"] as const,
 };

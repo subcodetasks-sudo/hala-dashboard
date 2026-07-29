@@ -2,7 +2,6 @@
 
 import { Phone, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
@@ -10,10 +9,12 @@ import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import type {
-  VerificationOrderRow,
-  VerificationOrdersFilterValues,
-} from "@/features/orders/types";
+import type { VerificationOrderRow } from "@/features/orders/types";
+import {
+  parseVerificationOrdersFilters,
+  serializeVerificationOrdersFilters,
+  useOrderFilters,
+} from "@/features/orders/utils";
 import VerificationOrderActions from "@/features/orders/verification/components/verification-order-actions";
 import VerificationOrdersFilters from "@/features/orders/verification/components/verification-orders-filters";
 import VerificationStatusBadge from "@/features/orders/verification/components/verification-status-badge";
@@ -51,14 +52,12 @@ function formatIndicatorValue(value: number) {
 
 export default function VerificationOrdersView() {
   const t = useTranslations("Orders.Verification");
-  const [draftFilters, setDraftFilters] =
-    useState<VerificationOrdersFilterValues>(
-      DEFAULT_VERIFICATION_ORDERS_FILTERS
-    );
-  const [appliedFilters, setAppliedFilters] =
-    useState<VerificationOrdersFilterValues>(
-      DEFAULT_VERIFICATION_ORDERS_FILTERS
-    );
+  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
+    useOrderFilters({
+      defaults: DEFAULT_VERIFICATION_ORDERS_FILTERS,
+      serialize: serializeVerificationOrdersFilters,
+      parse: parseVerificationOrdersFilters,
+    });
 
   const { data: rows = [], isLoading } = useVerificationOrders(appliedFilters);
   const { data: indicators } = useVerificationIndicators();
@@ -193,7 +192,7 @@ export default function VerificationOrdersView() {
         <VerificationOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
-          onApply={() => setAppliedFilters(draftFilters)}
+          onApply={applyFilters}
         />
 
         <DataTable

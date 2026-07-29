@@ -1,5 +1,11 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import { Suspense } from "react";
+
+import CompletedOrdersView from "@/features/orders/completed/components/completed-orders-view";
 
 export default function CompletedOrdersPage() {
-  return <DashboardPagePlaceholder titleKey="completedOrders" />;
+  return (
+    <Suspense fallback={null}>
+      <CompletedOrdersView />
+    </Suspense>
+  );
 }

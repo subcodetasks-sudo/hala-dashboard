@@ -307,14 +307,39 @@
 }
 
 /* Sonner Custom Toast Styling Override */
+/* Sonner injects its stylesheet unlayered at runtime, so it outranks every
+   Tailwind utility regardless of specificity — these overrides need !important.
+   Reference the plain :root --brand-* tokens, not the @theme --color-brand-*
+   ones, which Tailwind only emits when a utility happens to use them. */
 [data-sonner-toast] {
-  background-color: var(--color-brand-success) !important;
-  color: var(--color-brand-white) !important;
+  --toast-surface: var(--brand-success);
+  /* Pill hugs its content instead of the fixed sonner track width */
+  width: fit-content !important;
+  max-width: 100% !important;
+  padding: 12px 20px !important;
+  background-color: var(--toast-surface) !important;
+  color: var(--brand-white) !important;
   border-radius: 9999px !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  box-shadow: 0 20px 25px -5px rgba(27, 150, 74, 0.6), 0 8px 10px -6px rgba(27, 150, 74, 0.6) !important;
+  border: 1px solid rgb(from var(--brand-white) r g b / 0.15) !important;
+  box-shadow:
+    0 18px 25px -8px rgb(from var(--brand-black) r g b / 0.24),
+    0 8px 10px -6px rgb(from var(--brand-black) r g b / 0.16) !important;
   justify-content: flex-start !important;
   gap: 8px !important;
+}
+
+/* Re-center the shrink-wrapped pill inside the absolutely positioned track */
+[data-sonner-toast][data-x-position="center"] {
+  inset-inline: 0 !important;
+  margin-inline: auto !important;
+}
+
+[data-sonner-toast][data-type="warning"] {
+  --toast-surface: var(--brand-warning);
+}
+
+[data-sonner-toast][data-type="error"] {
+  --toast-surface: var(--brand-accent);
 }
 
 [data-sonner-toast] [data-icon] {
@@ -328,12 +353,44 @@
 }
 
 [data-sonner-toast] [data-content] {
-  flex: none !important;
-  width: max-content !important;
+  flex: 0 1 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
 }
 
 [data-sonner-toast] [data-title],
 [data-sonner-toast] [data-description] {
-  color: var(--color-brand-white) !important;
+  color: var(--brand-white) !important;
   text-align: start !important;
+}
+
+[data-sonner-toast] [data-title] {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+}
+
+[data-sonner-toast] [data-button] {
+  height: auto !important;
+  padding: 6px 14px !important;
+  border-radius: 9999px !important;
+  background: var(--brand-white) !important;
+  color: var(--toast-surface) !important;
+  border: none !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  margin-inline-start: 4px !important;
+  transition: opacity 150ms ease !important;
+}
+
+[data-sonner-toast] [data-button]:hover {
+  opacity: 0.85 !important;
+}
+
+[data-sonner-toast] [data-cancel] {
+  background: rgb(from var(--brand-white) r g b / 0.2) !important;
+  color: var(--brand-white) !important;
 }

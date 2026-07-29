@@ -2,8 +2,9 @@
 
 import { format, parseISO } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
-import { Download, Eye } from "lucide-react";
+import { CloudUpload, Download, Eye } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useId, useRef, useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import { Button } from "@/components/ui/button";
@@ -67,9 +68,12 @@ const DOCUMENT_VISUALS: Record<OrderDocumentType, DocumentVisual> = {
   },
 };
 
+const UPLOAD_ACCEPT = ".png,.pdf,image/png,application/pdf";
+
 export default function DocumentDataPanel({ order }: DocumentDataPanelProps) {
   const t = useTranslations("Orders.New.Review.documents");
   const locale = useLocale();
+  const canReplaceDocuments = order.status === "held";
 
   return (
     <div className="flex flex-col gap-6 rounded-2xl border border-black/5 bg-white p-6 shadow-sm">
@@ -81,22 +85,41 @@ export default function DocumentDataPanel({ order }: DocumentDataPanelProps) {
       </h3>
 
       <ul className="flex flex-col">
-        {order.documents.map((doc, index) => (
-          <li key={doc.id}>
-            <DocumentRow
-              document={doc}
-              title={t(`types.${doc.type}`)}
-              viewLabel={t("view")}
-              downloadLabel={t("download")}
-              meta={t("meta", {
-                date: formatUploadedAt(doc.uploadedAtIso, locale),
+        {order.documents.map((doc, index) => {
+          const date = formatUploadedAt(doc.uploadedAtIso, locale);
+          const hasIssue = doc.issue === "unclear";
+          const meta = hasIssue
+            ? t("metaIssue", {
+                issue: t("issueUnclear"),
+                date,
+                format: doc.format,
+              })
+            : t("meta", {
+                date,
                 size: doc.sizeLabel,
                 format: doc.format,
-              })}
-              isLast={index === order.documents.length - 1}
-            />
-          </li>
-        ))}
+              });
+
+          return (
+            <li key={doc.id}>
+              <DocumentRow
+                document={doc}
+                title={t(`types.${doc.type}`)}
+                meta={meta}
+                metaTone={hasIssue ? "warning" : "muted"}
+                viewLabel={t("view")}
+                downloadLabel={t("download")}
+                uploadLabel={t("uploadLabel")}
+                uploadFormats={t("uploadFormats")}
+                uploadAria={t("uploadAria", {
+                  title: t(`types.${doc.type}`),
+                })}
+                showUpload={canReplaceDocuments}
+                isLast={index === order.documents.length - 1}
+              />
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -106,15 +129,25 @@ function DocumentRow({
   document,
   title,
   meta,
+  metaTone,
   viewLabel,
   downloadLabel,
+  uploadLabel,
+  uploadFormats,
+  uploadAria,
+  showUpload,
   isLast,
 }: {
   document: OrderDocument;
   title: string;
   meta: string;
+  metaTone: "muted" | "warning";
   viewLabel: string;
   downloadLabel: string;
+  uploadLabel: string;
+  uploadFormats: string;
+  uploadAria: string;
+  showUpload: boolean;
   isLast: boolean;
 }) {
   const visual = DOCUMENT_VISUALS[document.type];
@@ -122,11 +155,11 @@ function DocumentRow({
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4",
+        "flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between lg:gap-4",
         !isLast && "border-b border-black/5"
       )}
     >
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         <span
           className={cn(
             "inline-flex size-11 shrink-0 items-center justify-center rounded-xl",
@@ -138,16 +171,23 @@ function DocumentRow({
         </span>
         <div className="min-w-0">
           <p className="truncate text-sm font-bold text-brand-black">{title}</p>
-          <p className="mt-0.5 truncate text-xs text-brand-gris">{meta}</p>
+          <p
+            className={cn(
+              "mt-0.5 truncate text-xs font-medium",
+              metaTone === "warning" ? "text-brand-warning" : "text-brand-gris"
+            )}
+          >
+            {meta}
+          </p>
         </div>
       </div>
 
-      <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
+      <div className="flex shrink-0 flex-wrap items-center gap-2.5 lg:justify-end">
         <Button
           variant="ghost"
           asChild
           // Soft purple — not a brand token
-          className="h-9 gap-1.5 rounded-full bg-[#F3E8FF] px-4 font-semibold text-[#7C3AED] shadow-none hover:bg-[#EDE0FF] hover:text-[#7C3AED]"
+          className="h-10 gap-1.5 rounded-full bg-[#F3E8FF] px-4 font-semibold text-[#7C3AED] shadow-none hover:bg-[#EDE0FF] hover:text-[#7C3AED]"
         >
           <a href={document.url} target="_blank" rel="noopener noreferrer">
             <Eye className="size-4" strokeWidth={1.75} />
@@ -157,15 +197,71 @@ function DocumentRow({
         <Button
           variant="ghost"
           asChild
-          className="h-9 gap-1.5 rounded-full bg-brand-success/10 px-4 font-semibold text-brand-success shadow-none hover:bg-brand-success/15 hover:text-brand-success"
+          className="h-10 gap-1.5 rounded-full bg-brand-success/10 px-4 font-semibold text-brand-success shadow-none hover:bg-brand-success/15 hover:text-brand-success"
         >
           <a href={document.url} download>
             <Download className="size-4" strokeWidth={1.75} />
             {downloadLabel}
           </a>
         </Button>
+        {showUpload ? (
+          <DocumentUploadControl
+            label={uploadLabel}
+            formats={uploadFormats}
+            ariaLabel={uploadAria}
+          />
+        ) : null}
       </div>
     </div>
+  );
+}
+
+function DocumentUploadControl({
+  label,
+  formats,
+  ariaLabel,
+}: {
+  label: string;
+  formats: string;
+  ariaLabel: string;
+}) {
+  const inputId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  return (
+    <>
+      <input
+        id={inputId}
+        ref={inputRef}
+        type="file"
+        accept={UPLOAD_ACCEPT}
+        className="sr-only"
+        onChange={(event) => {
+          const file = event.target.files?.[0] ?? null;
+          setFileName(file?.name ?? null);
+          event.target.value = "";
+        }}
+      />
+      <button
+        type="button"
+        aria-label={ariaLabel}
+        onClick={() => inputRef.current?.click()}
+        className="inline-flex h-11 min-w-52 items-center gap-3 rounded-full border border-black/10 bg-[#F7F7F7] ps-4 pe-1.5 text-start transition-colors hover:border-brand-primary/30 hover:bg-brand-background/70"
+      >
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-xs font-semibold leading-tight text-brand-black">
+            {fileName ?? label}
+          </span>
+          <span className="mt-1 block text-[0.625rem] leading-tight text-brand-gris">
+            {formats}
+          </span>
+        </span>
+        <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-black/5 text-brand-black">
+          <CloudUpload className="size-4" strokeWidth={1.75} />
+        </span>
+      </button>
+    </>
   );
 }
 

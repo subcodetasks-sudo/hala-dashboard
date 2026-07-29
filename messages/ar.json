@@ -50,11 +50,12 @@
   },
   "Auth": {
     "Login": {
-      "brand": "عقدي",
-      "title": "لوحة تحكم المحتوي",
-      "email": {
-        "label": "البريد الإلكتروني",
-        "placeholder": "أدخل بريدك الإلكتروني هنا..."
+      "brand": "هلا وهلا",
+      "title": "أهلاً بعودتك",
+      "subtitle": "سجّل الدخول إلى لوحة التحكم",
+      "idNumber": {
+        "label": "رقم الهوية",
+        "placeholder": "أدخل رقم الهوية هنا..."
       },
       "password": {
         "label": "كلمة المرور",
@@ -65,12 +66,37 @@
       "rememberMe": "تذكرني",
       "forgotPassword": "هل نسيت كلمة المرور؟",
       "submit": "تسجيل الدخول",
+      "submitting": "جاري تسجيل الدخول...",
+      "welcomeToast": "هلا وسهلا {name}",
+      "fallbackEmployeeName": "الموظف",
+      "errorToast": "تعذر تسجيل الدخول. تحقق من بياناتك وحاول مرة أخرى.",
+      "route": {
+        "invalidJson": "نص الطلب غير صالح",
+        "required": "رقم الهوية وكلمة المرور مطلوبان",
+        "loginFailed": "فشل تسجيل الدخول",
+        "invalidCredentials": "بيانات الدخول غير صحيحة. حاول مرة أخرى.",
+        "unableToSignIn": "تعذر تسجيل الدخول. حاول مرة أخرى."
+      },
       "validation": {
-        "emailRequired": "البريد الإلكتروني مطلوب",
-        "emailInvalid": "يرجى إدخال بريد إلكتروني صالح",
+        "idNumberRequired": "رقم الهوية مطلوب",
+        "idNumberFormat": "رقم الهوية يجب أن يكون 10 أرقام ويبدأ بـ 1 أو 2",
         "passwordRequired": "كلمة المرور مطلوبة",
-        "passwordMin": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل"
+        "passwordMin": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل"
       }
+    },
+    "Logout": {
+      "confirmMessage": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+      "confirmAction": "تسجيل الخروج",
+      "errorToast": "تعذر تسجيل الخروج. حاول مرة أخرى.",
+      "route": {
+        "success": "تم تسجيل الخروج بنجاح"
+      }
+    }
+  },
+  "Profile": {
+    "route": {
+      "unauthorized": "غير مصرح",
+      "success": "تم تحميل الملف الشخصي بنجاح"
     }
   },
   "Orders": {
@@ -193,6 +219,10 @@
           "workerPlaceholder": "بيانات العامل ستتوفر قريبًا.",
           "documentsPlaceholder": "المستندات ستتوفر قريبًا."
         },
+        "hold": {
+          "reasonLabel": "سبب التعليق:",
+          "notesLabel": "ملاحظة الموظف للعميل"
+        },
         "employer": {
           "sectionTitle": "بيانات صاحب العمل",
           "edit": "تعديل البيانات",
@@ -230,6 +260,11 @@
           "view": "عرض",
           "download": "تحميل",
           "meta": "رفع {date} • {size} • {format}",
+          "uploadLabel": "إضغط هنا لاختيار الملف",
+          "uploadFormats": "png - pdf",
+          "uploadAria": "رفع مستند {title}",
+          "metaIssue": "{issue} • {date} • {format}",
+          "issueUnclear": "صورة غير واضحة",
           "types": {
             "nationalId": "صورة الهوية الوطنية",
             "workerId": "صورة هوية العامل (الاقامة)",
@@ -304,11 +339,11 @@
         "pickDate": "اختر التاريخ"
       },
       "reasons": {
-        "missingDocument": "مستند ناقص",
-        "incompleteWorkerData": "بيانات العامل ناقصة",
-        "incompleteEmployerData": "بيانات صاحب العمل غير مكتملة",
-        "unclearDocument": "مستند غير واضح",
-        "dataConflict": "تعارض في البيانات",
+        "employer_data_incomplete": "بيانات صاحب العمل غير مكتملة",
+        "worker_data_unclear": "بيانات العامل غير واضحة",
+        "missing_document": "مستند ناقص",
+        "unclear_document": "مستند غير واضح",
+        "data_conflict": "تعارض في البيانات",
         "other": "سبب آخر"
       },
       "table": {
@@ -327,6 +362,10 @@
       "empty": {
         "title": "لا توجد طلبات معلقة",
         "description": "لا توجد حاليًا أي طلبات معلقة. جميع الطلبات تسير بشكل طبيعي ضمن دورة المعالجة."
+      },
+      "route": {
+        "unauthorized": "غير مصرح",
+        "unableToFetch": "تعذر تحميل أسباب التعليق. يرجى المحاولة مرة أخرى."
       }
     },
     "Processed": {
@@ -517,6 +556,61 @@
       "empty": {
         "title": "لا توجد طلبات دفع",
         "description": "لا توجد طلبات بانتظار السداد حالياً"
+      }
+    },
+    "Completed": {
+      "title": "الطلبات المكتملة",
+      "description": "الطلبات التي أكملت كامل الإجراءات بعد تأكيد الدفع ووصلت إلى المرحلة النهائية.",
+      "listTitle": "قائمة الطلبات المكتملة",
+      "periodWeek": "من الأسبوع",
+      "manualOrder": "إدخال طلب يدوي",
+      "indicators": {
+        "total": "إجمالي الطلبات المكتملة",
+        "paidOnline": "طلبات مدفوعة أونلاين",
+        "paidManual": "طلبات مدفوعة يدوياً",
+        "withDelivery": "طلبات بتوصيل",
+        "pickup": "طلبات استلام شخصي"
+      },
+      "filters": {
+        "fromDate": "تاريخ الإنشاء",
+        "toDate": "تاريخ الانتهاء",
+        "searchLabel": "البحث",
+        "searchPlaceholder": "البحث برقم الطلب أو اسم صاحب العمل...",
+        "orderType": "نوع الطلب",
+        "typeAll": "الكل",
+        "typeEform": "E-form",
+        "typeManual": "يدوي",
+        "deliveryStatus": "حالة التوصيل",
+        "deliveryAll": "الكل",
+        "deliveryRequired": "مطلوب",
+        "deliveryNotRequired": "غير مطلوب",
+        "paymentMethod": "حالة الدفع",
+        "paymentAll": "الكل",
+        "paymentOnline": "أونلاين",
+        "paymentManual": "يدوي",
+        "apply": "تطبيق الفلترة",
+        "pickDate": "اختر التاريخ"
+      },
+      "table": {
+        "orderNumber": "رقم الطلب",
+        "employer": "صاحب العمل / الجوال",
+        "worker": "اسم العامل",
+        "createdAt": "تاريخ الإنشاء",
+        "contractUploadedAt": "تاريخ رفع العقد",
+        "paidAt": "تاريخ الدفع",
+        "paymentMethod": "نوع الدفع",
+        "paymentOnline": "أونلاين",
+        "paymentManual": "يدوي",
+        "dueFees": "الرسوم المستحقة",
+        "deliveryStatus": "حالة التوصيل",
+        "deliveryRequired": "مطلوب",
+        "deliveryNotRequired": "غير مطلوب",
+        "action": "إجراء",
+        "viewDetails": "عرض بيانات الطلب"
+      },
+      "empty": {
+        "title": "لا توجد طلبات مكتملة",
+        "description": "ستظهر الطلبات المكتملة هنا بمجرد انتهاء كامل الإجراءات."
       }
     }
   },

@@ -16,11 +16,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ChangeHistoryTable from "@/features/orders/components/change-history-table";
 import DocumentDataPanel from "@/features/orders/components/document-data-panel";
 import EmployerDataPanel from "@/features/orders/components/employer-data-panel";
+import HoldReasonCard from "@/features/orders/components/hold-reason-card";
 import ReviewOrderSidebar from "@/features/orders/components/review-order-sidebar";
 import WorkerDataPanel from "@/features/orders/components/worker-data-panel";
 import type { EmployerFormValues } from "@/features/orders/schemas/employer-schema";
 import type { WorkerFormValues } from "@/features/orders/schemas/worker-schema";
-import type { OrderReviewDetail } from "@/features/orders/types";
+import type { HoldReasonValue, OrderReviewDetail } from "@/features/orders/types";
 import {
   useOrder,
   useUpdateOrderEmployer,
@@ -29,6 +30,23 @@ import {
 import { Link } from "@/i18n/navigation";
 
 export type ReviewTabId = "employer" | "worker" | "documents";
+
+const REVIEW_TABS: { id: ReviewTabId; iconSrc: string }[] = [
+  { id: "employer", iconSrc: "/svg/user-square.svg" },
+  { id: "worker", iconSrc: "/svg/user-tag.svg" },
+  { id: "documents", iconSrc: "/svg/receipt-2.svg" },
+];
+
+const TAB_TRIGGER_CLASS =
+  "h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white";
+
+/** Tab holding the data that caused the hold, flagged with a warning dot. */
+const HOLD_REASON_TAB: Partial<Record<HoldReasonValue, ReviewTabId>> = {
+  employer_data_incomplete: "employer",
+  worker_data_unclear: "worker",
+  missing_document: "documents",
+  unclear_document: "documents",
+};
 
 type OrderViewProps = {
   order: OrderReviewDetail;
@@ -44,6 +62,9 @@ export default function OrderView({ order: initialOrder }: OrderViewProps) {
   const [editingTab, setEditingTab] = useState<ReviewTabId | null>(null);
 
   const isEditing = editingTab !== null;
+  const flaggedTab = order.hold?.reason
+    ? HOLD_REASON_TAB[order.hold.reason]
+    : undefined;
 
   const handleTabChange = (value: string) => {
     setEditingTab(null);
@@ -98,7 +119,7 @@ export default function OrderView({ order: initialOrder }: OrderViewProps) {
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#FFF5EC] px-3.5 py-1.5 text-xs font-bold text-brand-black">
               <span className="size-1.5 rounded-full bg-[#E08337]" />
-              {t("statusNew")}
+              {order.statusLabel}
             </span>
           </div>
         </div>
@@ -135,33 +156,26 @@ export default function OrderView({ order: initialOrder }: OrderViewProps) {
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
         <div className="min-w-0 flex-1 space-y-4">
+          {order.hold ? <HoldReasonCard hold={order.hold} /> : null}
+
           <Tabs
             value={activeTab}
             onValueChange={handleTabChange}
             className="gap-4"
           >
             <TabsList className="flex h-auto w-full flex-wrap gap-3 rounded-none bg-transparent p-0 group-data-horizontal/tabs:h-auto!">
-              <TabsTrigger
-                value="employer"
-                className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
-              >
-                <CustomIcon src="/svg/user-square.svg" size={16} />
-                {t("tabs.employer")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="worker"
-                className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
-              >
-                <CustomIcon src="/svg/user-tag.svg" size={16} />
-                {t("tabs.worker")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="documents"
-                className="h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white"
-              >
-                <CustomIcon src="/svg/receipt-2.svg" size={16} />
-                {t("tabs.documents")}
-              </TabsTrigger>
+              {REVIEW_TABS.map(({ id, iconSrc }) => (
+                <TabsTrigger key={id} value={id} className={TAB_TRIGGER_CLASS}>
+                  <CustomIcon src={iconSrc} size={16} />
+                  {t(`tabs.${id}`)}
+                  {flaggedTab === id ? (
+                    <span
+                      className="size-1.5 shrink-0 rounded-full bg-brand-warning"
+                      aria-hidden
+                    />
+                  ) : null}
+                </TabsTrigger>
+              ))}
             </TabsList>
 
             <TabsContent value="employer" className="mt-2 p-4 rounded-2xl border border-black/5">

@@ -9,9 +9,12 @@ import {
   SidebarHeader,
   SidebarMenu,
 } from "@/components/ui/sidebar";
-import { usePathname } from "@/i18n/navigation";
+import { useClearProfile } from "@/features/profile/queries/use-profile";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useRef } from "react";
+import { toast } from "sonner";
 import DashboardNavLink, { type NavBadge } from "./dashboard-nav-link";
 
 type NavLinkItem = {
@@ -64,7 +67,7 @@ const navGroups: NavGroupItem[] = [
       {
         href: "/orders/verification",
         labelKey: "verificationOrders",
-        icon: "/svg/refresh-2.svg",
+        icon: "/svg/export.svg",
       },
       {
         href: "/orders/payment",
@@ -138,8 +141,61 @@ const navGroups: NavGroupItem[] = [
 
 export default function DashboardSidebar() {
   const t = useTranslations("Dashboard.Sidebar");
+  const tLogout = useTranslations("Auth.Logout");
   const pathname = usePathname();
   const locale = useLocale();
+  const router = useRouter();
+  const clearProfile = useClearProfile();
+  const isLoggingOut = useRef(false);
+
+  async function performLogout() {
+    if (isLoggingOut.current) {
+      return;
+    }
+
+    isLoggingOut.current = true;
+
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Accept-Language": locale,
+        },
+      });
+
+      const payload = (await response.json().catch(() => null)) as {
+        success?: boolean;
+        message?: string;
+      } | null;
+
+      if (!response.ok || !payload?.success) {
+        toast.error(payload?.message || tLogout("errorToast"));
+        return;
+      }
+
+      clearProfile();
+      toast.success(payload.message || tLogout("route.success"));
+      router.replace("/login");
+      router.refresh();
+    } catch {
+      toast.error(tLogout("errorToast"));
+    } finally {
+      isLoggingOut.current = false;
+    }
+  }
+
+  function handleLogoutClick() {
+    toast.warning(tLogout("confirmMessage"), {
+      id: "logout-confirm",
+      action: {
+        label: tLogout("confirmAction"),
+        onClick: () => {
+          void performLogout();
+        },
+      },
+    });
+  }
 
   return (
     <Sidebar
@@ -172,6 +228,9 @@ export default function DashboardSidebar() {
                     label={t(`links.${link.labelKey}`)}
                     icon={link.icon}
                     badge={link.badge}
+                    onClick={
+                      link.labelKey === "logout" ? handleLogoutClick : undefined
+                    }
                     isActive={
                       !link.href
                         ? false
