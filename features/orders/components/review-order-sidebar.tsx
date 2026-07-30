@@ -49,6 +49,7 @@ export default function ReviewOrderSidebar({
   const [isPendOrderOpen, setPendOrderOpen] = useState(false);
   const [isContractDialogOpen, setContractDialogOpen] = useState(false);
   const [isSendForAuthOpen, setSendForAuthOpen] = useState(false);
+  const markUploaded = useMarkFinalContractUploaded();
 
   if (!order) {
     return null;
@@ -62,7 +63,6 @@ export default function ReviewOrderSidebar({
   const showReviewActions = canReview && !isEditing;
   const showProcessedActions = isProcessed && !isEditing;
   const showSentForAuthActions = isSentForAuth && !isEditing;
-  const markUploaded = useMarkFinalContractUploaded();
 
   const handleUploadFinalContract = () => {
     if (markUploaded.isPending) return;

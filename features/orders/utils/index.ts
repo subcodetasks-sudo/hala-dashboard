@@ -40,4 +40,5 @@ export {
   toApiOrderSource,
   toUiOrderSource,
 } from "./map-order-list-item";
+export { mapOrderDetailToReview } from "./map-order-detail";
 export { useOrderFilters } from "./use-order-filters";

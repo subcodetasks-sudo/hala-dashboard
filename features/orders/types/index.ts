@@ -33,6 +33,15 @@ export type OrderRefundStatus =
 
 export type OrderRefundMethod = "bank_transfer" | "wallet" | "cash";
 
+/** Backend hold-reason slugs from `/admin/renewal-requests/hold-reasons`. */
+export type HoldReasonValue =
+  | "employer_data_incomplete"
+  | "worker_data_unclear"
+  | "missing_document"
+  | "unclear_document"
+  | "data_conflict"
+  | "other";
+
 /** Detail endpoints return a single `name`; list endpoints return localized names. */
 export type OrderNamedRef = {
   id: number;
@@ -113,7 +122,7 @@ export type OrderListItem = {
   status: OrderStatus;
   status_label: string;
   contract_number: string | null;
-  hold_reason: string | null;
+  hold_reason: HoldReasonValue | null;
   hold_reason_label: string | null;
   hold_notes: string | null;
   held_at: string | null;
@@ -158,7 +167,10 @@ export type OrderListItem = {
   cancelled_by: OrderNamedRef | null;
 };
 
-/** Full order payload returned by the detail endpoint. */
+/**
+ * Full renewal-request payload from `GET /admin/renewal-requests/:id`.
+ * @alias RenewalRequestDetail
+ */
 export type OrderDetail = {
   id: number;
   request_number: string | null;
@@ -173,7 +185,7 @@ export type OrderDetail = {
   review_started_at: string | null;
   processed_at: string | null;
   held_at: string | null;
-  hold_reason: string | null;
+  hold_reason: HoldReasonValue | null;
   hold_reason_label: string | null;
   hold_notes: string | null;
   contract_number: string | null;
@@ -283,19 +295,15 @@ export type OrderDetailResponse = {
   data: OrderDetail;
 };
 
+/** @alias of OrderDetail — renewal request detail from `/admin/renewal-requests/:id`. */
+export type RenewalRequestDetail = OrderDetail;
+
+export type RenewalRequestDetailResponse = OrderDetailResponse;
+
 export type NewOrderRow = MockOrder & {
   createdAtIso: string;
   executionDateIso: string;
 };
-
-/** Backend hold-reason slugs from `/admin/renewal-requests/hold-reasons`. */
-export type HoldReasonValue =
-  | "employer_data_incomplete"
-  | "worker_data_unclear"
-  | "missing_document"
-  | "unclear_document"
-  | "data_conflict"
-  | "other";
 
 export type HoldReason = {
   value: HoldReasonValue;

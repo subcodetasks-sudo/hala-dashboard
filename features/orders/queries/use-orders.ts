@@ -1,22 +1,24 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getOrderReviewFromApiMock } from "../api-mock-data";
+import { useLocale } from "next-intl";
+
 import { NEW_ORDERS, filterNewOrders } from "../mock-data";
 import type {
   NewOrderRow,
+  OrderDetailResponse,
   OrderReviewDetail,
   OrdersFilterValues,
 } from "../types";
 import type { EmployerFormValues } from "@/features/orders/schemas/employer-schema";
 import type { WorkerFormValues } from "@/features/orders/schemas/worker-schema";
 import { orderKeys } from "@/features/orders/query-keys";
+import { mapOrderDetailToReview } from "@/features/orders/utils/map-order-detail";
 
 export { orderKeys };
 
-// In-memory store for initial state and mutations (enables instant client-side query updates)
+// In-memory store for list mutations (dialogs still use mock list updates)
 let ordersStore: NewOrderRow[] = [...NEW_ORDERS];
 const orderDetailsStore: Record<string, OrderReviewDetail> = {};
 
-// API Fetch / Post Simulation handlers
 export async function fetchOrders(filters?: OrdersFilterValues): Promise<NewOrderRow[]> {
   await new Promise((resolve) => setTimeout(resolve, 200));
   if (filters) {
@@ -25,16 +27,42 @@ export async function fetchOrders(filters?: OrdersFilterValues): Promise<NewOrde
   return ordersStore;
 }
 
-export async function fetchOrderById(id: string): Promise<OrderReviewDetail | null> {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  if (orderDetailsStore[id]) {
-    return orderDetailsStore[id];
+/**
+ * Fetches a renewal request from `/admin/renewal-requests/:id` via the App Router proxy.
+ */
+export async function fetchOrderById(
+  id: string,
+  locale: string,
+): Promise<OrderReviewDetail | null> {
+  const response = await fetch(`/api/orders/renewal-requests/${encodeURIComponent(id)}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Accept-Language": locale,
+    },
+  });
+
+  const payload = (await response.json().catch(() => null)) as
+    | OrderDetailResponse
+    | { success?: false; message?: string }
+    | null;
+
+  if (response.status === 404) {
+    return null;
   }
-  const detail = getOrderReviewFromApiMock(id);
-  if (detail) {
-    orderDetailsStore[id] = detail;
+
+  if (!response.ok || !payload || !("success" in payload) || !payload.success) {
+    throw new Error(
+      payload && "message" in payload && typeof payload.message === "string"
+        ? payload.message
+        : "Failed to load renewal request",
+    );
   }
-  return detail ?? null;
+
+  const appLocale = locale.startsWith("en") ? "en" : "ar";
+  const detail = mapOrderDetailToReview(payload.data, appLocale);
+  orderDetailsStore[id] = detail;
+  return detail;
 }
 
 export async function createOrder(newOrder: Omit<NewOrderRow, "id">): Promise<NewOrderRow> {
@@ -67,12 +95,7 @@ function ensureOrderDetail(id: string): OrderReviewDetail {
   if (orderDetailsStore[id]) {
     return orderDetailsStore[id];
   }
-  const detail = getOrderReviewFromApiMock(id);
-  if (!detail) {
-    throw new Error(`Order detail with ID ${id} not found`);
-  }
-  orderDetailsStore[id] = detail;
-  return detail;
+  throw new Error(`Order detail with ID ${id} not loaded`);
 }
 
 export async function updateOrderReviewDetail(
@@ -115,11 +138,14 @@ export async function updateOrderWorker(
   });
 }
 
-// React Query Hooks
-
 /**
- * Custom hook for querying all orders with optional filter criteria.
+ * Seeds the in-memory detail store (e.g. from server-rendered initial data)
+ * so employer/worker edits can update the cache before a client refetch.
  */
+export function seedOrderDetail(order: OrderReviewDetail) {
+  orderDetailsStore[order.id] = order;
+}
+
 export function useOrders(filters?: OrdersFilterValues) {
   return useQuery({
     queryKey: orderKeys.list(filters),
@@ -128,19 +154,18 @@ export function useOrders(filters?: OrdersFilterValues) {
 }
 
 /**
- * Custom hook for querying a single order by ID.
+ * Custom hook for querying a single renewal request by ID.
  */
 export function useOrder(id: string) {
+  const locale = useLocale();
+
   return useQuery({
-    queryKey: orderKeys.detail(id),
-    queryFn: () => fetchOrderById(id),
+    queryKey: [...orderKeys.detail(id), locale],
+    queryFn: () => fetchOrderById(id, locale),
     enabled: Boolean(id),
   });
 }
 
-/**
- * Custom hook for creating a new order (POST).
- */
 export function useCreateOrder() {
   const queryClient = useQueryClient();
 
@@ -152,9 +177,6 @@ export function useCreateOrder() {
   });
 }
 
-/**
- * Custom hook for updating an order (PUT/PATCH).
- */
 export function useUpdateOrder() {
   const queryClient = useQueryClient();
 
@@ -168,33 +190,29 @@ export function useUpdateOrder() {
   });
 }
 
-/**
- * Updates employer fields on the order review detail cache.
- */
 export function useUpdateOrderEmployer() {
   const queryClient = useQueryClient();
+  const locale = useLocale();
 
   return useMutation({
     mutationFn: ({ id, values }: { id: string; values: EmployerFormValues }) =>
       updateOrderEmployer(id, values),
     onSuccess: (data) => {
-      queryClient.setQueryData(orderKeys.detail(data.id), data);
+      queryClient.setQueryData([...orderKeys.detail(data.id), locale], data);
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
     },
   });
 }
 
-/**
- * Updates worker fields on the order review detail cache.
- */
 export function useUpdateOrderWorker() {
   const queryClient = useQueryClient();
+  const locale = useLocale();
 
   return useMutation({
     mutationFn: ({ id, values }: { id: string; values: WorkerFormValues }) =>
       updateOrderWorker(id, values),
     onSuccess: (data) => {
-      queryClient.setQueryData(orderKeys.detail(data.id), data);
+      queryClient.setQueryData([...orderKeys.detail(data.id), locale], data);
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
     },
   });
