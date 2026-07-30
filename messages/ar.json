@@ -27,6 +27,7 @@
       "searchPlaceholder": "ابحث برقم الطلب أو اسم العميل...",
       "status": "الحالة",
       "apply": "تطبيق الفلترة",
+      "statusAll": "جميع الحالات",
       "statusNew": "جديد",
       "statusPending": "معلق",
       "statusProcessing": "قيد المعالجة",
@@ -42,10 +43,12 @@
       "status": "حالة الطلب",
       "action": "الإجراء",
       "startReview": "بدء المراجعة",
+      "viewOrder": "عرض الطلب",
       "sourceEform": "نموذج إلكتروني",
       "sourceManual": "يدوي",
       "statusNew": "جديد",
-      "empty": "لا توجد طلبات"
+      "empty": "لا توجد طلبات",
+      "loading": "جاري تحميل الطلبات..."
     }
   },
   "Auth": {
@@ -99,7 +102,18 @@
       "success": "تم تحميل الملف الشخصي بنجاح"
     }
   },
+  "Employees": {
+    "route": {
+      "unauthorized": "غير مصرح",
+      "unableToFetch": "تعذر تحميل الموظفين. يرجى المحاولة مرة أخرى.",
+      "unableToFetchRoles": "تعذر تحميل أدوار الموظفين. يرجى المحاولة مرة أخرى."
+    }
+  },
   "Orders": {
+    "route": {
+      "unauthorized": "غير مصرح",
+      "unableToFetch": "تعذر تحميل الطلبات. يرجى المحاولة مرة أخرى."
+    },
     "New": {
       "title": "الطلبات الجديدة",
       "description": "طلبات تجديد العقود المنشأة حديثاً ولم يتم البدء في معالجتها بعد.",
@@ -121,6 +135,16 @@
         "sourceAll": "الكل",
         "sourceEform": "نموذج إلكتروني",
         "sourceManual": "يدوي",
+        "status": "الحالة",
+        "statusAll": "جميع الحالات",
+        "statusNew": "جديد",
+        "statusUnderReview": "قيد المراجعة",
+        "statusProcessed": "تمت معالجته",
+        "statusHeld": "معلق",
+        "statusSentForAuthentication": "مرسل للتوثيق",
+        "statusAwaitingPayment": "بانتظار الدفع",
+        "statusCompleted": "مكتمل",
+        "statusCancelled": "ملغى",
         "apply": "تطبيق الفلترة",
         "pickDate": "اختر التاريخ"
       },
@@ -140,7 +164,8 @@
       },
       "empty": {
         "title": "لا توجد طلبات جديدة",
-        "description": "لا توجد طلبات جديدة مطابقة للفلاتر الحالية، جرب تغيير معايير البحث أو إعادة التعيين."
+        "description": "لا توجد طلبات جديدة مطابقة للفلاتر الحالية، جرب تغيير معايير البحث أو إعادة التعيين.",
+        "loading": "جاري تحميل الطلبات..."
       },
       "startReviewDialog": {
         "title": "بدء مراجعة الطلب",
@@ -203,6 +228,9 @@
         "breadcrumbs": {
           "home": "الرئيسية",
           "newOrders": "الطلبات الجديدة",
+          "pendingOrders": "الطلبات المعلقة",
+          "processedOrders": "الطلبات المعالجة",
+          "verificationOrders": "الطلبات المرسلة للمصادقة",
           "review": "مراجعة الطلب {orderNumber}"
         },
         "summary": {
@@ -296,7 +324,10 @@
           "checklistNoConflicts": "لا يوجد بيانات ناقصة أو متعارضة",
           "actions": "إجراءات المراجعة",
           "reviewed": "تمت المعالجة",
-          "suspend": "تعليق الطلب"
+          "suspend": "تعليق الطلب",
+          "showContract": "عرض العقد",
+          "sendForAuth": "إرسال العقد للمصادقة",
+          "uploadFinalContract": "رفع العقد النهائي"
         },
         "validation": {
           "employerNameRequired": "اسم صاحب العمل مطلوب",
@@ -366,6 +397,29 @@
       "route": {
         "unauthorized": "غير مصرح",
         "unableToFetch": "تعذر تحميل أسباب التعليق. يرجى المحاولة مرة أخرى."
+      },
+      "replaceDocumentDialog": {
+        "title": "تغيير مستند",
+        "heading": "هل انت متأكد من استبدال المستند !",
+        "description": "سيتم استبدال المستند الحالي بالمستند الجديد. هل ترغب في المتابعة؟",
+        "view": "عرض",
+        "confirm": "تأكيد الإستبدال",
+        "cancel": "تراجع وإلغاء",
+        "close": "إغلاق"
+      },
+      "markProcessedDialog": {
+        "title": "تحويل الطلب إلى تمت المعالجة",
+        "heading": "تحويل الطلب إلى تمت المعالجة !",
+        "description": "بعد التأكد من اكتمال جميع المتطلبات، سيتم تحويل الطلب من معلق إلى تمت المعالجة.",
+        "orderNumber": "رقم الطلب",
+        "employerName": "اسم صاحب العمل",
+        "workerName": "اسم العامل",
+        "confirm": "تأكيد تمت المعالجة",
+        "cancel": "تراجع وإلغاء",
+        "close": "إغلاق",
+        "copy": "نسخ الرقم",
+        "copied": "تم النسخ!",
+        "toastSuccess": "تمت إعتماد الطلب {orderNumber} للمعالجة بنجاح."
       }
     },
     "Processed": {

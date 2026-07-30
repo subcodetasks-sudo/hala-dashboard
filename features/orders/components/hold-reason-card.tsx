@@ -84,7 +84,7 @@ export default function HoldReasonCard({ hold }: HoldReasonCardProps) {
         <div className="mt-4 pt-3 space-y-2">
           <div className="flex items-center gap-1.5 text-xs font-medium text-brand-gris">
             <CustomIcon
-              src="/svg/receipt-item.svg"
+              src="/svg/receipt-2.svg"
               size={18}
               className="shrink-0 text-brand-gris"
             />

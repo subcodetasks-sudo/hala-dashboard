@@ -1,9 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  NEW_ORDERS,
-  filterNewOrders,
-  getOrderReviewByOrderId,
-} from "../mock-data";
+import { getOrderReviewFromApiMock } from "../api-mock-data";
+import { NEW_ORDERS, filterNewOrders } from "../mock-data";
 import type {
   NewOrderRow,
   OrderReviewDetail,
@@ -28,16 +25,16 @@ export async function fetchOrders(filters?: OrdersFilterValues): Promise<NewOrde
   return ordersStore;
 }
 
-export async function fetchOrderById(id: string): Promise<OrderReviewDetail | undefined> {
+export async function fetchOrderById(id: string): Promise<OrderReviewDetail | null> {
   await new Promise((resolve) => setTimeout(resolve, 200));
   if (orderDetailsStore[id]) {
     return orderDetailsStore[id];
   }
-  const detail = getOrderReviewByOrderId(id);
+  const detail = getOrderReviewFromApiMock(id);
   if (detail) {
     orderDetailsStore[id] = detail;
   }
-  return detail;
+  return detail ?? null;
 }
 
 export async function createOrder(newOrder: Omit<NewOrderRow, "id">): Promise<NewOrderRow> {
@@ -70,7 +67,7 @@ function ensureOrderDetail(id: string): OrderReviewDetail {
   if (orderDetailsStore[id]) {
     return orderDetailsStore[id];
   }
-  const detail = getOrderReviewByOrderId(id);
+  const detail = getOrderReviewFromApiMock(id);
   if (!detail) {
     throw new Error(`Order detail with ID ${id} not found`);
   }

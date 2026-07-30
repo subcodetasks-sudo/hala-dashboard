@@ -20,16 +20,32 @@ import {
 import ContractPreviewSkeleton from "@/features/orders/processed/components/contract-preview-skeleton";
 import CustomIcon from "@/components/custom-svg";
 
+import { toast } from "sonner";
+
 type ViewDownloadContractDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  orderNumber?: string;
+  onConfirmSend?: () => void;
 };
 
 export default function ViewDownloadContractDialog({
   open,
   onOpenChange,
+  orderNumber,
+  onConfirmSend,
 }: ViewDownloadContractDialogProps) {
   const t = useTranslations("Orders.Processed.viewDownloadContractDialog");
+  const tAuth = useTranslations("Orders.Processed.sendForAuthDialog");
+
+  const handleConfirmSend = () => {
+    if (onConfirmSend) {
+      onConfirmSend();
+    } else {
+      toast.success(tAuth("toastSuccess", { orderNumber: orderNumber ?? "" }));
+    }
+    onOpenChange(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -63,6 +79,7 @@ export default function ViewDownloadContractDialog({
         <div className="flex flex-col gap-3 px-5 pb-5 sm:flex-row sm:items-center">
           <Button
             type="button"
+            onClick={handleConfirmSend}
             className="group relative h-12 items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-primary px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-primary/90 hover:shadow-md hover:shadow-brand-primary/20 active:scale-[0.98] sm:flex-[1.6]"
           >
             <span

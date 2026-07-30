@@ -19,6 +19,9 @@ const STAFF: Record<string, OrderNamedRef> = {
   khalid: { id: 4, name_ar: "خالد العتيبي", name_en: "Khalid Alotaibi" },
 };
 
+/** Detail endpoints return admins as `{ id, name }` only. */
+const SUPER_ADMIN: OrderNamedRef = { id: 1, name: "Super Admin" };
+
 const STATUS_LABELS: Record<OrderStatus, { en: string; ar: string }> = {
   draft: { en: "Draft", ar: "مسودة" },
   new: { en: "New", ar: "جديد" },
@@ -690,6 +693,109 @@ export const MOCK_ORDER_DETAILS: OrderDetail[] = [
     created_at: "2026-07-10 07:50:00",
     updated_at: "2026-07-21 09:00:00",
   }),
+  /** Captured from the staging detail endpoint (sent for authentication). */
+  baseDetail({
+    id: 14,
+    request_number: "266207",
+    current_step: 4,
+    status: "sent_for_authentication",
+    status_label: "Sent for authentication",
+    source: "e_form",
+    source_label: "E-form",
+    is_submitted: true,
+    submitted_at: "2026-07-30 07:07:36",
+    expected_completion_date: "2026-08-06",
+    review_started_at: "2026-07-30 09:26:39",
+    processed_at: "2026-07-30 09:26:43",
+    contract_number: "CNT-2026-M6DD819",
+    contract_qr_code:
+      '{"contract_number":"CNT-2026-M6DD819","request_number":"266207"}',
+    contract_generated_at: "2026-07-30 09:26:43",
+    contract_url: `${STORAGE}/71/CNT-2026-M6DD819.html`,
+    sent_for_authentication_at: "2026-07-30 09:57:15",
+    employer: {
+      employer_name_ar: "كيرلس",
+      employer_name_en: "kerolos",
+      national_id: "1111111111",
+      phone: "0512222222",
+      city_id: 36,
+      city: { id: 36, name_ar: "بقيق", name_en: "Abqaiq" },
+      passport_issue_place_id: 2,
+      passport_issue_place: {
+        id: 2,
+        name_ar: "القنصلية الفلبينية العامة - جدة",
+        name_en: "Philippine Consulate General - Jeddah",
+      },
+    },
+    worker: {
+      worker_name_ar: "احمد",
+      worker_name_en: "ahmed",
+      worker_phone: "0522222222",
+      birth_date: "2008-07-01",
+      philippines_address: "address",
+      passport_issue_place_id: 37,
+      passport_issue_place: {
+        id: 37,
+        name_ar: "وزارة الخارجية الفلبينية - بوتوان",
+        name_en: "DFA Butuan",
+      },
+      passport_number: "123456789",
+      passport_issue_date: "2026-07-01",
+      passport_expiry_date: "2026-07-31",
+    },
+    documents: {
+      national_id_image: `${STORAGE}/64/hero.png`,
+      iqama_image: `${STORAGE}/65/hero.png`,
+      passport_image: `${STORAGE}/66/hero.png`,
+      exit_reentry_visa: `${STORAGE}/67/hero.png`,
+      worker_signature: `${STORAGE}/68/signature.png`,
+      employer_signature: `${STORAGE}/69/signature.png`,
+      salary: "3000.00",
+    },
+    assigned_to: SUPER_ADMIN,
+    processed_by: SUPER_ADMIN,
+    sent_for_authentication_by: SUPER_ADMIN,
+    activities: [
+      {
+        id: 17,
+        action: "sent_for_authentication",
+        action_label: "Contract sent for authentication",
+        description: "Contract sent for authentication",
+        meta: { contract_number: "CNT-2026-M6DD819" },
+        admin: SUPER_ADMIN,
+        created_at: "2026-07-30 09:57:15",
+      },
+      {
+        id: 14,
+        action: "contract_generated",
+        action_label: "Contract generated",
+        description: "Contract generated",
+        meta: { contract_number: "CNT-2026-M6DD819" },
+        admin: SUPER_ADMIN,
+        created_at: "2026-07-30 09:26:43",
+      },
+      {
+        id: 13,
+        action: "processed",
+        action_label: "Request processed",
+        description: "Request processed",
+        meta: null,
+        admin: SUPER_ADMIN,
+        created_at: "2026-07-30 09:26:43",
+      },
+      {
+        id: 12,
+        action: "review_started",
+        action_label: "Review started",
+        description: "Review started",
+        meta: null,
+        admin: SUPER_ADMIN,
+        created_at: "2026-07-30 09:26:39",
+      },
+    ],
+    created_at: "2026-07-30 06:36:10",
+    updated_at: "2026-07-30 09:57:15",
+  }),
 ];
 
 export function getMockOrderListByStatus(status: OrderStatus): OrderListItem[] {
@@ -719,6 +825,11 @@ function pickLocalizedName(
   nameAr: string | null | undefined
 ) {
   return nameEn?.trim() || nameAr?.trim() || "—";
+}
+
+function pickRefName(ref: OrderNamedRef | null | undefined) {
+  if (!ref) return "—";
+  return pickLocalizedName(ref.name_en ?? ref.name, ref.name_ar);
 }
 
 function formatApiDateTime(value: string | null | undefined) {
@@ -781,9 +892,7 @@ function mapHoldInfo(detail: OrderDetail): OrderHoldInfo | null {
   if (detail.status !== "held") return null;
 
   const held = formatApiDateTime(detail.held_at);
-  const heldByName = detail.held_by
-    ? pickLocalizedName(detail.held_by.name_en, detail.held_by.name_ar)
-    : "—";
+  const heldByName = pickRefName(detail.held_by);
 
   return {
     reason: (detail.hold_reason as HoldReasonValue | null) ?? null,
@@ -799,9 +908,7 @@ function mapHoldInfo(detail: OrderDetail): OrderHoldInfo | null {
 /** Maps API order detail → UI review shape used by OrderView (temp). */
 export function mapOrderDetailToReview(detail: OrderDetail): OrderReviewDetail {
   const created = formatApiDateTime(detail.created_at);
-  const assignee = detail.assigned_to
-    ? pickLocalizedName(detail.assigned_to.name_en, detail.assigned_to.name_ar)
-    : "—";
+  const assignee = pickRefName(detail.assigned_to);
 
   const documents = DOCUMENT_FIELD_MAP.flatMap(({ key, type }) => {
     const url = detail.documents[key];
@@ -852,12 +959,9 @@ export function mapOrderDetailToReview(detail: OrderDetail): OrderReviewDetail {
     workerPhoneLocal: toLocalPhoneDigits(detail.worker.worker_phone),
     workerBirthDate: detail.worker.birth_date ?? "",
     workerHomeAddress: detail.worker.philippines_address ?? "—",
-    workerPassportIssuePlace: detail.employer.passport_issue_place
-      ? pickLocalizedName(
-          detail.employer.passport_issue_place.name_en,
-          detail.employer.passport_issue_place.name_ar
-        )
-      : "—",
+    workerPassportIssuePlace: pickRefName(
+      detail.worker.passport_issue_place ?? detail.employer.passport_issue_place
+    ),
     workerPassportNumber: detail.worker.passport_number ?? "—",
     workerPassportIssueDate: detail.worker.passport_issue_date ?? "",
     workerPassportExpiryDate: detail.worker.passport_expiry_date ?? "",
@@ -872,12 +976,7 @@ export function mapOrderDetailToReview(detail: OrderDetail): OrderReviewDetail {
     hold: mapHoldInfo(detail),
     changeHistory: detail.activities.map((activity) => ({
       id: String(activity.id),
-      employee: activity.performed_by
-        ? pickLocalizedName(
-            activity.performed_by.name_en,
-            activity.performed_by.name_ar
-          )
-        : "—",
+      employee: pickRefName(activity.admin ?? activity.performed_by),
       actionType: activity.action_label ?? activity.action,
       dateTime: activity.created_at,
     })),

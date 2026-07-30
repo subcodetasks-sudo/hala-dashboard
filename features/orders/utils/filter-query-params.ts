@@ -2,6 +2,7 @@ import type { OrderSource } from "@/features/home/types";
 import type {
   CompletedOrdersFilterValues,
   DeliveryStatus,
+  OrderStatus,
   OrdersFilterValues,
   PaymentMethod,
   PaymentOrdersFilterValues,
@@ -107,6 +108,19 @@ const SUSPENSION_REASONS = [
 ] as const satisfies readonly SuspensionReason[];
 const SUSPENSION_REASON_FILTERS = ["all", ...SUSPENSION_REASONS] as const;
 
+const ALL_ORDER_STATUSES = [
+  "draft",
+  "new",
+  "under_review",
+  "processed",
+  "held",
+  "sent_for_authentication",
+  "awaiting_payment",
+  "completed",
+  "cancelled",
+] as const satisfies readonly OrderStatus[];
+const ALL_ORDER_STATUS_FILTERS = ["all", ...ALL_ORDER_STATUSES] as const;
+
 export function serializeOrdersFilters(
   filters: OrdersFilterValues
 ): URLSearchParams {
@@ -125,6 +139,14 @@ export function serializeOrdersFilters(
     filters.source,
     "all"
   );
+  if (filters.status != null) {
+    setEnumParam(
+      params,
+      ORDER_FILTER_PARAM_KEYS.status,
+      filters.status,
+      "all"
+    );
+  }
   return params;
 }
 
@@ -149,6 +171,15 @@ export function parseOrdersFilters(
       ORDER_SOURCE_FILTERS,
       defaults.source
     ),
+    ...(defaults.status != null || params.has(ORDER_FILTER_PARAM_KEYS.status)
+      ? {
+          status: parseEnumParam(
+            params.get(ORDER_FILTER_PARAM_KEYS.status),
+            ALL_ORDER_STATUS_FILTERS,
+            defaults.status ?? "all"
+          ),
+        }
+      : {}),
   };
 }
 

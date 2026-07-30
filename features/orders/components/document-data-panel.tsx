@@ -8,6 +8,7 @@ import { useId, useRef, useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import { Button } from "@/components/ui/button";
+import ReplaceDocumentDialog from "@/features/orders/pending/components/replace-document-dialog";
 import type {
   OrderDocument,
   OrderDocumentType,
@@ -209,6 +210,12 @@ function DocumentRow({
             label={uploadLabel}
             formats={uploadFormats}
             ariaLabel={uploadAria}
+            documentTitle={title}
+            documentMeta={meta}
+            documentUrl={document.url}
+            iconSrc={visual.iconSrc}
+            iconClassName={visual.iconClassName}
+            bgClassName={visual.bgClassName}
           />
         ) : null}
       </div>
@@ -220,14 +227,27 @@ function DocumentUploadControl({
   label,
   formats,
   ariaLabel,
+  documentTitle,
+  documentMeta,
+  documentUrl,
+  iconSrc,
+  iconClassName,
+  bgClassName,
 }: {
   label: string;
   formats: string;
   ariaLabel: string;
+  documentTitle: string;
+  documentMeta: string;
+  documentUrl: string;
+  iconSrc: string;
+  iconClassName: string;
+  bgClassName: string;
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
     <>
@@ -246,7 +266,7 @@ function DocumentUploadControl({
       <button
         type="button"
         aria-label={ariaLabel}
-        onClick={() => inputRef.current?.click()}
+        onClick={() => setConfirmOpen(true)}
         className="inline-flex h-11 min-w-52 items-center gap-3 rounded-full border border-black/10 bg-[#F7F7F7] ps-4 pe-1.5 text-start transition-colors hover:border-brand-primary/30 hover:bg-brand-background/70"
       >
         <span className="min-w-0 flex-1">
@@ -261,6 +281,17 @@ function DocumentUploadControl({
           <CloudUpload className="size-4" strokeWidth={1.75} />
         </span>
       </button>
+      <ReplaceDocumentDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        documentTitle={documentTitle}
+        documentMeta={documentMeta}
+        documentUrl={documentUrl}
+        iconSrc={iconSrc}
+        iconClassName={iconClassName}
+        bgClassName={bgClassName}
+        onConfirm={() => inputRef.current?.click()}
+      />
     </>
   );
 }

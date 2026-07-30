@@ -2,17 +2,32 @@ import type {
   CompletedOrdersFilterValues,
   OrdersFilterValues,
   PaymentOrdersFilterValues,
+  RenewalRequestsFilters,
   VerificationOrdersFilterValues,
 } from "@/features/orders/types";
 
 export const orderKeys = {
   all: ["orders"] as const,
   lists: () => [...orderKeys.all, "list"] as const,
-  list: (filters?: OrdersFilterValues) =>
+  list: (filters?: OrdersFilterValues | RenewalRequestsFilters) =>
     [...orderKeys.lists(), { filters }] as const,
   details: () => [...orderKeys.all, "detail"] as const,
   detail: (id: string) => [...orderKeys.details(), id] as const,
   holdReasons: () => [...orderKeys.all, "hold-reasons"] as const,
+  statuses: () => [...orderKeys.all, "statuses"] as const,
+  renewalRequestStats: () => [...orderKeys.all, "renewal-request-stats"] as const,
+  renewalRequestHeldStats: () => [...orderKeys.all, "renewal-request-held-stats"] as const,
+  renewalRequestProcessedStats: () => [...orderKeys.all, "renewal-request-processed-stats"] as const,
+  renewalRequestAuthenticationSentStats: () =>
+    [...orderKeys.all, "renewal-request-authentication-sent-stats"] as const,
+  renewalRequestPaymentStats: () =>
+    [...orderKeys.all, "renewal-request-payment-stats"] as const,
+  renewalRequestCompletedStats: () =>
+    [...orderKeys.all, "renewal-request-completed-stats"] as const,
+  renewalRequestCancelledStats: () =>
+    [...orderKeys.all, "renewal-request-cancelled-stats"] as const,
+  renewalRequestRefundStats: () =>
+    [...orderKeys.all, "renewal-request-refund-stats"] as const,
 };
 
 export const newOrderReviewKeys = {

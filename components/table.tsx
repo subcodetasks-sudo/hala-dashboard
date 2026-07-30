@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -31,6 +32,10 @@ type DataTableProps<T> = {
   emptyMessage?: string;
   /** Rich empty UI (icon + title + description). Takes precedence over `emptyMessage`. */
   emptyContent?: React.ReactNode;
+  /** When true, renders skeleton rows instead of empty/data content. */
+  isLoading?: boolean;
+  /** Number of skeleton rows to show while loading. Defaults to 5. */
+  skeletonRows?: number;
 };
 
 export default function DataTable<T>({
@@ -41,6 +46,8 @@ export default function DataTable<T>({
   className,
   emptyMessage = "No data",
   emptyContent,
+  isLoading = false,
+  skeletonRows = 5,
 }: DataTableProps<T>) {
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
 
@@ -58,7 +65,7 @@ export default function DataTable<T>({
       return;
     }
     setSelected(new Set(data.map((row, i) => resolveRowId(row, i))));
-  };
+  };  
 
   const toggleRow = (rowId: string, checked: boolean) => {
     setSelected((prev) => {
@@ -68,6 +75,8 @@ export default function DataTable<T>({
       return next;
     });
   };
+
+  const colSpan = columns.length + (selectable ? 1 : 0);
 
   return (
     <div className={cn("w-full overflow-hidden rounded-2xl bg-white", className)}>
@@ -80,6 +89,7 @@ export default function DataTable<T>({
                   checked={allSelected}
                   onCheckedChange={(value) => toggleAll(Boolean(value))}
                   aria-label="Select all"
+                  disabled={isLoading}
                 />
               </TableHead>
             ) : null}
@@ -98,10 +108,41 @@ export default function DataTable<T>({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.length === 0 ? (
+          {isLoading ? (
+            Array.from({ length: skeletonRows }, (_, rowIndex) => (
+              <TableRow
+                key={`skeleton-${rowIndex}`}
+                className="border-b border-black/5 hover:bg-transparent"
+              >
+                {selectable ? (
+                  <TableCell className="ps-6">
+                    <Skeleton className="size-4 rounded bg-brand-gris/15" />
+                  </TableCell>
+                ) : null}
+                {columns.map((column, columnIndex) => (
+                  <TableCell
+                    key={column.id}
+                    className={cn(
+                      "px-4 py-4 text-start",
+                      !selectable && columnIndex === 0 && "ps-6",
+                      column.className
+                    )}
+                  >
+                    <Skeleton
+                      className={cn(
+                        "h-4 w-full max-w-[9rem] bg-brand-gris/15",
+                        columnIndex % 3 === 1 && "max-w-[12rem] bg-brand-primary/10",
+                        columnIndex % 3 === 2 && "max-w-[6rem] bg-brand-gris/10",
+                      )}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : data.length === 0 ? (
             <TableRow className="hover:bg-transparent">
               <TableCell
-                colSpan={columns.length + (selectable ? 1 : 0)}
+                colSpan={colSpan}
                 className={cn(
                   "px-4 text-center text-brand-gris",
                   emptyContent ? "h-auto py-16" : "h-24"

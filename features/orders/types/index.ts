@@ -33,10 +33,12 @@ export type OrderRefundStatus =
 
 export type OrderRefundMethod = "bank_transfer" | "wallet" | "cash";
 
+/** Detail endpoints return a single `name`; list endpoints return localized names. */
 export type OrderNamedRef = {
   id: number;
-  name_ar: string | null;
-  name_en: string | null;
+  name?: string | null;
+  name_ar?: string | null;
+  name_en?: string | null;
 };
 
 export type OrderCity = {
@@ -68,6 +70,8 @@ export type OrderWorker = {
   worker_phone: string | null;
   birth_date: string | null;
   philippines_address: string | null;
+  passport_issue_place_id?: number | null;
+  passport_issue_place?: OrderPassportIssuePlace | null;
   passport_number: string | null;
   passport_issue_date: string | null;
   passport_expiry_date: string | null;
@@ -87,9 +91,12 @@ export type OrderActivity = {
   id: number;
   action: string;
   action_label: string | null;
-  notes: string | null;
+  description?: string | null;
+  meta?: Record<string, unknown> | null;
+  notes?: string | null;
   created_at: string;
-  performed_by: OrderNamedRef | null;
+  admin?: OrderNamedRef | null;
+  performed_by?: OrderNamedRef | null;
 };
 
 /** Flattened order row returned by list endpoints. */
@@ -227,12 +234,47 @@ export type OrderDetail = {
   updated_at: string;
 };
 
+/** Query params for `GET /admin/renewal-requests`. */
+export type OrderListQueryParams = {
+  "filter[status]"?: OrderStatus;
+  "filter[source]"?: OrderApiSource;
+  "filter[hold_reason]"?: HoldReasonValue;
+  search?: string;
+  created_from?: string;
+  created_to?: string;
+  expected_completion_date?: string;
+  per_page?: number;
+  page?: number;
+};
+
+/** Paginator wrapper returned by `/admin/renewal-requests`. */
+export type OrderListPage = {
+  data: OrderListItem[];
+  current_page?: number;
+  last_page?: number;
+  per_page?: number;
+  total?: number;
+  from?: number | null;
+  to?: number | null;
+};
+
 export type OrderListResponse = {
   success: boolean;
   message: string;
-  data: {
-    lists: OrderListItem[];
-  };
+  data: OrderListPage;
+};
+
+/** Client-side filters mapped onto `OrderListQueryParams`. */
+export type RenewalRequestsFilters = {
+  status?: OrderStatus;
+  source?: OrderApiSource | "all";
+  holdReason?: HoldReasonValue;
+  search?: string;
+  createdFrom?: string;
+  createdTo?: string;
+  expectedCompletionDate?: string;
+  perPage?: number;
+  page?: number;
 };
 
 export type OrderDetailResponse = {
@@ -266,6 +308,140 @@ export type HoldReasonsResponse = {
   data: HoldReason[];
 };
 
+/** Status option from `/admin/renewal-requests/statuses`. */
+export type OrderStatusOption = {
+  value: OrderStatus;
+  label: string;
+};
+
+export type OrderStatusesResponse = {
+  success: boolean;
+  message: string;
+  data: OrderStatusOption[];
+};
+
+export type RenewalRequestStatsData = {
+  // New requests stats
+  total_new?: number;
+  total_new_change_percent?: number;
+  // Held requests stats
+  total_held?: number;
+  incomplete_data?: number;
+  missing_documents?: number;
+  total_held_change_percent?: number;
+  incomplete_data_change_percent?: number;
+  missing_documents_change_percent?: number;
+  // Processed requests stats
+  total_processed?: number;
+  total_processed_change_percent?: number;
+  // Shared source stats
+  e_form?: number;
+  manual?: number;
+  e_form_change_percent?: number;
+  manual_change_percent?: number;
+  // Legacy / fallback fields
+  new_requests?: number;
+  new?: number;
+  pending_requests?: number;
+  pending?: number;
+  processed_requests?: number;
+  processed?: number;
+  [key: string]: unknown;
+};
+
+export type RenewalRequestStatsResponse = {
+  success: boolean;
+  message: string;
+  data: RenewalRequestStatsData | number;
+};
+
+/** `/admin/renewal-requests/processed-stats` */
+export type ProcessedStatsData = {
+  total_processed: number;
+  e_form: number;
+  manual: number;
+  total_processed_change_percent: number;
+  e_form_change_percent: number;
+  manual_change_percent: number;
+};
+
+export type ProcessedStatsResponse = {
+  success: boolean;
+  message: string;
+  data: ProcessedStatsData;
+};
+
+/** `/admin/renewal-requests/authentication-sent-stats` */
+export type AuthenticationSentStatsData = {
+  total_sent_for_authentication: number;
+  awaiting_final_contract: number;
+  final_contracts_uploaded_today: number;
+  total_sent_for_authentication_change_percent: number;
+  awaiting_final_contract_change_percent: number;
+  final_contracts_uploaded_change_percent: number;
+};
+
+export type AuthenticationSentStatsResponse = {
+  success: boolean;
+  message: string;
+  data: AuthenticationSentStatsData;
+};
+
+/** `/admin/renewal-requests/payment-stats` */
+export type PaymentStatsData = {
+  awaiting_payment: number;
+  paid_today: number;
+};
+
+export type PaymentStatsResponse = {
+  success: boolean;
+  message: string;
+  data: PaymentStatsData;
+};
+
+/** `/admin/renewal-requests/completed-stats` */
+export type CompletedStatsData = {
+  total_completed: number;
+  paid_online: number;
+  paid_manual: number;
+  delivery_required: number;
+  pickup: number;
+};
+
+export type CompletedStatsResponse = {
+  success: boolean;
+  message: string;
+  data: CompletedStatsData;
+};
+
+/** `/admin/renewal-requests/cancelled-stats` */
+export type CancelledStatsData = {
+  total_cancelled: number;
+  cancelled_by_customer: number;
+  cancelled_by_admin: number;
+  linked_to_refund: number;
+};
+
+export type CancelledStatsResponse = {
+  success: boolean;
+  message: string;
+  data: CancelledStatsData;
+};
+
+/** `/admin/renewal-requests/refund-stats` */
+export type RefundStatsData = {
+  total_refund_requests: number;
+  pending_decision: number;
+  refunded: number;
+  total_refunded_amount: number;
+};
+
+export type RefundStatsResponse = {
+  success: boolean;
+  message: string;
+  data: RefundStatsData;
+};
+
 /** @alias of HoldReasonValue — used by pending filters/UI. */
 export type SuspensionReason = HoldReasonValue;
 
@@ -293,6 +469,7 @@ export type OrdersFilterValues = {
   expectedExecution: Date | undefined;
   search: string;
   source: "all" | OrderSource;
+  status?: "all" | OrderStatus;
 };
 
 export type PendingOrdersFilterValues = {

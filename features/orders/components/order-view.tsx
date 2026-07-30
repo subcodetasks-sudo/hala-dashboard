@@ -54,7 +54,8 @@ type OrderViewProps = {
 
 export default function OrderView({ order: initialOrder }: OrderViewProps) {
   const t = useTranslations("Orders.New.Review");
-  const { data: order = initialOrder } = useOrder(initialOrder.id);
+  const { data: fetchedOrder } = useOrder(initialOrder.id);
+  const order = fetchedOrder ?? initialOrder;
   const updateEmployer = useUpdateOrderEmployer();
   const updateWorker = useUpdateOrderWorker();
 
@@ -92,7 +93,15 @@ export default function OrderView({ order: initialOrder }: OrderViewProps) {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="/orders/new">{t("breadcrumbs.newOrders")}</Link>
+                {order.status === "held" || order.hold ? (
+                  <Link href="/orders/pending">{t("breadcrumbs.pendingOrders")}</Link>
+                ) : order.status === "processed" ? (
+                  <Link href="/orders/processed">{t("breadcrumbs.processedOrders")}</Link>
+                ) : order.status === "sent_for_authentication" ? (
+                  <Link href="/orders/verification">{t("breadcrumbs.verificationOrders")}</Link>
+                ) : (
+                  <Link href="/orders/new">{t("breadcrumbs.newOrders")}</Link>
+                )}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

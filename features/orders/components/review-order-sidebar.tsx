@@ -15,6 +15,11 @@ import {
 } from "@/components/ui/tooltip";
 import ApproveProcessDialog from "@/features/orders/new/components/approve-process-dialog";
 import PendOrderDialog from "@/features/orders/new/components/pend-order-dialog";
+import MarkProcessedDialog from "@/features/orders/pending/components/mark-processed-dialog";
+import SendContractForAuthDialog from "@/features/orders/processed/components/send-contract-for-auth-dialog";
+import ViewDownloadContractDialog from "@/features/orders/components/view-download-contract-dialog";
+import { useMarkFinalContractUploaded } from "@/features/orders/verification/queries/use-verification-orders";
+import { toast } from "sonner";
 import {
   NEW_ORDER_CHECKLIST_IDS,
   useReviewChecklist,
@@ -40,15 +45,37 @@ export default function ReviewOrderSidebar({
   const [copied, setCopied] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isApproveProcessOpen, setApproveProcessOpen] = useState(false);
+  const [isMarkProcessedOpen, setMarkProcessedOpen] = useState(false);
   const [isPendOrderOpen, setPendOrderOpen] = useState(false);
+  const [isContractDialogOpen, setContractDialogOpen] = useState(false);
+  const [isSendForAuthOpen, setSendForAuthOpen] = useState(false);
 
   if (!order) {
     return null;
   }
 
   // Held orders are re-reviewed, so they keep the checklist and the process action.
-  const canReview = order.status === "new" || order.status === "held";
+  const isHeld = order.status === "held";
+  const isProcessed = order.status === "processed";
+  const isSentForAuth = order.status === "sent_for_authentication";
+  const canReview = order.status === "new" || isHeld;
   const showReviewActions = canReview && !isEditing;
+  const showProcessedActions = isProcessed && !isEditing;
+  const showSentForAuthActions = isSentForAuth && !isEditing;
+  const markUploaded = useMarkFinalContractUploaded();
+
+  const handleUploadFinalContract = () => {
+    if (markUploaded.isPending) return;
+    markUploaded.mutate(order.id, {
+      onSuccess: () => {
+        toast.success(
+          locale.startsWith("ar")
+            ? `تم رفع العقد النهائي للطلب ${order.orderNumber} بنجاح.`
+            : `Final contract for order ${order.orderNumber} uploaded successfully.`
+        );
+      },
+    });
+  };
 
   const relativeTime = locale.startsWith("ar")
     ? "10د"
@@ -56,6 +83,14 @@ export default function ReviewOrderSidebar({
 
   const handleCopy = () =>
     copyTextWithFeedback(order.orderNumber, { setCopied, setTooltipOpen });
+
+  const handleReviewedClick = () => {
+    if (isHeld) {
+      setMarkProcessedOpen(true);
+      return;
+    }
+    setApproveProcessOpen(true);
+  };
 
   return (
     <aside className="flex w-full shrink-0 flex-col gap-4 lg:w-72 xl:w-80">
@@ -141,7 +176,7 @@ export default function ReviewOrderSidebar({
 
         <ul className="mt-1 divide-y divide-black/5">
           {NEW_ORDER_CHECKLIST_IDS.map((key) => {
-            const checked = checklist[key];
+            const checked = isProcessed ? true : checklist[key];
             return (
               <li key={key}>
                 <button
@@ -189,7 +224,7 @@ export default function ReviewOrderSidebar({
             <Button
               type="button"
               disabled={!canCompleteReview}
-              onClick={() => setApproveProcessOpen(true)}
+              onClick={handleReviewedClick}
               className={cn(
                 "h-12 gap-2 rounded-full border-none bg-brand-primary px-4 font-semibold text-brand-white shadow-sm",
                 canCompleteReview
@@ -214,9 +249,69 @@ export default function ReviewOrderSidebar({
         </section>
       ) : null}
 
+      {showProcessedActions ? (
+        <section className="rounded-[1.75rem] bg-[#F5F5F5] p-4">
+          <SectionTitle iconSrc="/svg/flash.svg" title={t("actions")} />
+
+          <div className="mt-3 flex flex-col gap-2.5">
+            <Button
+              type="button"
+              onClick={() => setSendForAuthOpen(true)}
+              className="h-12 gap-2 rounded-full border-none bg-brand-primary px-4 font-semibold text-brand-white shadow-sm hover:bg-brand-primary/90"
+            >
+              <CustomIcon src="/svg/maximize.svg" size={20} />
+              {t("sendForAuth")}
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setContractDialogOpen(true)}
+              className="h-12 gap-2 rounded-full border-none bg-brand-blue px-4 font-semibold text-brand-white shadow-sm hover:bg-brand-blue/90"
+            >
+              <CustomIcon src="/svg/receipt-item.svg" size={20} />
+              {t("showContract")}
+            </Button>
+          </div>
+        </section>
+      ) : null}
+
+      {showSentForAuthActions ? (
+        <section className="rounded-[1.75rem] bg-[#F5F5F5] p-4">
+          <SectionTitle iconSrc="/svg/flash.svg" title={t("actions")} />
+
+          <div className="mt-3 flex flex-col gap-2.5">
+            <Button
+              type="button"
+              onClick={handleUploadFinalContract}
+              disabled={markUploaded.isPending}
+              className="h-12 gap-2 rounded-full border-none bg-brand-primary px-4 font-semibold text-brand-white shadow-sm hover:bg-brand-primary/90"
+            >
+              <CustomIcon src="/svg/maximize.svg" size={20} />
+              {t("uploadFinalContract")}
+            </Button>
+            <Button
+              type="button"
+              onClick={() => setContractDialogOpen(true)}
+              className="h-12 gap-2 rounded-full border-none bg-brand-blue px-4 font-semibold text-brand-white shadow-sm hover:bg-brand-blue/90"
+            >
+              <CustomIcon src="/svg/receipt-item.svg" size={20} />
+              {t("showContract")}
+            </Button>
+          </div>
+        </section>
+      ) : null}
+
       <ApproveProcessDialog
         open={isApproveProcessOpen}
         onOpenChange={setApproveProcessOpen}
+        orderId={order.id}
+        orderNumber={order.orderNumber}
+        employerName={order.employerName}
+        workerName={order.workerName}
+      />
+
+      <MarkProcessedDialog
+        open={isMarkProcessedOpen}
+        onOpenChange={setMarkProcessedOpen}
         orderId={order.id}
         orderNumber={order.orderNumber}
         employerName={order.employerName}
@@ -227,6 +322,20 @@ export default function ReviewOrderSidebar({
         open={isPendOrderOpen}
         onOpenChange={setPendOrderOpen}
         orderId={order.id}
+      />
+
+      <ViewDownloadContractDialog
+        open={isContractDialogOpen}
+        onOpenChange={setContractDialogOpen}
+        orderNumber={order.orderNumber}
+      />
+
+      <SendContractForAuthDialog
+        open={isSendForAuthOpen}
+        onOpenChange={setSendForAuthOpen}
+        orderNumber={order.orderNumber}
+        employerName={order.employerName}
+        workerName={order.workerName}
       />
     </aside>
   );

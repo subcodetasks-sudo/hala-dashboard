@@ -10,6 +10,9 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import { useClearProfile } from "@/features/profile/queries/use-profile";
+import { useRenewalRequestStats } from "@/features/orders/queries/use-renewal-request-stats";
+import { useRenewalRequestHeldStats } from "@/features/orders/queries/use-renewal-request-held-stats";
+import { useRenewalRequestProcessedStats } from "@/features/orders/queries/use-renewal-request-processed-stats";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -50,19 +53,19 @@ const navGroups: NavGroupItem[] = [
         href: "/orders/new",
         labelKey: "newOrders",
         icon: "/svg/receipt-2.svg",
-        badge: { count: 2, tone: "accent" },
+        badge: { count: 0, tone: "accent" },
       },
       {
         href: "/orders/pending",
         labelKey: "pendingOrders",
         icon: "/svg/check.svg",
-        badge: { count: 1, tone: "orange" },
+        badge: { count: 0, tone: "orange" },
       },
       {
         href: "/orders/processed",
         labelKey: "processedOrders",
         icon: "/svg/receipt-item.svg",
-        badge: { count: 2, tone: "purple" },
+        badge: { count: 0, tone: "purple" },
       },
       {
         href: "/orders/verification",
@@ -146,6 +149,10 @@ export default function DashboardSidebar() {
   const locale = useLocale();
   const router = useRouter();
   const clearProfile = useClearProfile();
+  const { newRequestsCount, isLoading: isNewLoading } = useRenewalRequestStats();
+  const { heldRequestsCount, isLoading: isHeldLoading } = useRenewalRequestHeldStats();
+  const { processedRequestsCount, isLoading: isProcessedLoading } =
+    useRenewalRequestProcessedStats();
   const isLoggingOut = useRef(false);
 
   async function performLogout() {
@@ -221,26 +228,50 @@ export default function DashboardSidebar() {
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="gap-2">
-                {group.links.map((link) => (
-                  <DashboardNavLink
-                    key={link.labelKey}
-                    href={link.href}
-                    label={t(`links.${link.labelKey}`)}
-                    icon={link.icon}
-                    badge={link.badge}
-                    onClick={
-                      link.labelKey === "logout" ? handleLogoutClick : undefined
-                    }
-                    isActive={
-                      !link.href
-                        ? false
-                        : link.href === "/"
-                          ? pathname === "/"
-                          : pathname === link.href ||
-                            pathname.startsWith(`${link.href}/`)
-                    }
-                  />
-                ))}
+                {group.links.map((link) => {
+                  let badge = link.badge;
+
+                  if (link.labelKey === "newOrders") {
+                    badge = {
+                      count: newRequestsCount,
+                      tone: "accent" as const,
+                      isLoading: isNewLoading,
+                    };
+                  } else if (link.labelKey === "pendingOrders") {
+                    badge = {
+                      count: heldRequestsCount,
+                      tone: "orange" as const,
+                      isLoading: isHeldLoading,
+                    };
+                  } else if (link.labelKey === "processedOrders") {
+                    badge = {
+                      count: processedRequestsCount,
+                      tone: "purple" as const,
+                      isLoading: isProcessedLoading,
+                    };
+                  }
+
+                  return (
+                    <DashboardNavLink
+                      key={link.labelKey}
+                      href={link.href}
+                      label={t(`links.${link.labelKey}`)}
+                      icon={link.icon}
+                      badge={badge}
+                      onClick={
+                        link.labelKey === "logout" ? handleLogoutClick : undefined
+                      }
+                      isActive={
+                        !link.href
+                          ? false
+                          : link.href === "/"
+                            ? pathname === "/"
+                            : pathname === link.href ||
+                              pathname.startsWith(`${link.href}/`)
+                      }
+                    />
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

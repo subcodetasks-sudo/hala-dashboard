@@ -140,6 +140,7 @@ export default function VerificationOrderActions({
       <ViewDownloadContractDialog
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
+        orderNumber={orderNumber}
       />
     </>
   );

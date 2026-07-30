@@ -127,6 +127,7 @@ export default function ProcessedOrderActions({
       <ViewDownloadContractDialog
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
+        orderNumber={orderNumber}
       />
 
       <SendContractForAuthDialog

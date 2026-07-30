@@ -197,9 +197,10 @@ export default function VerificationOrdersView() {
 
         <DataTable
           columns={columns}
-          data={isLoading ? [] : rows}
+          data={rows}
           getRowId={(row) => row.id}
           selectable
+          isLoading={isLoading}
           emptyContent={
             <EmptyTableState
               iconSrc="/svg/export.svg"

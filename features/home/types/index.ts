@@ -6,6 +6,14 @@ export type OrderStatus =
   | "processed"
   | "completed";
 
+export type HomeIndicatorKey =
+  | "processing"
+  | "verification"
+  | "payment"
+  | "completed"
+  | "cancelled"
+  | "refund";
+
 export type MockOrder = {
   id: string;
   orderNumber: string;

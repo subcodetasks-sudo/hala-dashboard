@@ -27,6 +27,7 @@
       "searchPlaceholder": "Search by order number or customer name...",
       "status": "Status",
       "apply": "Apply Filter",
+      "statusAll": "All statuses",
       "statusNew": "New",
       "statusPending": "Pending",
       "statusProcessing": "Processing",
@@ -42,10 +43,12 @@
       "status": "Order Status",
       "action": "Action",
       "startReview": "Start Review",
+      "viewOrder": "View Order",
       "sourceEform": "E-form",
       "sourceManual": "Manual",
       "statusNew": "New",
-      "empty": "No orders found"
+      "empty": "No orders found",
+      "loading": "Loading orders..."
     }
   },
   "Auth": {
@@ -99,7 +102,18 @@
       "success": "Profile loaded successfully"
     }
   },
+  "Employees": {
+    "route": {
+      "unauthorized": "Unauthorized",
+      "unableToFetch": "Unable to load employees. Please try again.",
+      "unableToFetchRoles": "Unable to load employee roles. Please try again."
+    }
+  },
   "Orders": {
+    "route": {
+      "unauthorized": "Unauthorized",
+      "unableToFetch": "Unable to load orders. Please try again."
+    },
     "New": {
       "title": "New Orders",
       "description": "Newly created contract renewal requests that have not yet started processing.",
@@ -121,6 +135,16 @@
         "sourceAll": "All",
         "sourceEform": "E-form",
         "sourceManual": "Manual",
+        "status": "State",
+        "statusAll": "All States",
+        "statusNew": "New",
+        "statusUnderReview": "Under Review",
+        "statusProcessed": "Processed",
+        "statusHeld": "Held",
+        "statusSentForAuthentication": "Sent for Authentication",
+        "statusAwaitingPayment": "Awaiting Payment",
+        "statusCompleted": "Completed",
+        "statusCancelled": "Cancelled",
         "apply": "Apply Filter",
         "pickDate": "Select date"
       },
@@ -140,7 +164,8 @@
       },
       "empty": {
         "title": "No new orders",
-        "description": "There are no new orders matching the current filters. Try changing the search criteria or resetting."
+        "description": "There are no new orders matching the current filters. Try changing the search criteria or resetting.",
+        "loading": "Loading orders..."
       },
       "startReviewDialog": {
         "title": "Start Order Review",
@@ -203,6 +228,9 @@
         "breadcrumbs": {
           "home": "Home",
           "newOrders": "New Orders",
+          "pendingOrders": "Pending Orders",
+          "processedOrders": "Processed Orders",
+          "verificationOrders": "Sent for Authentication Orders",
           "review": "Review Order {orderNumber}"
         },
         "summary": {
@@ -296,7 +324,10 @@
           "checklistNoConflicts": "No missing or conflicting data",
           "actions": "Review Actions",
           "reviewed": "Processed",
-          "suspend": "Suspend Order"
+          "suspend": "Suspend Order",
+          "showContract": "Show Contract",
+          "sendForAuth": "Send for Authentication",
+          "uploadFinalContract": "Upload Final Contract"
         },
         "validation": {
           "employerNameRequired": "Employer name is required",
@@ -366,6 +397,29 @@
       "route": {
         "unauthorized": "Unauthorized",
         "unableToFetch": "Unable to load hold reasons. Please try again."
+      },
+      "replaceDocumentDialog": {
+        "title": "Change Document",
+        "heading": "Are you sure about replacing the document!",
+        "description": "The current document will be replaced with the new document. Do you want to continue?",
+        "view": "View",
+        "confirm": "Confirm Replacement",
+        "cancel": "Back and Cancel",
+        "close": "Close"
+      },
+      "markProcessedDialog": {
+        "title": "Move Order to Processed",
+        "heading": "Move Order to Processed!",
+        "description": "After confirming all requirements are complete, the order will be moved from Pending to Processed.",
+        "orderNumber": "Order Number",
+        "employerName": "Employer Name",
+        "workerName": "Worker Name",
+        "confirm": "Confirm Processed",
+        "cancel": "Back and Cancel",
+        "close": "Close",
+        "copy": "Copy ID",
+        "copied": "Copied!",
+        "toastSuccess": "Order {orderNumber} has been successfully approved for processing."
       }
     },
     "Processed": {

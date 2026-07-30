@@ -1,8 +1,7 @@
 "use client";
 
 import { Phone, Plus } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 import ConfirmFilterButton from "@/components/confirm-filter-button";
 import CustomIcon from "@/components/custom-svg";
@@ -17,20 +16,81 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MOCK_ORDERS } from "@/features/home/mock-data";
-import type { MockOrder } from "@/features/home/types";
-import StartReviewAction from "@/features/orders/new/components/start-review-action";
+import OrderRowActions from "@/features/orders/components/order-row-actions";
+import { DEFAULT_HOME_ORDERS_FILTERS } from "@/features/orders/mock-data";
+import { useOrderStatuses } from "@/features/orders/queries/use-order-statuses";
+import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
+import type { OrderListItem, OrderStatus, OrdersFilterValues } from "@/features/orders/types";
+import {
+  getOrderAssigneeName,
+  getOrderCreatedDisplay,
+  getOrderEmployerName,
+  getOrderExecutionDisplay,
+  getOrderPhoneDisplay,
+  parseOrdersFilters,
+  serializeOrdersFilters,
+  toUiOrderSource,
+  useOrderFilters,
+} from "@/features/orders/utils";
+
+function statusBadgeClass(status: OrderStatus) {
+  switch (status) {
+    case "new":
+      return "rounded-full border-transparent bg-[#E8913A]/15 px-3 py-1 text-[#E8913A]";
+    case "held":
+      return "rounded-full border-transparent bg-brand-accent/15 px-3 py-1 text-brand-accent";
+    case "under_review":
+      return "rounded-full border-transparent bg-brand-primary/15 px-3 py-1 text-brand-primary";
+    case "processed":
+      return "rounded-full border-transparent bg-brand-primary/15 px-3 py-1 text-brand-primary";
+    case "completed":
+      return "rounded-full border-transparent bg-brand-success/15 px-3 py-1 text-brand-success";
+    case "cancelled":
+      return "rounded-full border-transparent bg-brand-accent/15 px-3 py-1 text-brand-accent";
+    default:
+      return "rounded-full border-transparent bg-brand-gris/15 px-3 py-1 text-brand-gris";
+  }
+}
 
 export default function LatestOrdersSection() {
   const t = useTranslations("HomePage");
-  const [status, setStatus] = useState("new");
+  const locale = useLocale() === "en" ? "en" : "ar";
 
-  const columns: DataTableColumn<MockOrder>[] = [
+  const {
+    data: statusOptions = [],
+    isLoading: isStatusesLoading,
+  } = useOrderStatuses();
+
+  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
+    useOrderFilters({
+      defaults: DEFAULT_HOME_ORDERS_FILTERS,
+      serialize: serializeOrdersFilters,
+      parse: parseOrdersFilters,
+    });
+
+  const allStatuses = [
+    { value: "all" as const, label: t("filters.statusAll") },
+    ...statusOptions.filter((status) => status.value !== "under_review"),
+  ];
+
+  const { data: rows = [], isLoading, isError, error } = useRenewalRequests({
+    status:
+      appliedFilters.status && appliedFilters.status !== "all"
+        ? appliedFilters.status
+        : undefined,
+    search: appliedFilters.search,
+    perPage: 15,
+    enabled: true,
+  });
+
+  const columns: DataTableColumn<OrderListItem>[] = [
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
       cell: (row) => (
-        <span className="font-semibold text-brand-black">{row.orderNumber}</span>
+        <span className="font-semibold text-brand-black">
+          {row.request_number ?? `#ORD-${row.id}`}
+        </span>
       ),
     },
     {
@@ -38,10 +98,12 @@ export default function LatestOrdersSection() {
       header: t("table.customer"),
       cell: (row) => (
         <div className="flex flex-col gap-1">
-          <span className="font-semibold text-brand-black">{row.customerName}</span>
+          <span className="font-semibold text-brand-black">
+            {getOrderEmployerName(row, locale)}
+          </span>
           <span className="inline-flex items-center gap-1.5 text-xs text-brand-gris">
             <Phone className="size-3.5 shrink-0" strokeWidth={1.75} />
-            <span dir="ltr">{row.customerPhone}</span>
+            <span dir="ltr">{getOrderPhoneDisplay(row)}</span>
           </span>
         </div>
       ),
@@ -50,62 +112,72 @@ export default function LatestOrdersSection() {
       id: "handler",
       header: t("table.handler"),
       cell: (row) => (
-        <span className="text-brand-black">{row.handlerName}</span>
+        <span className="text-brand-black">
+          {getOrderAssigneeName(row, locale)}
+        </span>
       ),
     },
     {
       id: "createdAt",
       header: t("table.createdAt"),
-      cell: (row) => (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-brand-black">{row.createdDate}</span>
-          <span className="text-xs text-brand-gris">{row.createdTime}</span>
-        </div>
-      ),
+      cell: (row) => {
+        const created = getOrderCreatedDisplay(row);
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-brand-black">{created.dateLabel}</span>
+            <span className="text-xs text-brand-gris">{created.timeLabel}</span>
+          </div>
+        );
+      },
     },
     {
       id: "source",
       header: t("table.source"),
-      cell: (row) => (
-        <Badge
-          className={
-            row.source === "eform"
-              ? "rounded-lg w-full  border-transparent bg-[#8B6BB5]/15 px-3 py-4 text-[#8B6BB5]"
-              : "rounded-lg w-full border-transparent bg-brand-success/15 px-3 py-4 text-brand-success"
-          }
-        >
-          {row.source === "eform"
-            ? t("table.sourceEform")
-            : t("table.sourceManual")}
-        </Badge>
-      ),
+      cell: (row) => {
+        const source = toUiOrderSource(row.source);
+        return (
+          <Badge
+            className={
+              source === "eform"
+                ? "rounded-lg w-full border-transparent bg-[#8B6BB5]/15 px-3 py-4 text-[#8B6BB5]"
+                : "rounded-lg w-full border-transparent bg-brand-success/15 px-3 py-4 text-brand-success"
+            }
+          >
+            {source === "eform"
+              ? t("table.sourceEform")
+              : t("table.sourceManual")}
+          </Badge>
+        );
+      },
     },
     {
       id: "executionDate",
       header: t("table.executionDate"),
       cell: (row) => (
-        <span className="text-brand-black">{row.executionDate}</span>
+        <span className="text-brand-black">
+          {getOrderExecutionDisplay(row)}
+        </span>
       ),
     },
     {
       id: "status",
       header: t("table.status"),
-      cell: () => (
-        <Badge className="rounded-full border-transparent bg-[#E8913A]/15 px-3 py-1 text-[#E8913A]">
-          {t("table.statusNew")}
+      cell: (row) => (
+        <Badge className={statusBadgeClass(row.status)}>
+          {row.status_label || t("table.statusNew")}
         </Badge>
       ),
     },
     {
       id: "action",
       header: t("table.action"),
+      headerClassName: "w-44 text-center",
+      className: "w-44 text-center",
       cell: (row) => (
-        <StartReviewAction
-          orderId={row.id}
-          orderNumber={row.orderNumber}
-          customerName={row.customerName}
-          handlerName={row.handlerName}
-          label={t("table.startReview")}
+        <OrderRowActions
+          order={row}
+          startReviewLabel={t("table.startReview")}
+          viewOrderLabel={t("table.viewOrder")}
         />
       ),
     },
@@ -131,6 +203,10 @@ export default function LatestOrdersSection() {
             <SearchBar
               placeholder={t("filters.searchPlaceholder")}
               className="h-11 w-full"
+              value={draftFilters.search}
+              onChange={(event) =>
+                setDraftFilters({ ...draftFilters, search: event.target.value })
+              }
             />
           </div>
 
@@ -138,33 +214,49 @@ export default function LatestOrdersSection() {
             <span className="text-xs font-semibold text-brand-black px-1">
               {t("filters.status")}
             </span>
-            <Select value={status} onValueChange={setStatus}>
+            <Select
+              value={draftFilters.status ?? "all"}
+              onValueChange={(value) =>
+                setDraftFilters({
+                  ...draftFilters,
+                  status: value as OrdersFilterValues["status"],
+                })
+              }
+              disabled={isStatusesLoading}
+            >
               <SelectTrigger className="!h-11 w-full rounded-full border-black/5 bg-[#F5F5F5] px-4 text-sm sm:w-44">
                 <SelectValue placeholder={t("filters.status")} />
               </SelectTrigger>
               <SelectContent position="popper" side="bottom" align="start">
-                <SelectItem value="new">{t("filters.statusNew")}</SelectItem>
-                <SelectItem value="pending">{t("filters.statusPending")}</SelectItem>
-                <SelectItem value="processing">
-                  {t("filters.statusProcessing")}
-                </SelectItem>
-                <SelectItem value="completed">
-                  {t("filters.statusCompleted")}
-                </SelectItem>
+                {allStatuses.map((status) => (
+                  <SelectItem key={status.value} value={status.value}>
+                    {status.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          <ConfirmFilterButton label={t("filters.apply")} />
+          <ConfirmFilterButton
+            label={t("filters.apply")}
+            onClick={applyFilters}
+          />
         </div>
       </div>
 
       <DataTable
         columns={columns}
-        data={MOCK_ORDERS}
-        getRowId={(row) => row.id}
+        data={rows}
+        getRowId={(row) => String(row.id)}
         selectable
-        emptyMessage={t("table.empty")}
+        isLoading={isLoading}
+        emptyMessage={
+          isError
+            ? error instanceof Error
+              ? error.message
+              : t("table.empty")
+            : t("table.empty")
+        }
       />
     </section>
   );

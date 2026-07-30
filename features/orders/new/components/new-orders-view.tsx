@@ -1,7 +1,7 @@
 "use client";
 
 import { Phone, Plus } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
@@ -11,21 +11,59 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import OrdersFilters from "@/features/orders/components/orders-filters";
 import StartReviewAction from "@/features/orders/new/components/start-review-action";
+import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
+import { useRenewalRequestStats } from "@/features/orders/queries/use-renewal-request-stats";
+import { DEFAULT_ORDERS_FILTERS } from "@/features/orders/mock-data";
+import type { OrderListItem } from "@/features/orders/types";
 import {
-  DEFAULT_ORDERS_FILTERS,
-  filterNewOrders,
-  NEW_ORDER_INDICATORS,
-  NEW_ORDERS,
-} from "@/features/orders/mock-data";
-import type { NewOrderRow } from "@/features/orders/types";
-import {
+  getOrderCreatedDisplay,
+  getOrderEmployerName,
+  getOrderExecutionDisplay,
+  getOrderPhoneDisplay,
+  getOrderWorkerName,
   parseOrdersFilters,
   serializeOrdersFilters,
+  toIsoDate,
+  toUiOrderSource,
   useOrderFilters,
 } from "@/features/orders/utils";
 
+/** RTL: first item renders on the right (matches design order). */
+const INDICATOR_CARDS = [
+  {
+    key: "total" as const,
+    iconSrc: "/svg/receipt-2.svg",
+    bgClassName: "bg-brand-primary/10",
+  },
+  {
+    key: "epayment" as const,
+    iconSrc: "/svg/wallet.svg",
+    bgClassName: "bg-brand-primary/10",
+  },
+  {
+    key: "manual" as const,
+    iconSrc: "/svg/export.svg",
+    bgClassName: "bg-brand-primary/10",
+  },
+];
+
+function formatIndicatorValue(value: number | undefined) {
+  if (value === undefined) return "-";
+  return String(value).padStart(2, "0");
+}
+
 export default function NewOrdersView() {
   const t = useTranslations("Orders.New");
+  const locale = useLocale() === "en" ? "en" : "ar";
+  const {
+    totalNew,
+    eFormCount,
+    manualCount,
+    totalChangePercent,
+    eFormChangePercent,
+    manualChangePercent,
+    isLoading: isStatsLoading,
+  } = useRenewalRequestStats();
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
     useOrderFilters({
       defaults: DEFAULT_ORDERS_FILTERS,
@@ -33,14 +71,30 @@ export default function NewOrdersView() {
       parse: parseOrdersFilters,
     });
 
-  const rows = filterNewOrders(NEW_ORDERS, appliedFilters);
+  const { data: rows = [], isLoading, isError, error } = useRenewalRequests({
+    status: "new",
+    uiSource: appliedFilters.source,
+    search: appliedFilters.search,
+    createdFrom: appliedFilters.fromDate
+      ? toIsoDate(appliedFilters.fromDate)
+      : undefined,
+    createdTo: appliedFilters.toDate
+      ? toIsoDate(appliedFilters.toDate)
+      : undefined,
+    expectedCompletionDate: appliedFilters.expectedExecution
+      ? toIsoDate(appliedFilters.expectedExecution)
+      : undefined,
+    perPage: 15,
+  });
 
-  const columns: DataTableColumn<NewOrderRow>[] = [
+  const columns: DataTableColumn<OrderListItem>[] = [
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
       cell: (row) => (
-        <span className="font-semibold text-brand-black">{row.orderNumber}</span>
+        <span className="font-semibold text-brand-black">
+          {row.request_number ?? `#ORD-${row.id}`}
+        </span>
       ),
     },
     {
@@ -48,10 +102,12 @@ export default function NewOrdersView() {
       header: t("table.customer"),
       cell: (row) => (
         <div className="flex flex-col gap-1">
-          <span className="font-semibold text-brand-black">{row.customerName}</span>
+          <span className="font-semibold text-brand-black">
+            {getOrderEmployerName(row, locale)}
+          </span>
           <span className="inline-flex items-center gap-1.5 text-xs text-brand-gris">
             <Phone className="size-3.5 shrink-0" strokeWidth={1.75} />
-            <span dir="ltr">{row.customerPhone}</span>
+            <span dir="ltr">{getOrderPhoneDisplay(row)}</span>
           </span>
         </div>
       ),
@@ -60,49 +116,59 @@ export default function NewOrdersView() {
       id: "handler",
       header: t("table.handler"),
       cell: (row) => (
-        <span className="text-brand-black">{row.handlerName}</span>
+        <span className="text-brand-black">
+          {getOrderWorkerName(row, locale)}
+        </span>
       ),
     },
     {
       id: "createdAt",
       header: t("table.createdAt"),
-      cell: (row) => (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-brand-black">{row.createdDate}</span>
-          <span className="text-xs text-brand-gris">{row.createdTime}</span>
-        </div>
-      ),
+      cell: (row) => {
+        const created = getOrderCreatedDisplay(row);
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-brand-black">{created.dateLabel}</span>
+            <span className="text-xs text-brand-gris">{created.timeLabel}</span>
+          </div>
+        );
+      },
     },
     {
       id: "source",
       header: t("table.source"),
-      cell: (row) => (
-        <Badge
-          className={
-            row.source === "eform"
-              ? "w-full rounded-lg border-transparent bg-[#8B6BB5]/15 px-3 py-4 text-[#8B6BB5]"
-              : "w-full rounded-lg border-transparent bg-brand-success/15 px-3 py-4 text-brand-success"
-          }
-        >
-          {row.source === "eform"
-            ? t("table.sourceEform")
-            : t("table.sourceManual")}
-        </Badge>
-      ),
+      cell: (row) => {
+        const source = toUiOrderSource(row.source);
+        return (
+          <Badge
+            className={
+              source === "eform"
+                ? "w-full rounded-lg border-transparent bg-[#8B6BB5]/15 px-3 py-4 text-[#8B6BB5]"
+                : "w-full rounded-lg border-transparent bg-brand-success/15 px-3 py-4 text-brand-success"
+            }
+          >
+            {source === "eform"
+              ? t("table.sourceEform")
+              : t("table.sourceManual")}
+          </Badge>
+        );
+      },
     },
     {
       id: "executionDate",
       header: t("table.executionDate"),
       cell: (row) => (
-        <span className="text-brand-black">{row.executionDate}</span>
+        <span className="text-brand-black">
+          {getOrderExecutionDisplay(row)}
+        </span>
       ),
     },
     {
       id: "status",
       header: t("table.status"),
-      cell: () => (
+      cell: (row) => (
         <Badge className="rounded-full border-transparent bg-[#E8913A]/15 px-3 py-1 text-[#E8913A]">
-          {t("table.statusNew")}
+          {row.status_label || t("table.statusNew")}
         </Badge>
       ),
     },
@@ -111,10 +177,10 @@ export default function NewOrdersView() {
       header: t("table.action"),
       cell: (row) => (
         <StartReviewAction
-          orderId={row.id}
-          orderNumber={row.orderNumber}
-          customerName={row.customerName}
-          handlerName={row.handlerName}
+          orderId={String(row.id)}
+          orderNumber={row.request_number ?? `#ORD-${row.id}`}
+          customerName={getOrderEmployerName(row, locale)}
+          handlerName={getOrderWorkerName(row, locale)}
           label={t("table.startReview")}
         />
       ),
@@ -141,17 +207,36 @@ export default function NewOrdersView() {
       </div>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {NEW_ORDER_INDICATORS.map((indicator) => (
-          <InfoCard
-            key={indicator.key}
-            title={t(`indicators.${indicator.key}`)}
-            value={indicator.value}
-            change={indicator.change}
-            period={t("period")}
-            iconSrc={indicator.iconSrc}
-            bgClassName={indicator.bgClassName}
-          />
-        ))}
+        {INDICATOR_CARDS.map((indicator) => {
+          let value = "-";
+          let change = "-";
+
+          if (isStatsLoading) {
+            value = "...";
+            change = "...";
+          } else if (indicator.key === "total") {
+            value = formatIndicatorValue(totalNew);
+            change = totalChangePercent;
+          } else if (indicator.key === "epayment") {
+            value = formatIndicatorValue(eFormCount);
+            change = eFormChangePercent;
+          } else if (indicator.key === "manual") {
+            value = formatIndicatorValue(manualCount);
+            change = manualChangePercent;
+          }
+
+          return (
+            <InfoCard
+              key={indicator.key}
+              title={t(`indicators.${indicator.key}`)}
+              value={value}
+              change={change}
+              period={t("period")}
+              iconSrc={indicator.iconSrc}
+              bgClassName={indicator.bgClassName}
+            />
+          );
+        })}
       </section>
 
       <section className="flex flex-col gap-4">
@@ -173,13 +258,20 @@ export default function NewOrdersView() {
         <DataTable
           columns={columns}
           data={rows}
-          getRowId={(row) => row.id}
+          getRowId={(row) => String(row.id)}
           selectable
+          isLoading={isLoading}
           emptyContent={
             <EmptyTableState
               iconSrc="/svg/receipt-2.svg"
-              title={t("empty.title")}
-              description={t("empty.description")}
+              title={
+                isError
+                  ? error instanceof Error
+                    ? error.message
+                    : t("empty.title")
+                  : t("empty.title")
+              }
+              description={isError ? " " : t("empty.description")}
             />
           }
         />

@@ -10,8 +10,9 @@ import { cn } from "@/lib/utils";
 import CustomIcon from "./custom-svg";
 
 export type NavBadge = {
-  count: number;
+  count?: number;
   tone: "accent" | "orange" | "purple";
+  isLoading?: boolean;
 };
 
 type DashboardNavLinkProps = {
@@ -58,7 +59,11 @@ function NavItemContent({
               badgeToneClass[badge.tone],
             )}
           >
-            {String(badge.count).padStart(2, "0")}
+            {badge.isLoading ? (
+              <span className="size-2.5 animate-spin rounded-full border-2 border-brand-white border-t-transparent" />
+            ) : (
+              String(badge.count ?? 0).padStart(2, "0")
+            )}
           </span>
         ) : null}
       </span>
