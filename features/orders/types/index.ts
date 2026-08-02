@@ -56,6 +56,46 @@ export type OrderCity = {
   name_en: string;
 };
 
+/** City row from `GET /admin/cities` (snake + camel variants normalized in the hook). */
+export type City = {
+  id: number;
+  name_ar: string;
+  name_en: string;
+  /** Locale-resolved title when the API sends a single `name`/`title`. */
+  name?: string | null;
+  status?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+};
+
+/** Query params for `GET /admin/cities`. */
+export type CitiesListFilters = {
+  search?: string;
+  status?: string;
+  sort?: string;
+  perPage?: number;
+  page?: number;
+};
+
+/** Paginator wrapper returned by `/admin/cities`. */
+export type CitiesListPage = {
+  data: City[];
+  current_page?: number;
+  last_page?: number;
+  per_page?: number;
+  total?: number;
+  from?: number | null;
+  to?: number | null;
+};
+
+export type CitiesListResponse = {
+  success: boolean;
+  message: string;
+  data: CitiesListPage;
+};
+
 export type OrderPassportIssuePlace = {
   id: number;
   name_ar: string;
@@ -300,6 +340,35 @@ export type RenewalRequestDetail = OrderDetail;
 
 export type RenewalRequestDetailResponse = OrderDetailResponse;
 
+/** `POST /admin/renewal-requests/:id/start-review` */
+export type StartReviewResponse = OrderDetailResponse;
+
+/** `POST /admin/renewal-requests/:id/process` */
+export type ProcessRenewalRequestResponse = OrderDetailResponse;
+
+/** `POST /admin/renewal-requests/:id/send-for-authentication` */
+export type SendForAuthenticationResponse = OrderDetailResponse;
+
+/** `POST /admin/renewal-requests/:id/hold` */
+export type HoldRenewalRequestBody = {
+  hold_reason: HoldReasonValue;
+  hold_notes: string;
+};
+
+export type HoldRenewalRequestResponse = OrderDetailResponse;
+
+/** Form-data `collection` values for `POST .../documents`. */
+export type DocumentCollection =
+  | "national_id_image"
+  | "iqama_image"
+  | "passport_image"
+  | "exit_reentry_visa"
+  | "employer_signature"
+  | "worker_signature";
+
+/** `POST /admin/renewal-requests/:id/documents` (multipart) */
+export type UploadRenewalDocumentResponse = OrderDetailResponse;
+
 export type NewOrderRow = MockOrder & {
   createdAtIso: string;
   executionDateIso: string;
@@ -428,6 +497,9 @@ export type CancelledStatsData = {
   cancelled_by_customer: number;
   cancelled_by_admin: number;
   linked_to_refund: number;
+  total_cancelled_change_percent?: number;
+  cancelled_by_customer_change_percent?: number;
+  cancelled_by_admin_change_percent?: number;
 };
 
 export type CancelledStatsResponse = {
@@ -604,6 +676,47 @@ export type CompletedOrdersFilterValues = {
   deliveryStatus: "all" | DeliveryStatus;
 };
 
+/** Known cancellation-source slugs used for UI styling. */
+export type CancellationSourceValue =
+  | "customer"
+  | "review_employee"
+  | "contracts_employee"
+  | "admin";
+
+/** Backend cancellation-source option from `/admin/renewal-requests/cancellation-sources`. */
+export type CancellationSource = {
+  value: string;
+  label: string;
+};
+
+export type CancellationSourcesResponse = {
+  success: boolean;
+  message: string;
+  data: CancellationSource[];
+};
+
+/** Backend cancellation-reason option from `/admin/renewal-requests/cancellation-reasons`. */
+export type CancellationReason = {
+  value: string;
+  label: string;
+};
+
+export type CancellationReasonsResponse = {
+  success: boolean;
+  message: string;
+  data: CancellationReason[];
+};
+
+export type CancelledOrdersFilterValues = {
+  cancelledAt: Date | undefined;
+  search: string;
+  orderType: "all" | OrderSource;
+  /** `"all"` or a backend cancellation-source slug. */
+  cancellationSource: "all" | string;
+  /** `"all"` or a backend cancellation-reason slug. */
+  cancellationReason: "all" | string;
+};
+
 export type ChangeHistoryRow = {
   id: string;
   employee: string;
@@ -623,6 +736,8 @@ export type OrderDocumentType =
 export type OrderDocument = {
   id: string;
   type: OrderDocumentType;
+  /** Backend form-data `collection` key used when replacing this document. */
+  collection: DocumentCollection;
   uploadedAtIso: string;
   sizeLabel: string;
   format: string;

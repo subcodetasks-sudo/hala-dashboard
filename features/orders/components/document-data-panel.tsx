@@ -4,16 +4,20 @@ import { format, parseISO } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { CloudUpload, Download, Eye } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, type ChangeEvent } from "react";
+import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
 import { Button } from "@/components/ui/button";
 import ReplaceDocumentDialog from "@/features/orders/pending/components/replace-document-dialog";
+import { useUploadRenewalDocument } from "@/features/orders/queries/use-upload-renewal-document";
 import type {
+  DocumentCollection,
   OrderDocument,
   OrderDocumentType,
   OrderReviewDetail,
 } from "@/features/orders/types";
+import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 type DocumentDataPanelProps = {
@@ -104,6 +108,7 @@ export default function DocumentDataPanel({ order }: DocumentDataPanelProps) {
           return (
             <li key={doc.id}>
               <DocumentRow
+                orderId={order.id}
                 document={doc}
                 title={t(`types.${doc.type}`)}
                 meta={meta}
@@ -127,6 +132,7 @@ export default function DocumentDataPanel({ order }: DocumentDataPanelProps) {
 }
 
 function DocumentRow({
+  orderId,
   document,
   title,
   meta,
@@ -139,6 +145,7 @@ function DocumentRow({
   showUpload,
   isLast,
 }: {
+  orderId: string;
   document: OrderDocument;
   title: string;
   meta: string;
@@ -207,6 +214,8 @@ function DocumentRow({
         </Button>
         {showUpload ? (
           <DocumentUploadControl
+            orderId={orderId}
+            collection={document.collection}
             label={uploadLabel}
             formats={uploadFormats}
             ariaLabel={uploadAria}
@@ -224,6 +233,8 @@ function DocumentRow({
 }
 
 function DocumentUploadControl({
+  orderId,
+  collection,
   label,
   formats,
   ariaLabel,
@@ -234,6 +245,8 @@ function DocumentUploadControl({
   iconClassName,
   bgClassName,
 }: {
+  orderId: string;
+  collection: DocumentCollection;
   label: string;
   formats: string;
   ariaLabel: string;
@@ -244,10 +257,62 @@ function DocumentUploadControl({
   iconClassName: string;
   bgClassName: string;
 }) {
+  const t = useTranslations("Orders.Pending.replaceDocumentDialog");
+  const router = useRouter();
+  const uploadDocument = useUploadRenewalDocument();
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const isPending = uploadDocument.isPending;
+
+  const resetPicker = () => {
+    setPendingFile(null);
+    setFileName(null);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    event.target.value = "";
+
+    if (!file) return;
+
+    setPendingFile(file);
+    setFileName(file.name);
+    setConfirmOpen(true);
+  };
+
+  const handleConfirm = () => {
+    if (!pendingFile || isPending) return;
+
+    uploadDocument.mutate(
+      {
+        renewalRequestId: orderId,
+        collection,
+        file: pendingFile,
+      },
+      {
+        onSuccess: () => {
+          toast.success(t("successToast"));
+          setConfirmOpen(false);
+          setPendingFile(null);
+          router.refresh();
+        },
+        onError: (error) => {
+          toast.error(
+            error instanceof Error && error.message
+              ? error.message
+              : t("errorToast"),
+          );
+        },
+      },
+    );
+  };
 
   return (
     <>
@@ -257,17 +322,15 @@ function DocumentUploadControl({
         type="file"
         accept={UPLOAD_ACCEPT}
         className="sr-only"
-        onChange={(event) => {
-          const file = event.target.files?.[0] ?? null;
-          setFileName(file?.name ?? null);
-          event.target.value = "";
-        }}
+        disabled={isPending}
+        onChange={handleFileChange}
       />
       <button
         type="button"
         aria-label={ariaLabel}
-        onClick={() => setConfirmOpen(true)}
-        className="inline-flex h-11 min-w-52 items-center gap-3 rounded-full border border-black/10 bg-[#F7F7F7] ps-4 pe-1.5 text-start transition-colors hover:border-brand-primary/30 hover:bg-brand-background/70"
+        disabled={isPending}
+        onClick={() => inputRef.current?.click()}
+        className="inline-flex h-11 min-w-52 items-center gap-3 rounded-full border border-black/10 bg-[#F7F7F7] ps-4 pe-1.5 text-start transition-colors hover:border-brand-primary/30 hover:bg-brand-background/70 disabled:pointer-events-none disabled:opacity-60"
       >
         <span className="min-w-0 flex-1">
           <span className="block truncate text-xs font-semibold leading-tight text-brand-black">
@@ -283,14 +346,19 @@ function DocumentUploadControl({
       </button>
       <ReplaceDocumentDialog
         open={confirmOpen}
-        onOpenChange={setConfirmOpen}
+        onOpenChange={(open) => {
+          if (!open && isPending) return;
+          setConfirmOpen(open);
+          if (!open) resetPicker();
+        }}
         documentTitle={documentTitle}
         documentMeta={documentMeta}
         documentUrl={documentUrl}
         iconSrc={iconSrc}
         iconClassName={iconClassName}
         bgClassName={bgClassName}
-        onConfirm={() => inputRef.current?.click()}
+        isPending={isPending}
+        onConfirm={handleConfirm}
       />
     </>
   );

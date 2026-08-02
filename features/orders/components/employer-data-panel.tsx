@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -9,7 +9,7 @@ import ReviewFormPhoneField from "@/components/phone-field";
 import ReviewFormSelectField from "@/components/select-field";
 import ReviewFormTextField from "@/components/text-field";
 import ReviewFormSectionHeader from "@/features/orders/components/section-header";
-import { SAUDI_CITIES } from "@/features/orders/mock-data";
+import { getCityLabel, useCities } from "@/features/orders/queries/use-cities";
 import type { OrderReviewDetail } from "@/features/orders/types";
 import {
   createEmployerSchema,
@@ -19,6 +19,8 @@ import {
 type EmployerDataPanelProps = {
   order: OrderReviewDetail;
   isEditing: boolean;
+  /** When false, form stays read-only and edit controls are hidden. */
+  canEdit?: boolean;
   onEditingChange: (editing: boolean) => void;
   onSaved?: (values: EmployerFormValues) => void;
 };
@@ -26,11 +28,14 @@ type EmployerDataPanelProps = {
 export default function EmployerDataPanel({
   order,
   isEditing,
+  canEdit = true,
   onEditingChange,
   onSaved,
 }: EmployerDataPanelProps) {
   const t = useTranslations("Orders.New.Review.employer");
   const tValidation = useTranslations("Orders.New.Review.validation");
+  const locale = useLocale();
+  const { data: cities = [], isLoading: isCitiesLoading } = useCities();
 
   const schema = useMemo(
     () =>
@@ -62,6 +67,7 @@ export default function EmployerDataPanel({
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<EmployerFormValues>({
     resolver: zodResolver(schema),
@@ -73,7 +79,30 @@ export default function EmployerDataPanel({
     reset(defaultValues);
   }, [defaultValues, reset]);
 
+  const selectedCity = watch("city");
+
+  const cityOptions = useMemo(() => {
+    const options = cities.map((city) => {
+      const label = getCityLabel(city, locale);
+      return { value: label, label };
+    });
+    const current = selectedCity?.trim();
+
+    if (
+      current &&
+      current !== "—" &&
+      !options.some((option) => option.value === current)
+    ) {
+      return [{ value: current, label: current }, ...options];
+    }
+
+    return options;
+  }, [cities, locale, selectedCity]);
+
+  const editing = canEdit && isEditing;
+
   const onSubmit = (values: EmployerFormValues) => {
+    if (!canEdit) return;
     onSaved?.(values);
     onEditingChange(false);
   };
@@ -88,7 +117,8 @@ export default function EmployerDataPanel({
       <ReviewFormSectionHeader
         title={t("sectionTitle")}
         iconSrc="/svg/personalcard.svg"
-        isEditing={isEditing}
+        isEditing={editing}
+        canEdit={canEdit}
         editLabel={t("edit")}
         saveLabel={t("save")}
         cancelLabel={t("cancel")}
@@ -106,7 +136,7 @@ export default function EmployerDataPanel({
           id="employerName"
           label={t("employerName")}
           iconSrc="/svg/person.svg"
-          readOnly={!isEditing}
+          readOnly={!editing}
           error={errors.employerName}
           {...register("employerName")}
         />
@@ -115,7 +145,7 @@ export default function EmployerDataPanel({
           id="nationalId"
           label={t("nationalId")}
           iconSrc="/svg/identity-2.svg"
-          readOnly={!isEditing}
+          readOnly={!editing}
           error={errors.nationalId}
           inputMode="numeric"
           maxLength={10}
@@ -133,7 +163,7 @@ export default function EmployerDataPanel({
             <ReviewFormPhoneField
               id="phoneLocal"
               label={t("phone")}
-              readOnly={!isEditing}
+              readOnly={!editing}
               error={errors.phoneLocal}
               placeholder={t("phonePlaceholder")}
               className="md:col-span-2"
@@ -150,11 +180,12 @@ export default function EmployerDataPanel({
               id="city"
               label={t("city")}
               iconSrc="/svg/location.svg"
-              value={field.value}
+              value={field.value === "—" ? undefined : field.value}
               onChange={field.onChange}
-              readOnly={!isEditing}
+              readOnly={!editing}
+              disabled={editing && isCitiesLoading}
               error={errors.city}
-              options={SAUDI_CITIES}
+              options={cityOptions}
             />
           )}
         />
@@ -163,7 +194,7 @@ export default function EmployerDataPanel({
           id="address"
           label={t("address")}
           iconSrc="/svg/clipboard.svg"
-          readOnly={!isEditing}
+          readOnly={!editing}
           error={errors.address}
           {...register("address")}
         />

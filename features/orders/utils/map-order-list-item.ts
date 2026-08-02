@@ -35,13 +35,16 @@ function formatApiDateTime(value: string | null | undefined) {
 
   const [datePart = "", timePart = ""] = value.split(" ");
   const [year, month, day] = datePart.split("-").map(Number);
-  const [hour = 0, minute = 0] = timePart.split(":").map(Number);
+  const timeSubparts = timePart.split(":");
+  const hour = Number(timeSubparts[0] ?? 0);
+  const minute = Number(timeSubparts[1] ?? 0);
+  const second = Number(timeSubparts[2] ?? 0);
 
   if (!year || !month || !day) {
     return { dateLabel: value, timeLabel: timePart || "—", isoDate: datePart };
   }
 
-  const date = new Date(year, month - 1, day, hour, minute);
+  const date = new Date(year, month - 1, day, hour, minute, second);
   const dateLabel = date.toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
@@ -51,6 +54,7 @@ function formatApiDateTime(value: string | null | undefined) {
   const timeLabel = date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
+    hour12: true,
   });
 
   return { dateLabel, timeLabel, isoDate: datePart };
@@ -132,6 +136,17 @@ export function getOrderProcessedByName(
   locale: AppLocale,
 ) {
   return pickRefName(locale, item.processed_by);
+}
+
+export function getOrderCancelledByName(
+  item: OrderListItem,
+  locale: AppLocale,
+) {
+  return pickRefName(locale, item.cancelled_by);
+}
+
+export function getOrderCancelledAtDisplay(item: OrderListItem) {
+  return formatApiDateTime(item.cancelled_at);
 }
 
 export function getOrderRefInitials(name: string) {

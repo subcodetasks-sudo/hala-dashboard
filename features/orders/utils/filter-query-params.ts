@@ -1,5 +1,6 @@
 import type { OrderSource } from "@/features/home/types";
 import type {
+  CancelledOrdersFilterValues,
   CompletedOrdersFilterValues,
   DeliveryStatus,
   OrderStatus,
@@ -20,6 +21,7 @@ export const ORDER_FILTER_PARAM_KEYS = {
   expectedExecution: "expectedExecution",
   createdAt: "createdAt",
   contractUploadedAt: "contractUploadedAt",
+  cancelledAt: "cancelledAt",
   search: "search",
   source: "source",
   orderType: "orderType",
@@ -27,6 +29,8 @@ export const ORDER_FILTER_PARAM_KEYS = {
   suspensionReason: "suspensionReason",
   deliveryStatus: "deliveryStatus",
   paymentMethod: "paymentMethod",
+  cancellationSource: "cancellationSource",
+  cancellationReason: "cancellationReason",
 } as const;
 
 export type OrderFilterParamKey =
@@ -402,5 +406,62 @@ export function parseCompletedOrdersFilters(
       DELIVERY_STATUS_FILTERS,
       defaults.deliveryStatus
     ),
+  };
+}
+
+export function serializeCancelledOrdersFilters(
+  filters: CancelledOrdersFilterValues
+): URLSearchParams {
+  const params = new URLSearchParams();
+  setDateParam(
+    params,
+    ORDER_FILTER_PARAM_KEYS.cancelledAt,
+    filters.cancelledAt
+  );
+  setSearchParam(params, filters.search);
+  setEnumParam(
+    params,
+    ORDER_FILTER_PARAM_KEYS.orderType,
+    filters.orderType,
+    "all"
+  );
+  setEnumParam(
+    params,
+    ORDER_FILTER_PARAM_KEYS.cancellationSource,
+    filters.cancellationSource,
+    "all"
+  );
+  setEnumParam(
+    params,
+    ORDER_FILTER_PARAM_KEYS.cancellationReason,
+    filters.cancellationReason,
+    "all"
+  );
+  return params;
+}
+
+export function parseCancelledOrdersFilters(
+  params: URLSearchParams,
+  defaults: CancelledOrdersFilterValues
+): CancelledOrdersFilterValues {
+  const sourceParam = params
+    .get(ORDER_FILTER_PARAM_KEYS.cancellationSource)
+    ?.trim();
+  const reasonParam = params
+    .get(ORDER_FILTER_PARAM_KEYS.cancellationReason)
+    ?.trim();
+
+  return {
+    cancelledAt:
+      parseIsoDateParam(params.get(ORDER_FILTER_PARAM_KEYS.cancelledAt)) ??
+      defaults.cancelledAt,
+    search: params.get(ORDER_FILTER_PARAM_KEYS.search)?.trim() ?? defaults.search,
+    orderType: parseEnumParam(
+      params.get(ORDER_FILTER_PARAM_KEYS.orderType),
+      ORDER_SOURCE_FILTERS,
+      defaults.orderType
+    ),
+    cancellationSource: sourceParam || defaults.cancellationSource,
+    cancellationReason: reasonParam || defaults.cancellationReason,
   };
 }

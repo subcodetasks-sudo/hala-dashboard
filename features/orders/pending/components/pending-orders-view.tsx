@@ -2,11 +2,13 @@
 
 import { Eye, Phone } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
+import TablePagination from "@/components/table-pagination";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -73,8 +75,13 @@ export default function PendingOrdersView() {
       serialize: serializePendingOrdersFilters,
       parse: parsePendingOrdersFilters,
     });
+  const [page, setPage] = useState(1);
+  const handleApplyFilters = () => {
+    setPage(1);
+    applyFilters();
+  };
 
-  const { data: rows = [], isLoading, isError, error } = useRenewalRequests({
+  const { data, isLoading, isError, error } = useRenewalRequests({
     status: "held",
     search: appliedFilters.search,
     createdFrom: appliedFilters.fromDate
@@ -87,8 +94,11 @@ export default function PendingOrdersView() {
       appliedFilters.suspensionReason !== "all"
         ? appliedFilters.suspensionReason
         : undefined,
-    perPage: 15,
+    perPage: 10,
+    page,
   });
+
+  const rows = data?.items ?? [];
 
   const columns: DataTableColumn<OrderListItem>[] = [
     {
@@ -265,7 +275,7 @@ export default function PendingOrdersView() {
         <PendingOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
-          onApply={applyFilters}
+          onApply={handleApplyFilters}
         />
 
         <DataTable
@@ -287,6 +297,13 @@ export default function PendingOrdersView() {
               description={isError ? " " : t("empty.description")}
             />
           }
+        />
+
+        <TablePagination
+          page={data?.currentPage ?? page}
+          lastPage={data?.lastPage ?? 1}
+          total={data?.total}
+          onPageChange={setPage}
         />
       </section>
     </div>

@@ -1,28 +1,39 @@
 "use client";
 
 import { Phone, Plus } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import TablePagination from "@/components/table-pagination";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import type { VerificationOrderRow } from "@/features/orders/types";
+import { useRenewalRequestAuthenticationSentStats } from "@/features/orders/queries/use-renewal-request-authentication-sent-stats";
+import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
+import type {
+  OrderListItem,
+  VerificationOrderStatus,
+} from "@/features/orders/types";
 import {
+  formatStatsCount,
+  getOrderCreatedDisplay,
+  getOrderEmployerName,
+  getOrderPhoneDisplay,
+  getOrderProcessedByName,
+  getOrderRefInitials,
+  getOrderWorkerName,
   parseVerificationOrdersFilters,
   serializeVerificationOrdersFilters,
+  toIsoDate,
   useOrderFilters,
 } from "@/features/orders/utils";
 import VerificationOrderActions from "@/features/orders/verification/components/verification-order-actions";
 import VerificationOrdersFilters from "@/features/orders/verification/components/verification-orders-filters";
 import VerificationStatusBadge from "@/features/orders/verification/components/verification-status-badge";
 import { DEFAULT_VERIFICATION_ORDERS_FILTERS } from "@/features/orders/verification/mock-data";
-import {
-  useVerificationIndicators,
-  useVerificationOrders,
-} from "@/features/orders/verification/queries/use-verification-orders";
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -46,28 +57,65 @@ const INDICATOR_CARDS = [
   },
 ];
 
-function formatIndicatorValue(value: number) {
-  return String(value).padStart(2, "0");
+function getVerificationUiStatus(
+  item: OrderListItem,
+): VerificationOrderStatus {
+  return item.has_final_contract
+    ? "finalContractUploaded"
+    : "sentForVerification";
 }
 
 export default function VerificationOrdersView() {
   const t = useTranslations("Orders.Verification");
+  const locale = useLocale() === "en" ? "en" : "ar";
+  const {
+    totalSentForAuthentication,
+    awaitingFinalContract,
+    finalContractsUploadedToday,
+    totalSentForAuthenticationChangePercent,
+    awaitingFinalContractChangePercent,
+    finalContractsUploadedChangePercent,
+    isLoading: isStatsLoading,
+  } = useRenewalRequestAuthenticationSentStats();
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
     useOrderFilters({
       defaults: DEFAULT_VERIFICATION_ORDERS_FILTERS,
       serialize: serializeVerificationOrdersFilters,
       parse: parseVerificationOrdersFilters,
     });
+  const [page, setPage] = useState(1);
+  const handleApplyFilters = () => {
+    setPage(1);
+    applyFilters();
+  };
 
-  const { data: rows = [], isLoading } = useVerificationOrders(appliedFilters);
-  const { data: indicators } = useVerificationIndicators();
+  const { data, isLoading, isError, error } = useRenewalRequests({
+    status: "sent_for_authentication",
+    search: appliedFilters.search,
+    createdFrom: appliedFilters.fromDate
+      ? toIsoDate(appliedFilters.fromDate)
+      : undefined,
+    createdTo: appliedFilters.toDate
+      ? toIsoDate(appliedFilters.toDate)
+      : undefined,
+    perPage: 15,
+    page,
+  });
 
-  const columns: DataTableColumn<VerificationOrderRow>[] = [
+  const rows = (data?.items ?? []).filter((item) => {
+    if (appliedFilters.status === "all") return true;
+    const uiStatus = getVerificationUiStatus(item);
+    return uiStatus === appliedFilters.status;
+  });
+
+  const columns: DataTableColumn<OrderListItem>[] = [
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
       cell: (row) => (
-        <span className="font-semibold text-brand-black">{row.orderNumber}</span>
+        <span className="font-semibold text-brand-black">
+          {row.request_number ?? `#ORD-${row.id}`}
+        </span>
       ),
     },
     {
@@ -75,7 +123,7 @@ export default function VerificationOrdersView() {
       header: t("table.contractNumber"),
       cell: (row) => (
         <span className="whitespace-nowrap text-brand-black">
-          {row.contractNumber}
+          {row.contract_number || "—"}
         </span>
       ),
     },
@@ -84,10 +132,12 @@ export default function VerificationOrdersView() {
       header: t("table.employer"),
       cell: (row) => (
         <div className="flex flex-col gap-1">
-          <span className="font-semibold text-brand-black">{row.employerName}</span>
+          <span className="font-semibold text-brand-black">
+            {getOrderEmployerName(row, locale)}
+          </span>
           <span className="inline-flex items-center gap-1.5 text-xs text-brand-gris">
             <Phone className="size-3.5 shrink-0" strokeWidth={1.75} />
-            <span dir="ltr">{row.employerPhone}</span>
+            <span dir="ltr">{getOrderPhoneDisplay(row)}</span>
           </span>
         </div>
       ),
@@ -96,51 +146,56 @@ export default function VerificationOrdersView() {
       id: "worker",
       header: t("table.worker"),
       cell: (row) => (
-        <span className="whitespace-nowrap text-brand-black">{row.workerName}</span>
+        <span className="whitespace-nowrap text-brand-black">
+          {getOrderWorkerName(row, locale)}
+        </span>
       ),
     },
     {
       id: "createdAt",
       header: t("table.createdAt"),
-      cell: (row) => (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-brand-black">{row.createdDate}</span>
-          <span className="text-xs text-brand-gris">{row.createdTime}</span>
-        </div>
-      ),
+      cell: (row) => {
+        const created = getOrderCreatedDisplay(row);
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-brand-black">{created.dateLabel}</span>
+            <span className="text-xs text-brand-gris">{created.timeLabel}</span>
+          </div>
+        );
+      },
     },
     {
       id: "handler",
       header: t("table.handler"),
-      cell: (row) => (
-        <div className="flex items-center gap-2">
-          <Avatar size="sm" className="size-8">
-            {row.handlerAvatarUrl ? (
-              <AvatarImage src={row.handlerAvatarUrl} alt={row.handlerName} />
-            ) : null}
-            <AvatarFallback className="bg-brand-primary/15 text-xs font-semibold text-brand-primary">
-              {row.handlerInitials}
-            </AvatarFallback>
-          </Avatar>
-          <span className="whitespace-nowrap text-brand-black">
-            {row.handlerName}
-          </span>
-        </div>
-      ),
+      cell: (row) => {
+        const name = getOrderProcessedByName(row, locale);
+        return (
+          <div className="flex items-center gap-2">
+            <Avatar size="sm" className="size-8">
+              <AvatarFallback className="bg-brand-primary/15 text-xs font-semibold text-brand-primary">
+                {getOrderRefInitials(name)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="whitespace-nowrap text-brand-black">{name}</span>
+          </div>
+        );
+      },
     },
     {
       id: "status",
       header: t("table.status"),
-      cell: (row) => <VerificationStatusBadge status={row.status} />,
+      cell: (row) => (
+        <VerificationStatusBadge status={getVerificationUiStatus(row)} />
+      ),
     },
     {
       id: "action",
       header: t("table.action"),
       cell: (row) => (
         <VerificationOrderActions
-          orderId={row.id}
-          orderNumber={row.orderNumber}
-          status={row.status}
+          orderId={String(row.id)}
+          orderNumber={row.request_number ?? `#ORD-${row.id}`}
+          status={getVerificationUiStatus(row)}
         />
       ),
     },
@@ -166,17 +221,42 @@ export default function VerificationOrdersView() {
       </div>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {INDICATOR_CARDS.map((card) => (
-          <InfoCard
-            key={card.key}
-            title={t(`indicators.${card.key}`)}
-            value={formatIndicatorValue(indicators?.[card.key] ?? 0)}
-            change={indicators?.change ?? "+24%"}
-            period={t(card.periodKey)}
-            iconSrc={card.iconSrc}
-            bgClassName={card.bgClassName}
-          />
-        ))}
+        {INDICATOR_CARDS.map((card) => {
+          let value = "-";
+          let change = "-";
+
+          if (isStatsLoading) {
+            value = "...";
+            change = "...";
+          } else if (card.key === "total") {
+            value = formatStatsCount(
+              totalSentForAuthentication,
+              isStatsLoading,
+            );
+            change = totalSentForAuthenticationChangePercent;
+          } else if (card.key === "awaitingContract") {
+            value = formatStatsCount(awaitingFinalContract, isStatsLoading);
+            change = awaitingFinalContractChangePercent;
+          } else {
+            value = formatStatsCount(
+              finalContractsUploadedToday,
+              isStatsLoading,
+            );
+            change = finalContractsUploadedChangePercent;
+          }
+
+          return (
+            <InfoCard
+              key={card.key}
+              title={t(`indicators.${card.key}`)}
+              value={value}
+              change={change}
+              period={t(card.periodKey)}
+              iconSrc={card.iconSrc}
+              bgClassName={card.bgClassName}
+            />
+          );
+        })}
       </section>
 
       <section className="flex flex-col gap-4">
@@ -192,22 +272,35 @@ export default function VerificationOrdersView() {
         <VerificationOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
-          onApply={applyFilters}
+          onApply={handleApplyFilters}
         />
 
         <DataTable
           columns={columns}
           data={rows}
-          getRowId={(row) => row.id}
+          getRowId={(row) => String(row.id)}
           selectable
           isLoading={isLoading}
           emptyContent={
             <EmptyTableState
               iconSrc="/svg/export.svg"
-              title={t("empty.title")}
-              description={t("empty.description")}
+              title={
+                isError
+                  ? error instanceof Error
+                    ? error.message
+                    : t("empty.title")
+                  : t("empty.title")
+              }
+              description={isError ? " " : t("empty.description")}
             />
           }
+        />
+
+        <TablePagination
+          page={data?.currentPage ?? page}
+          lastPage={data?.lastPage ?? 1}
+          total={data?.total}
+          onPageChange={setPage}
         />
       </section>
     </div>

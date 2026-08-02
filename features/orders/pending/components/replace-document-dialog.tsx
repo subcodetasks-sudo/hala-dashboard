@@ -12,6 +12,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
 type ReplaceDocumentDialogProps = {
@@ -23,6 +24,7 @@ type ReplaceDocumentDialogProps = {
   iconSrc: string;
   iconClassName: string;
   bgClassName: string;
+  isPending?: boolean;
   onConfirm: () => void;
 };
 
@@ -35,17 +37,23 @@ export default function ReplaceDocumentDialog({
   iconSrc,
   iconClassName,
   bgClassName,
+  isPending = false,
   onConfirm,
 }: ReplaceDocumentDialogProps) {
   const t = useTranslations("Orders.Pending.replaceDocumentDialog");
 
   const handleConfirm = () => {
+    if (isPending) return;
     onConfirm();
-    onOpenChange(false);
+  };
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen && isPending) return;
+    onOpenChange(nextOpen);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
         overlayClassName="bg-black/50 supports-backdrop-filter:backdrop-blur-sm"
@@ -59,6 +67,7 @@ export default function ReplaceDocumentDialog({
             <Button
               type="button"
               variant="ghost"
+              disabled={isPending}
               aria-label={t("close")}
               className="size-9 shrink-0 rounded-xl bg-brand-background p-0 text-brand-gris hover:bg-brand-background/80 hover:text-brand-black"
             >
@@ -119,6 +128,7 @@ export default function ReplaceDocumentDialog({
           <Button
             type="button"
             variant="ghost"
+            disabled={isPending}
             onClick={() => onOpenChange(false)}
             className="h-12 flex-1 rounded-2xl bg-brand-background font-semibold text-brand-black hover:bg-brand-background/80"
           >
@@ -126,28 +136,35 @@ export default function ReplaceDocumentDialog({
           </Button>
           <Button
             type="button"
+            disabled={isPending}
             onClick={handleConfirm}
             className="group relative h-12 flex-[1.4] items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-primary px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-primary/90 hover:shadow-md hover:shadow-brand-primary/20 active:scale-[0.98]"
           >
-            <span
-              className="confirm-chevron-start inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsLeft
-                className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
-            <span className="tracking-wide">{t("confirm")}</span>
-            <span
-              className="confirm-chevron-end inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsRight
-                className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
+            {isPending ? (
+              <Spinner className="size-5 text-brand-white" />
+            ) : (
+              <>
+                <span
+                  className="confirm-chevron-start inline-flex items-center"
+                  aria-hidden
+                >
+                  <ChevronsLeft
+                    className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
+                    strokeWidth={2.25}
+                  />
+                </span>
+                <span className="tracking-wide">{t("confirm")}</span>
+                <span
+                  className="confirm-chevron-end inline-flex items-center"
+                  aria-hidden
+                >
+                  <ChevronsRight
+                    className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
+                    strokeWidth={2.25}
+                  />
+                </span>
+              </>
+            )}
           </Button>
         </div>
       </DialogContent>

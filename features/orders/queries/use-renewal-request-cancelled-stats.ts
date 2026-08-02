@@ -8,6 +8,7 @@ import type {
   CancelledStatsData,
   CancelledStatsResponse,
 } from "@/features/orders/types";
+import { formatChangePercent } from "@/features/orders/utils";
 
 async function fetchCancelledStats(
   locale: string,
@@ -48,8 +49,26 @@ export function useRenewalRequestCancelledStats() {
     staleTime: 60 * 1000,
   });
 
+  const isLoading = query.isLoading;
+  const data = query.data;
+
   return {
     ...query,
-    totalCancelled: query.data?.total_cancelled,
+    totalCancelled: data?.total_cancelled,
+    cancelledByCustomer: data?.cancelled_by_customer,
+    cancelledByAdmin: data?.cancelled_by_admin,
+    linkedToRefund: data?.linked_to_refund,
+    totalCancelledChangePercent: formatChangePercent(
+      data?.total_cancelled_change_percent,
+      isLoading,
+    ),
+    cancelledByCustomerChangePercent: formatChangePercent(
+      data?.cancelled_by_customer_change_percent,
+      isLoading,
+    ),
+    cancelledByAdminChangePercent: formatChangePercent(
+      data?.cancelled_by_admin_change_percent,
+      isLoading,
+    ),
   };
 }

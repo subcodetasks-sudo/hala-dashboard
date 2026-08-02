@@ -19,18 +19,22 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSendForAuthentication } from "@/features/orders/queries/use-send-for-authentication";
 import { copyTextWithFeedback } from "@/features/orders/utils";
+import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 type SendContractForAuthDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  orderId: string;
   orderNumber: string;
   employerName: string;
   workerName: string;
@@ -39,13 +43,18 @@ type SendContractForAuthDialogProps = {
 export default function SendContractForAuthDialog({
   open,
   onOpenChange,
+  orderId,
   orderNumber,
   employerName,
   workerName,
 }: SendContractForAuthDialogProps) {
   const t = useTranslations("Orders.Processed.sendForAuthDialog");
+  const router = useRouter();
+  const sendForAuth = useSendForAuthentication();
   const [copied, setCopied] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+
+  const isPending = sendForAuth.isPending;
 
   const handleCopy = () => {
     if (!orderNumber) return;
@@ -56,12 +65,28 @@ export default function SendContractForAuthDialog({
   };
 
   const handleConfirm = () => {
-    toast.success(t("toastSuccess", { orderNumber: orderNumber ?? "" }));
-    onOpenChange(false);
+    if (!orderId || isPending) return;
+
+    sendForAuth.mutate(orderId, {
+      onSuccess: () => {
+        toast.success(t("toastSuccess", { orderNumber: orderNumber ?? "" }));
+        onOpenChange(false);
+        router.push("/orders/verification");
+        router.refresh();
+      },
+      onError: (error) => {
+        toast.error(
+          error instanceof Error && error.message
+            ? error.message
+            : t("errorToast"),
+        );
+      },
+    });
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
+      if (isPending) return;
       setCopied(false);
       setTooltipOpen(false);
     }
@@ -83,6 +108,7 @@ export default function SendContractForAuthDialog({
             <Button
               type="button"
               variant="ghost"
+              disabled={isPending}
               aria-label={t("close")}
               className="size-9 shrink-0 rounded-xl bg-brand-background p-0 text-brand-gris hover:bg-brand-background/80 hover:text-brand-black"
             >
@@ -176,6 +202,7 @@ export default function SendContractForAuthDialog({
           <Button
             type="button"
             variant="ghost"
+            disabled={isPending}
             onClick={() => onOpenChange(false)}
             className="h-12 flex-1 rounded-2xl bg-brand-background font-semibold text-brand-black hover:bg-brand-background/80"
           >
@@ -183,28 +210,35 @@ export default function SendContractForAuthDialog({
           </Button>
           <Button
             type="button"
+            disabled={isPending}
             onClick={handleConfirm}
             className="group relative h-12 flex-[1.4] items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-primary px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-primary/90 hover:shadow-md hover:shadow-brand-primary/20 active:scale-[0.98]"
           >
-            <span
-              className="confirm-chevron-start inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsLeft
-                className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
-            <span className="tracking-wide">{t("confirm")}</span>
-            <span
-              className="confirm-chevron-end inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsRight
-                className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
+            {isPending ? (
+              <Spinner className="size-5 text-brand-white" />
+            ) : (
+              <>
+                <span
+                  className="confirm-chevron-start inline-flex items-center"
+                  aria-hidden
+                >
+                  <ChevronsLeft
+                    className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
+                    strokeWidth={2.25}
+                  />
+                </span>
+                <span className="tracking-wide">{t("confirm")}</span>
+                <span
+                  className="confirm-chevron-end inline-flex items-center"
+                  aria-hidden
+                >
+                  <ChevronsRight
+                    className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
+                    strokeWidth={2.25}
+                  />
+                </span>
+              </>
+            )}
           </Button>
         </div>
       </DialogContent>

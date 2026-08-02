@@ -2,7 +2,10 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { verificationOrderKeys } from "@/features/orders/query-keys";
+import {
+  orderKeys,
+  verificationOrderKeys,
+} from "@/features/orders/query-keys";
 import type {
   VerificationOrderRow,
   VerificationOrdersFilterValues,
@@ -13,13 +16,6 @@ import {
   VERIFICATION_ORDERS,
 } from "@/features/orders/verification/mock-data";
 
-export type VerificationIndicators = {
-  total: number;
-  awaitingContract: number;
-  uploadedToday: number;
-  change: string;
-};
-
 let verificationOrdersStore: VerificationOrderRow[] = [...VERIFICATION_ORDERS];
 
 export async function fetchVerificationOrders(
@@ -27,20 +23,6 @@ export async function fetchVerificationOrders(
 ): Promise<VerificationOrderRow[]> {
   await new Promise((resolve) => setTimeout(resolve, 200));
   return filterVerificationOrders(verificationOrdersStore, filters);
-}
-
-export async function fetchVerificationIndicators(): Promise<VerificationIndicators> {
-  await new Promise((resolve) => setTimeout(resolve, 150));
-  return {
-    total: verificationOrdersStore.length,
-    awaitingContract: verificationOrdersStore.filter(
-      (order) => order.status === "sentForVerification"
-    ).length,
-    uploadedToday: verificationOrdersStore.filter(
-      (order) => order.status === "finalContractUploaded"
-    ).length,
-    change: "+24%",
-  };
 }
 
 export async function markFinalContractUploaded(
@@ -72,16 +54,6 @@ export function useVerificationOrders(
 }
 
 /**
- * Summary indicator cards for the verification page.
- */
-export function useVerificationIndicators() {
-  return useQuery({
-    queryKey: verificationOrderKeys.indicators(),
-    queryFn: fetchVerificationIndicators,
-  });
-}
-
-/**
  * Marks an order as having its final contract uploaded.
  */
 export function useMarkFinalContractUploaded() {
@@ -94,7 +66,7 @@ export function useMarkFinalContractUploaded() {
         queryKey: verificationOrderKeys.lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: verificationOrderKeys.indicators(),
+        queryKey: orderKeys.renewalRequestAuthenticationSentStats(),
       });
     },
   });

@@ -5,6 +5,8 @@ type ReviewFormSectionHeaderProps = {
   title: string;
   iconSrc: string;
   isEditing: boolean;
+  /** When false, hide edit/save/cancel controls (read-only form). Default true. */
+  canEdit?: boolean;
   editLabel: string;
   saveLabel: string;
   cancelLabel: string;
@@ -17,6 +19,7 @@ export default function ReviewFormSectionHeader({
   title,
   iconSrc,
   isEditing,
+  canEdit = true,
   editLabel,
   saveLabel,
   cancelLabel,
@@ -33,34 +36,40 @@ export default function ReviewFormSectionHeader({
         <span>{title}</span>
       </h3>
 
-      {isEditing ? (
-        <div className="flex flex-wrap items-center gap-2">
+      {canEdit ? (
+        isEditing ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onCancel}
+              className="h-10 rounded-xl bg-brand-background px-4 font-semibold text-brand-black hover:bg-brand-background/80"
+            >
+              {cancelLabel}
+            </Button>
+            <Button
+              type="button"
+              onClick={onSave}
+              className="h-10 gap-2 rounded-xl border-none bg-brand-primary px-4 font-semibold text-brand-white hover:bg-brand-primary/90"
+            >
+              {saveLabel}
+            </Button>
+          </div>
+        ) : (
           <Button
             type="button"
-            variant="ghost"
-            onClick={onCancel}
-            className="h-10 rounded-xl bg-brand-background px-4 font-semibold text-brand-black hover:bg-brand-background/80"
-          >
-            {cancelLabel}
-          </Button>
-          <Button
-            type="button"
-            onClick={onSave}
+            onClick={onEdit}
             className="h-10 gap-2 rounded-xl border-none bg-brand-primary px-4 font-semibold text-brand-white hover:bg-brand-primary/90"
           >
-            {saveLabel}
+            <CustomIcon
+              src="/svg/brush.svg"
+              size={16}
+              className="text-brand-white"
+            />
+            {editLabel}
           </Button>
-        </div>
-      ) : (
-        <Button
-          type="button"
-          onClick={onEdit}
-          className="h-10 gap-2 rounded-xl border-none bg-brand-primary px-4 font-semibold text-brand-white hover:bg-brand-primary/90"
-        >
-          <CustomIcon src="/svg/brush.svg" size={16} className="text-brand-white" />
-          {editLabel}
-        </Button>
-      )}
+        )
+      ) : null}
     </div>
   );
 }

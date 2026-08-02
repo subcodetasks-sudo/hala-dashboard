@@ -9,6 +9,13 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
+type ReviewFormSelectOption =
+  | string
+  | {
+      value: string;
+      label: string;
+    };
+
 type ReviewFormSelectFieldProps = {
   id: string;
   label: string;
@@ -17,10 +24,21 @@ type ReviewFormSelectFieldProps = {
   onChange: (value: string) => void;
   readOnly: boolean;
   error?: { message?: string };
-  options: readonly string[];
+  options: readonly ReviewFormSelectOption[];
   className?: string;
   placeholder?: string;
+  disabled?: boolean;
 };
+
+function toSelectOption(option: ReviewFormSelectOption): {
+  value: string;
+  label: string;
+} {
+  if (typeof option === "string") {
+    return { value: option, label: option };
+  }
+  return option;
+}
 
 export default function ReviewFormSelectField({
   id,
@@ -33,11 +51,15 @@ export default function ReviewFormSelectField({
   options,
   className,
   placeholder,
+  disabled = false,
 }: ReviewFormSelectFieldProps) {
+  const normalizedOptions = options.map(toSelectOption);
+  const isDisabled = readOnly || disabled;
+
   return (
     <Field className={className} data-invalid={!!error || undefined}>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
-      <Select value={value} onValueChange={onChange} disabled={readOnly}>
+      <Select value={value} onValueChange={onChange} disabled={isDisabled}>
         <SelectTrigger
           id={id}
           aria-invalid={!!error}
@@ -52,9 +74,9 @@ export default function ReviewFormSelectField({
           </span>
         </SelectTrigger>
         <SelectContent position="popper" side="bottom" align="start">
-          {options.map((option) => (
-            <SelectItem key={option} value={option}>
-              {option}
+          {normalizedOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
             </SelectItem>
           ))}
         </SelectContent>

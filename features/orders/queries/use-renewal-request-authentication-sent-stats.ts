@@ -8,6 +8,7 @@ import type {
   AuthenticationSentStatsData,
   AuthenticationSentStatsResponse,
 } from "@/features/orders/types";
+import { formatChangePercent } from "@/features/orders/utils";
 
 async function fetchAuthenticationSentStats(
   locale: string,
@@ -48,9 +49,26 @@ export function useRenewalRequestAuthenticationSentStats() {
     staleTime: 60 * 1000,
   });
 
+  const isLoading = query.isLoading;
+  const data = query.data;
+
   return {
     ...query,
-    totalSentForAuthentication: query.data?.total_sent_for_authentication,
-    changePercent: query.data?.total_sent_for_authentication_change_percent,
+    totalSentForAuthentication: data?.total_sent_for_authentication,
+    awaitingFinalContract: data?.awaiting_final_contract,
+    finalContractsUploadedToday: data?.final_contracts_uploaded_today,
+    totalSentForAuthenticationChangePercent: formatChangePercent(
+      data?.total_sent_for_authentication_change_percent,
+      isLoading,
+    ),
+    awaitingFinalContractChangePercent: formatChangePercent(
+      data?.awaiting_final_contract_change_percent,
+      isLoading,
+    ),
+    finalContractsUploadedChangePercent: formatChangePercent(
+      data?.final_contracts_uploaded_change_percent,
+      isLoading,
+    ),
+    changePercent: data?.total_sent_for_authentication_change_percent,
   };
 }

@@ -1,4 +1,5 @@
 import type {
+  CitiesListFilters,
   CompletedOrdersFilterValues,
   OrdersFilterValues,
   PaymentOrdersFilterValues,
@@ -14,7 +15,11 @@ export const orderKeys = {
   details: () => [...orderKeys.all, "detail"] as const,
   detail: (id: string) => [...orderKeys.details(), id] as const,
   holdReasons: () => [...orderKeys.all, "hold-reasons"] as const,
+  cancellationReasons: () => [...orderKeys.all, "cancellation-reasons"] as const,
+  cancellationSources: () => [...orderKeys.all, "cancellation-sources"] as const,
   statuses: () => [...orderKeys.all, "statuses"] as const,
+  cities: (filters?: CitiesListFilters) =>
+    [...orderKeys.all, "cities", { filters }] as const,
   renewalRequestStats: () => [...orderKeys.all, "renewal-request-stats"] as const,
   renewalRequestHeldStats: () => [...orderKeys.all, "renewal-request-held-stats"] as const,
   renewalRequestProcessedStats: () => [...orderKeys.all, "renewal-request-processed-stats"] as const,

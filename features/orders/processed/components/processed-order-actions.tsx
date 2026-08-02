@@ -133,6 +133,7 @@ export default function ProcessedOrderActions({
       <SendContractForAuthDialog
         open={isSendForAuthOpen}
         onOpenChange={setSendForAuthOpen}
+        orderId={orderId}
         orderNumber={orderNumber}
         employerName={employerName}
         workerName={workerName}

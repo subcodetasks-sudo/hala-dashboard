@@ -2,11 +2,13 @@
 
 import { Phone, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 import ConfirmFilterButton from "@/components/confirm-filter-button";
 import CustomIcon from "@/components/custom-svg";
 import SearchBar from "@/components/search-bar";
 import DataTable, { type DataTableColumn } from "@/components/table";
+import TablePagination from "@/components/table-pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCan } from "@/features/auth/lib/use-can";
 import OrderRowActions from "@/features/orders/components/order-row-actions";
 import { DEFAULT_HOME_ORDERS_FILTERS } from "@/features/orders/mock-data";
 import { useOrderStatuses } from "@/features/orders/queries/use-order-statuses";
@@ -55,6 +58,7 @@ function statusBadgeClass(status: OrderStatus) {
 export default function LatestOrdersSection() {
   const t = useTranslations("HomePage");
   const locale = useLocale() === "en" ? "en" : "ar";
+  const permissions = useCan();
 
   const {
     data: statusOptions = [],
@@ -67,21 +71,35 @@ export default function LatestOrdersSection() {
       serialize: serializeOrdersFilters,
       parse: parseOrdersFilters,
     });
+  const [page, setPage] = useState(1);
 
-  const allStatuses = [
-    { value: "all" as const, label: t("filters.statusAll") },
-    ...statusOptions.filter((status) => status.value !== "under_review"),
-  ];
+  useEffect(() => {
+    setPage(1);
+  }, [appliedFilters]);
 
-  const { data: rows = [], isLoading, isError, error } = useRenewalRequests({
-    status:
-      appliedFilters.status && appliedFilters.status !== "all"
-        ? appliedFilters.status
-        : undefined,
+  const scopedStatusOptions = permissions.orderStatuses(statusOptions);
+
+  const allStatuses = permissions.includeOrderStatusAllOption()
+    ? [
+        { value: "all" as const, label: t("filters.statusAll") },
+        ...scopedStatusOptions,
+      ]
+    : scopedStatusOptions;
+
+  const draftStatus = permissions.orderStatusSelectValue(draftFilters.status);
+  const queryStatus = permissions.resolveOrderStatusFilter(
+    appliedFilters.status,
+  );
+
+  const { data, isLoading, isError, error } = useRenewalRequests({
+    status: queryStatus,
     search: appliedFilters.search,
-    perPage: 15,
+    perPage: 10,
+    page,
     enabled: true,
   });
+
+  const rows = data?.items ?? [];
 
   const columns: DataTableColumn<OrderListItem>[] = [
     {
@@ -215,7 +233,7 @@ export default function LatestOrdersSection() {
               {t("filters.status")}
             </span>
             <Select
-              value={draftFilters.status ?? "all"}
+              value={draftStatus}
               onValueChange={(value) =>
                 setDraftFilters({
                   ...draftFilters,
@@ -257,6 +275,13 @@ export default function LatestOrdersSection() {
               : t("table.empty")
             : t("table.empty")
         }
+      />
+
+      <TablePagination
+        page={data?.currentPage ?? page}
+        lastPage={data?.lastPage ?? 1}
+        total={data?.total}
+        onPageChange={setPage}
       />
     </section>
   );

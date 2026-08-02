@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "welcome": "مرحباً عزيزنا الأدمن! 👋",
+    "welcome": "مرحباً عزيزنا {name}! 👋",
     "welcomeSubtitle": "نظرة عامة على طلبات تجديد العقود.",
     "manualOrder": "إدخال طلب يدوي",
     "sections": {
@@ -10,7 +10,7 @@
     },
     "period": "هذا الأسبوع",
     "indicators": {
-      "processing": "الطلبات للمعالجة",
+      "processing": "الطلبات المعالجة",
       "verification": "الطلبات المرسلة للمصادقة",
       "payment": "الطلبات في مرحلة الدفع",
       "completed": "الطلبات المكتملة",
@@ -112,7 +112,8 @@
   "Orders": {
     "route": {
       "unauthorized": "غير مصرح",
-      "unableToFetch": "تعذر تحميل الطلبات. يرجى المحاولة مرة أخرى."
+      "unableToFetch": "تعذر تحميل الطلبات. يرجى المحاولة مرة أخرى.",
+      "unableToFetchCities": "تعذر تحميل المدن. يرجى المحاولة مرة أخرى."
     },
     "New": {
       "title": "الطلبات الجديدة",
@@ -178,7 +179,14 @@
         "cancel": "تراجع وإلغاء",
         "close": "إغلاق",
         "copy": "نسخ المعرف",
-        "copied": "تم النسخ!"
+        "copied": "تم النسخ!",
+        "successToast": "تم بدء المراجعة بنجاح",
+        "errorToast": "تعذر بدء المراجعة. يرجى المحاولة مرة أخرى.",
+        "route": {
+          "unauthorized": "غير مصرح",
+          "invalidId": "معرّف طلب التجديد مطلوب",
+          "unableToComplete": "تعذر بدء المراجعة. يرجى المحاولة مرة أخرى."
+        }
       },
       "approveProcessDialog": {
         "title": "اعتماد معالجة الطلب",
@@ -194,7 +202,13 @@
         "close": "إغلاق",
         "copy": "نسخ المعرف",
         "copied": "تم النسخ!",
-        "toastSuccess": "تم إعتماد هذا الطلب بنجاح"
+        "toastSuccess": "تم إعتماد هذا الطلب بنجاح",
+        "errorToast": "تعذر اعتماد هذا الطلب. يرجى المحاولة مرة أخرى.",
+        "route": {
+          "unauthorized": "غير مصرح",
+          "invalidId": "معرّف طلب التجديد مطلوب",
+          "unableToComplete": "تعذر اعتماد هذا الطلب. يرجى المحاولة مرة أخرى."
+        }
       },
       "pendOrderDialog": {
         "title": "تعليق الطلب",
@@ -210,6 +224,7 @@
         "cancel": "تراجع وإلغاء",
         "close": "إغلاق",
         "toastSuccess": "تم تعليق الطلب بنجاح",
+        "errorToast": "تعذر تعليق هذا الطلب. يرجى المحاولة مرة أخرى.",
         "reasons": {
           "incompleteEmployerData": "بيانات صاحب العمل غير مكتملة",
           "unclearWorkerData": "بيانات العامل غير واضحة",
@@ -217,6 +232,13 @@
           "unclearDocument": "مستند غير واضح",
           "dataConflict": "تعارض في البيانات",
           "other": "سبب آخر"
+        },
+        "route": {
+          "unauthorized": "غير مصرح",
+          "invalidId": "معرّف طلب التجديد مطلوب",
+          "invalidJson": "نص الطلب غير صالح",
+          "holdReasonRequired": "سبب التعليق مطلوب",
+          "unableToComplete": "تعذر تعليق هذا الطلب. يرجى المحاولة مرة أخرى."
         }
       },
       "Review": {
@@ -405,7 +427,17 @@
         "view": "عرض",
         "confirm": "تأكيد الإستبدال",
         "cancel": "تراجع وإلغاء",
-        "close": "إغلاق"
+        "close": "إغلاق",
+        "successToast": "تم استبدال المستند بنجاح",
+        "errorToast": "تعذر استبدال هذا المستند. يرجى المحاولة مرة أخرى.",
+        "route": {
+          "unauthorized": "غير مصرح",
+          "invalidId": "معرّف طلب التجديد مطلوب",
+          "invalidForm": "بيانات رفع الملف غير صالحة",
+          "collectionRequired": "نوع المستند مطلوب",
+          "fileRequired": "ملف المستند مطلوب",
+          "unableToComplete": "تعذر استبدال هذا المستند. يرجى المحاولة مرة أخرى."
+        }
       },
       "markProcessedDialog": {
         "title": "تحويل الطلب إلى تمت المعالجة",
@@ -419,7 +451,8 @@
         "close": "إغلاق",
         "copy": "نسخ الرقم",
         "copied": "تم النسخ!",
-        "toastSuccess": "تمت إعتماد الطلب {orderNumber} للمعالجة بنجاح."
+        "toastSuccess": "تمت إعتماد الطلب {orderNumber} للمعالجة بنجاح.",
+        "errorToast": "تعذر اعتماد هذا الطلب. يرجى المحاولة مرة أخرى."
       }
     },
     "Processed": {
@@ -491,7 +524,13 @@
         "close": "إغلاق",
         "copy": "نسخ المعرف",
         "copied": "تم النسخ!",
-        "toastSuccess": "تم إرسال عقد {orderNumber} للمصادقة بنجاح."
+        "toastSuccess": "تم إرسال عقد {orderNumber} للمصادقة بنجاح.",
+        "errorToast": "تعذر إرسال هذا العقد للمصادقة. يرجى المحاولة مرة أخرى.",
+        "route": {
+          "unauthorized": "غير مصرح",
+          "invalidId": "معرّف طلب التجديد مطلوب",
+          "unableToComplete": "تعذر إرسال هذا العقد للمصادقة. يرجى المحاولة مرة أخرى."
+        }
       }
     },
     "Verification": {
@@ -666,6 +705,60 @@
         "title": "لا توجد طلبات مكتملة",
         "description": "ستظهر الطلبات المكتملة هنا بمجرد انتهاء كامل الإجراءات."
       }
+    },
+    "Cancelled": {
+      "title": "الطلبات الملغاة",
+      "description": "جميع طلبات تجميد العقود التي تم إلغاؤها، مع عرض سبب الإلغاء والمرحلة التي توقف عندها الطلب.",
+      "listTitle": "قائمة الطلبات الملغاة",
+      "periodWeek": "هذا الأسبوع",
+      "manualOrder": "إدخال طلب يدوي",
+      "indicators": {
+        "total": "إجمالي الطلبات الملغاة",
+        "byCustomer": "طلبات ملغاة من العميل",
+        "byAdmin": "طلبات ملغاة من الإدارة"
+      },
+      "filters": {
+        "cancelledAt": "تاريخ الإلغاء",
+        "searchLabel": "البحث",
+        "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
+        "orderType": "النوع",
+        "typeAll": "الكل",
+        "typeEform": "E-form",
+        "typeManual": "يدوي",
+        "cancellationSource": "مصدر الإلغاء",
+        "sourceAll": "الكل",
+        "cancellationReason": "سبب الإلغاء",
+        "reasonAll": "الكل",
+        "apply": "تطبيق الفلترة",
+        "pickDate": "اختر التاريخ"
+      },
+      "route": {
+        "unauthorized": "غير مصرح",
+        "unableToFetch": "تعذر تحميل خيارات الإلغاء. يرجى المحاولة مرة أخرى."
+      },
+      "table": {
+        "orderNumber": "رقم الطلب",
+        "employer": "صاحب العمل / الجوال",
+        "worker": "اسم العامل",
+        "cancelledAt": "تاريخ الإلغاء",
+        "type": "نوع الطلب",
+        "typeEform": "E-form",
+        "typeManual": "يدوي",
+        "cancellationReason": "سبب الإلغاء",
+        "by": "بواسطة",
+        "byCustomer": "العميل",
+        "byReviewEmployee": "موظف المراجعة",
+        "byContractsEmployee": "موظف العقود",
+        "byAdmin": "الإدارة",
+        "status": "الحالة",
+        "statusCancelled": "ملغي",
+        "action": "إجراء",
+        "viewOrder": "عرض الطلب"
+      },
+      "empty": {
+        "title": "لا توجد طلبات ملغاة",
+        "description": "لم يتم تسجيل أي طلبات ملغاة حتى الآن - وهذا مؤشر جيد!"
+      }
     }
   },
   "Dashboard": {
@@ -679,6 +772,7 @@
       },
       "links": {
         "home": "الرئيسية",
+        "manualOrder": "إدخال طلب يدوي",
         "newOrders": "الطلبات الجديدة",
         "pendingOrders": "الطلبات المعلقة",
         "processedOrders": "الطلبات المعالجة",
@@ -715,5 +809,13 @@
     "description": "عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها أو غير متاحة حالياً.",
     "backHome": "العودة للرئيسية",
     "previousPage": "الصفحة السابقة"
+  },
+  "Common": {
+    "Pagination": {
+      "previous": "السابق",
+      "next": "التالي",
+      "goToPage": "الانتقال إلى الصفحة {page}",
+      "summary": "صفحة {page} من {lastPage} · {total} نتيجة"
+    }
   }
 }

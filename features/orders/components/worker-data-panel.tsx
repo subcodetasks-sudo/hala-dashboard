@@ -1,14 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import DateField from "@/components/date-field";
 import ReviewFormPhoneField from "@/components/phone-field";
+import ReviewFormSelectField from "@/components/select-field";
 import ReviewFormTextField from "@/components/text-field";
 import ReviewFormSectionHeader from "@/features/orders/components/section-header";
+import { getCityLabel, useCities } from "@/features/orders/queries/use-cities";
 import type { OrderReviewDetail } from "@/features/orders/types";
 import {
   createWorkerSchema,
@@ -18,6 +20,8 @@ import {
 type WorkerDataPanelProps = {
   order: OrderReviewDetail;
   isEditing: boolean;
+  /** When false, form stays read-only and edit controls are hidden. */
+  canEdit?: boolean;
   onEditingChange: (editing: boolean) => void;
   onSaved?: (values: WorkerFormValues) => void;
 };
@@ -25,11 +29,14 @@ type WorkerDataPanelProps = {
 export default function WorkerDataPanel({
   order,
   isEditing,
+  canEdit = true,
   onEditingChange,
   onSaved,
 }: WorkerDataPanelProps) {
   const t = useTranslations("Orders.New.Review.worker");
   const tValidation = useTranslations("Orders.New.Review.validation");
+  const locale = useLocale();
+  const { data: cities = [], isLoading: isCitiesLoading } = useCities();
 
   const schema = useMemo(
     () =>
@@ -66,6 +73,7 @@ export default function WorkerDataPanel({
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<WorkerFormValues>({
     resolver: zodResolver(schema),
@@ -77,7 +85,30 @@ export default function WorkerDataPanel({
     reset(defaultValues);
   }, [defaultValues, reset]);
 
+  const selectedPassportIssuePlace = watch("passportIssuePlace");
+
+  const cityOptions = useMemo(() => {
+    const options = cities.map((city) => {
+      const label = getCityLabel(city, locale);
+      return { value: label, label };
+    });
+    const current = selectedPassportIssuePlace?.trim();
+
+    if (
+      current &&
+      current !== "—" &&
+      !options.some((option) => option.value === current)
+    ) {
+      return [{ value: current, label: current }, ...options];
+    }
+
+    return options;
+  }, [cities, locale, selectedPassportIssuePlace]);
+
+  const editing = canEdit && isEditing;
+
   const onSubmit = (values: WorkerFormValues) => {
+    if (!canEdit) return;
     onSaved?.(values);
     onEditingChange(false);
   };
@@ -92,7 +123,8 @@ export default function WorkerDataPanel({
       <ReviewFormSectionHeader
         title={t("sectionTitle")}
         iconSrc="/svg/profile-tick.svg"
-        isEditing={isEditing}
+        isEditing={editing}
+        canEdit={canEdit}
         editLabel={t("edit")}
         saveLabel={t("save")}
         cancelLabel={t("cancel")}
@@ -112,7 +144,7 @@ export default function WorkerDataPanel({
             id="workerName"
             label={t("workerName")}
             iconSrc="/svg/person.svg"
-            readOnly={!isEditing}
+            readOnly={!editing}
             error={errors.workerName}
             {...register("workerName")}
           />
@@ -124,7 +156,7 @@ export default function WorkerDataPanel({
               <ReviewFormPhoneField
                 id="workerPhoneLocal"
                 label={t("workerPhone")}
-                readOnly={!isEditing}
+                readOnly={!editing}
                 error={errors.workerPhoneLocal}
                 placeholder={t("phonePlaceholder")}
                 field={field}
@@ -146,7 +178,7 @@ export default function WorkerDataPanel({
                 onChange={field.onChange}
                 valueAs="iso"
                 variant="form"
-                readOnly={!isEditing}
+                readOnly={!editing}
                 error={errors.birthDate}
                 iconSrc="/svg/calendar.svg"
               />
@@ -157,18 +189,27 @@ export default function WorkerDataPanel({
             id="homeAddress"
             label={t("homeAddress")}
             iconSrc="/svg/location.svg"
-            readOnly={!isEditing}
+            readOnly={!editing}
             error={errors.homeAddress}
             {...register("homeAddress")}
           />
 
-          <ReviewFormTextField
-            id="passportIssuePlace"
-            label={t("passportIssuePlace")}
-            iconSrc="/svg/target.svg"
-            readOnly={!isEditing}
-            error={errors.passportIssuePlace}
-            {...register("passportIssuePlace")}
+          <Controller
+            name="passportIssuePlace"
+            control={control}
+            render={({ field }) => (
+              <ReviewFormSelectField
+                id="passportIssuePlace"
+                label={t("passportIssuePlace")}
+                iconSrc="/svg/target.svg"
+                value={field.value === "—" ? undefined : field.value}
+                onChange={field.onChange}
+                readOnly={!editing}
+                disabled={editing && isCitiesLoading}
+                error={errors.passportIssuePlace}
+                options={cityOptions}
+              />
+            )}
           />
         </div>
 
@@ -178,7 +219,7 @@ export default function WorkerDataPanel({
             id="passportNumber"
             label={t("passportNumber")}
             iconSrc="/svg/wallet-2.svg"
-            readOnly={!isEditing}
+            readOnly={!editing}
             error={errors.passportNumber}
             {...register("passportNumber")}
           />
@@ -194,7 +235,7 @@ export default function WorkerDataPanel({
                 onChange={field.onChange}
                 valueAs="iso"
                 variant="form"
-                readOnly={!isEditing}
+                readOnly={!editing}
                 error={errors.passportIssueDate}
                 iconSrc="/svg/calendar.svg"
               />
@@ -212,7 +253,7 @@ export default function WorkerDataPanel({
                 onChange={field.onChange}
                 valueAs="iso"
                 variant="form"
-                readOnly={!isEditing}
+                readOnly={!editing}
                 error={errors.passportExpiryDate}
                 iconSrc="/svg/calendar.svg"
               />

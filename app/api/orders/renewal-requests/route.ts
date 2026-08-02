@@ -40,21 +40,36 @@ export async function GET(request: Request) {
   }
 
   try {
-    const result = await api.get<OrderListResponse>(
-      "/admin/renewal-requests",
-      {
-        locale,
-        params: collectQueryParams(request.url),
-        headers: {
-          Authorization: `${tokenType} ${token}`,
-        },
+    const result = await api.get<
+      OrderListResponse & {
+        meta?: Record<string, unknown>;
+      }
+    >("/admin/renewal-requests", {
+      locale,
+      params: collectQueryParams(request.url),
+      headers: {
+        Authorization: `${tokenType} ${token}`,
       },
-    );
+    });
+
+    // Laravel Resource collections put items in `data` and totals in sibling `meta`.
+    // Normalize that into our paginator shape so the client always gets last_page.
+    if (Array.isArray(result.data) && result.meta) {
+      return Response.json({
+        success: true,
+        message: result.message,
+        data: {
+          data: result.data,
+          ...result.meta,
+        },
+      });
+    }
 
     return Response.json({
       success: true,
       message: result.message,
       data: result.data,
+      ...(result.meta ? { meta: result.meta } : {}),
     });
   } catch (error) {
     if (error instanceof ApiError) {
@@ -76,3 +91,4 @@ export async function GET(request: Request) {
     );
   }
 }
+

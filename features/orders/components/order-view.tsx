@@ -15,6 +15,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCan } from "@/features/auth/lib/use-can";
 import ChangeHistoryTable from "@/features/orders/components/change-history-table";
 import DocumentDataPanel from "@/features/orders/components/document-data-panel";
 import EmployerDataPanel from "@/features/orders/components/employer-data-panel";
@@ -30,7 +31,7 @@ import {
   useUpdateOrderEmployer,
   useUpdateOrderWorker,
 } from "@/features/orders/queries/use-orders";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 
 export type ReviewTabId = "employer" | "worker" | "documents";
 
@@ -57,6 +58,8 @@ type OrderViewProps = {
 
 export default function OrderView({ orderId }: OrderViewProps) {
   const t = useTranslations("Orders.New.Review");
+  const router = useRouter();
+  const permissions = useCan();
   const { data: order, isPending, isError } = useOrder(orderId);
   const updateEmployer = useUpdateOrderEmployer();
   const updateWorker = useUpdateOrderWorker();
@@ -70,7 +73,20 @@ export default function OrderView({ orderId }: OrderViewProps) {
     }
   }, [order]);
 
-  if (isPending) {
+  const canViewOrderDetail =
+    !order ||
+    permissions.isPending ||
+    permissions.viewOrderDetail(order.status);
+
+  useEffect(() => {
+    if (!order || permissions.isPending || canViewOrderDetail) {
+      return;
+    }
+
+    router.replace("/");
+  }, [canViewOrderDetail, order, permissions.isPending, router]);
+
+  if (isPending || permissions.isPending) {
     return <OrderViewSkeleton />;
   }
 
@@ -78,7 +94,17 @@ export default function OrderView({ orderId }: OrderViewProps) {
     notFound();
   }
 
-  const isEditing = editingTab !== null;
+  if (!canViewOrderDetail) {
+    return <OrderViewSkeleton />;
+  }
+
+  // Editable only while reviewing new/held orders (under_review is the active new-review state).
+  const canEditForms =
+    order.status === "new" ||
+    order.status === "under_review" ||
+    order.status === "held";
+
+  const isEditing = canEditForms && editingTab !== null;
   const flaggedTab = order.hold?.reason
     ? HOLD_REASON_TAB[order.hold.reason]
     : undefined;
@@ -86,6 +112,14 @@ export default function OrderView({ orderId }: OrderViewProps) {
   const handleTabChange = (value: string) => {
     setEditingTab(null);
     setActiveTab(value as ReviewTabId);
+  };
+
+  const handleEditingChange = (tab: ReviewTabId, editing: boolean) => {
+    if (!canEditForms) {
+      setEditingTab(null);
+      return;
+    }
+    setEditingTab(editing ? tab : null);
   };
 
   const handleEmployerSaved = (values: EmployerFormValues) => {
@@ -206,9 +240,10 @@ export default function OrderView({ orderId }: OrderViewProps) {
             <TabsContent value="employer" className="mt-2 p-4 rounded-2xl border border-black/5">
               <EmployerDataPanel
                 order={order}
+                canEdit={canEditForms}
                 isEditing={editingTab === "employer"}
                 onEditingChange={(editing) =>
-                  setEditingTab(editing ? "employer" : null)
+                  handleEditingChange("employer", editing)
                 }
                 onSaved={handleEmployerSaved}
               />
@@ -216,9 +251,10 @@ export default function OrderView({ orderId }: OrderViewProps) {
             <TabsContent value="worker" className="mt-2">
               <WorkerDataPanel
                 order={order}
+                canEdit={canEditForms}
                 isEditing={editingTab === "worker"}
                 onEditingChange={(editing) =>
-                  setEditingTab(editing ? "worker" : null)
+                  handleEditingChange("worker", editing)
                 }
                 onSaved={handleWorkerSaved}
               />

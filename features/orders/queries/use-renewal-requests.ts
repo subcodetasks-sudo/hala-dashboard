@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
 
 import { orderKeys } from "@/features/orders/query-keys";
@@ -9,9 +9,20 @@ import type {
   OrderListResponse,
   RenewalRequestsFilters,
 } from "@/features/orders/types";
-import { extractCollection } from "@/features/orders/utils/api-payload";
+import {
+  extractCollection,
+  extractPaginationMeta,
+} from "@/features/orders/utils/api-payload";
 import { toApiOrderSource } from "@/features/orders/utils/map-order-list-item";
 import type { OrderSource } from "@/features/home/types";
+
+export type RenewalRequestsPage = {
+  items: OrderListItem[];
+  currentPage: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
+};
 
 function buildSearchParams(filters: RenewalRequestsFilters): URLSearchParams {
   const params = new URLSearchParams();
@@ -59,7 +70,7 @@ function buildSearchParams(filters: RenewalRequestsFilters): URLSearchParams {
 async function fetchRenewalRequests(
   locale: string,
   filters: RenewalRequestsFilters,
-): Promise<OrderListItem[]> {
+): Promise<RenewalRequestsPage> {
   const params = buildSearchParams(filters);
   const query = params.toString();
   const url = query
@@ -75,7 +86,7 @@ async function fetchRenewalRequests(
   });
 
   const payload = (await response.json().catch(() => null)) as
-    | OrderListResponse
+    | (OrderListResponse & { meta?: unknown })
     | { success?: false; message?: string }
     | null;
 
@@ -87,7 +98,21 @@ async function fetchRenewalRequests(
     );
   }
 
-  return extractCollection(payload.data) as OrderListItem[];
+  const items = extractCollection(payload.data) as OrderListItem[];
+  const pagination = extractPaginationMeta(payload.data, {
+    fallbackPage: filters.page ?? 1,
+    fallbackPerPage: filters.perPage ?? 10,
+    itemCount: items.length,
+    topLevelMeta: "meta" in payload ? payload.meta : undefined,
+  });
+
+  return {
+    items,
+    currentPage: pagination.currentPage,
+    lastPage: pagination.lastPage,
+    perPage: pagination.perPage,
+    total: pagination.total,
+  };
 }
 
 export type UseRenewalRequestsOptions = RenewalRequestsFilters & {
@@ -114,5 +139,6 @@ export function useRenewalRequests(options: UseRenewalRequestsOptions = {}) {
     queryKey: [...orderKeys.list(resolvedFilters), locale],
     queryFn: () => fetchRenewalRequests(locale, resolvedFilters),
     enabled,
+    placeholderData: keepPreviousData,
   });
 }

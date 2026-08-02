@@ -6,6 +6,7 @@ export {
 } from "./format-stats";
 export {
   ORDER_FILTER_PARAM_KEYS,
+  parseCancelledOrdersFilters,
   parseCompletedOrdersFilters,
   parseIsoDateParam,
   parseOrdersFilters,
@@ -13,6 +14,7 @@ export {
   parsePendingOrdersFilters,
   parseProcessedOrdersFilters,
   parseVerificationOrdersFilters,
+  serializeCancelledOrdersFilters,
   serializeCompletedOrdersFilters,
   serializeOrdersFilters,
   serializePaymentOrdersFilters,
@@ -26,6 +28,8 @@ export {
 } from "./filter-query-params";
 export {
   getOrderAssigneeName,
+  getOrderCancelledAtDisplay,
+  getOrderCancelledByName,
   getOrderCreatedDisplay,
   getOrderEmployerName,
   getOrderExecutionDisplay,

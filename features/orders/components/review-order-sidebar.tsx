@@ -55,11 +55,13 @@ export default function ReviewOrderSidebar({
     return null;
   }
 
-  // Held orders are re-reviewed, so they keep the checklist and the process action.
+  // Held / under-review orders keep the checklist and process actions (same as new).
   const isHeld = order.status === "held";
+  const isNewOrUnderReview =
+    order.status === "new" || order.status === "under_review";
   const isProcessed = order.status === "processed";
   const isSentForAuth = order.status === "sent_for_authentication";
-  const canReview = order.status === "new" || isHeld;
+  const canReview = isNewOrUnderReview || isHeld;
   const showReviewActions = canReview && !isEditing;
   const showProcessedActions = isProcessed && !isEditing;
   const showSentForAuthActions = isSentForAuth && !isEditing;
@@ -176,7 +178,8 @@ export default function ReviewOrderSidebar({
 
         <ul className="mt-1 divide-y divide-black/5">
           {NEW_ORDER_CHECKLIST_IDS.map((key) => {
-            const checked = isProcessed ? true : checklist[key];
+            // Interactive only for new / under_review / held; later stages are complete.
+            const checked = canReview ? checklist[key] : true;
             return (
               <li key={key}>
                 <button
@@ -235,7 +238,7 @@ export default function ReviewOrderSidebar({
               <CircleCheck className="size-5" strokeWidth={2} />
               {t("reviewed")}
             </Button>
-            {order.status === "new" ? (
+            {isNewOrUnderReview ? (
               <Button
                 type="button"
                 onClick={() => setPendOrderOpen(true)}
@@ -333,6 +336,7 @@ export default function ReviewOrderSidebar({
       <SendContractForAuthDialog
         open={isSendForAuthOpen}
         onOpenChange={setSendForAuthOpen}
+        orderId={order.id}
         orderNumber={order.orderNumber}
         employerName={order.employerName}
         workerName={order.workerName}

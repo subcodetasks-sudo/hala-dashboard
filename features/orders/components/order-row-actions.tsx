@@ -10,7 +10,6 @@ import PaymentOrderActions from "@/features/orders/payment/components/payment-or
 import ProcessedOrderActions from "@/features/orders/processed/components/processed-order-actions";
 import type { OrderListItem } from "@/features/orders/types";
 import {
-  getOrderAssigneeName,
   getOrderEmployerName,
   getOrderWorkerName,
 } from "@/features/orders/utils";
@@ -43,7 +42,7 @@ export default function OrderRowActions({
             orderId={orderId}
             orderNumber={orderNumber}
             customerName={employerName}
-            handlerName={getOrderAssigneeName(order, locale)}
+            handlerName={workerName}
             label={startReviewLabel}
           />
         );

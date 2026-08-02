@@ -1,4 +1,5 @@
 import type {
+  DocumentCollection,
   OrderDetail,
   OrderDocumentType,
   OrderHoldInfo,
@@ -13,7 +14,7 @@ import {
 type AppLocale = "ar" | "en";
 
 const DOCUMENT_FIELD_MAP: {
-  key: keyof OrderDetail["documents"];
+  key: DocumentCollection;
   type: OrderDocumentType;
 }[] = [
   { key: "national_id_image", type: "nationalId" },
@@ -51,13 +52,16 @@ function formatApiDateTime(value: string | null | undefined) {
 
   const [datePart = "", timePart = ""] = value.split(" ");
   const [year, month, day] = datePart.split("-").map(Number);
-  const [hour = 0, minute = 0] = timePart.split(":").map(Number);
+  const timeSubparts = timePart.split(":");
+  const hour = Number(timeSubparts[0] ?? 0);
+  const minute = Number(timeSubparts[1] ?? 0);
+  const second = Number(timeSubparts[2] ?? 0);
 
   if (!year || !month || !day) {
     return { dateLabel: value, timeLabel: timePart || "—", isoDate: datePart };
   }
 
-  const date = new Date(year, month - 1, day, hour, minute);
+  const date = new Date(year, month - 1, day, hour, minute, second);
   const dateLabel = date.toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
@@ -67,6 +71,7 @@ function formatApiDateTime(value: string | null | undefined) {
   const timeLabel = date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
+    hour12: true,
   });
 
   return { dateLabel, timeLabel, isoDate: datePart };
@@ -135,6 +140,7 @@ export function mapOrderDetailToReview(
       {
         id: `${detail.id}-${type}`,
         type,
+        collection: key,
         uploadedAtIso: created.isoDate || detail.created_at.slice(0, 10),
         sizeLabel: "—",
         format: isUnclearPassport
@@ -189,7 +195,7 @@ export function mapOrderDetailToReview(
     changeHistory: detail.activities.map((activity) => ({
       id: String(activity.id),
       employee: pickRefName(locale, activity.admin ?? activity.performed_by),
-      actionType: activity.action_label ?? activity.action,
+      actionType: activity.description ?? activity.action_label ?? activity.action,
       dateTime: activity.created_at,
     })),
     documents,

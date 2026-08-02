@@ -9,6 +9,7 @@ import {
   SidebarHeader,
   SidebarMenu,
 } from "@/components/ui/sidebar";
+import { useCan } from "@/features/auth/lib/use-can";
 import { useClearProfile } from "@/features/profile/queries/use-profile";
 import { useRenewalRequestStats } from "@/features/orders/queries/use-renewal-request-stats";
 import { useRenewalRequestHeldStats } from "@/features/orders/queries/use-renewal-request-held-stats";
@@ -92,6 +93,11 @@ const navGroups: NavGroupItem[] = [
         labelKey: "refundOrders",
         icon: "/svg/refresh-2.svg",
       },
+      {
+        href: "/orders/manual",
+        labelKey: "manualOrder",
+        icon: "/svg/receipt-edit.svg",
+      },
     ],
   },
   {
@@ -149,11 +155,29 @@ export default function DashboardSidebar() {
   const locale = useLocale();
   const router = useRouter();
   const clearProfile = useClearProfile();
+  const permissions = useCan();
   const { newRequestsCount, isLoading: isNewLoading } = useRenewalRequestStats();
   const { heldRequestsCount, isLoading: isHeldLoading } = useRenewalRequestHeldStats();
   const { processedRequestsCount, isLoading: isProcessedLoading } =
     useRenewalRequestProcessedStats();
   const isLoggingOut = useRef(false);
+  const visibleNavGroups = navGroups
+    .filter(
+      (group) => group.labelKey !== "operations" || permissions.viewOperations(),
+    )
+    .map((group) => {
+      if (group.labelKey !== "platform") {
+        return group;
+      }
+
+      return {
+        ...group,
+        links: group.links.filter((link) =>
+          permissions.viewPlatformNav(link.href),
+        ),
+      };
+    })
+    .filter((group) => group.links.length > 0);
 
   async function performLogout() {
     if (isLoggingOut.current) {
@@ -221,7 +245,7 @@ export default function DashboardSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="dashboard-sidebar-content gap-4 overflow-y-auto">
-        {navGroups.map((group) => (
+        {visibleNavGroups.map((group) => (
           <SidebarGroup key={group.labelKey} className="p-0">
             <SidebarGroupLabel className="mb-2 flex h-auto items-center gap-2 px-2 text-xs font-normal text-brand-gris">
               <span>{t(`groups.${group.labelKey}`)}</span>

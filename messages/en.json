@@ -1,6 +1,6 @@
 {
   "HomePage": {
-    "welcome": "Welcome, Dear Admin! 👋",
+    "welcome": "Welcome, Dear {name}! 👋",
     "welcomeSubtitle": "Overview of contract renewal requests.",
     "manualOrder": "Manual Order Entry",
     "sections": {
@@ -112,7 +112,8 @@
   "Orders": {
     "route": {
       "unauthorized": "Unauthorized",
-      "unableToFetch": "Unable to load orders. Please try again."
+      "unableToFetch": "Unable to load orders. Please try again.",
+      "unableToFetchCities": "Unable to load cities. Please try again."
     },
     "New": {
       "title": "New Orders",
@@ -178,7 +179,14 @@
         "cancel": "Back and Cancel",
         "close": "Close",
         "copy": "Copy ID",
-        "copied": "Copied!"
+        "copied": "Copied!",
+        "successToast": "Review started successfully",
+        "errorToast": "Unable to start review. Please try again.",
+        "route": {
+          "unauthorized": "Unauthorized",
+          "invalidId": "Renewal request ID is required",
+          "unableToComplete": "Unable to start review. Please try again."
+        }
       },
       "approveProcessDialog": {
         "title": "Confirm Order Processing",
@@ -194,7 +202,13 @@
         "close": "Close",
         "copy": "Copy ID",
         "copied": "Copied!",
-        "toastSuccess": "This order has been successfully approved"
+        "toastSuccess": "This order has been successfully approved",
+        "errorToast": "Unable to process this order. Please try again.",
+        "route": {
+          "unauthorized": "Unauthorized",
+          "invalidId": "Renewal request ID is required",
+          "unableToComplete": "Unable to process this order. Please try again."
+        }
       },
       "pendOrderDialog": {
         "title": "Suspend Order",
@@ -210,6 +224,7 @@
         "cancel": "Back and Cancel",
         "close": "Close",
         "toastSuccess": "Order has been successfully suspended",
+        "errorToast": "Unable to suspend this order. Please try again.",
         "reasons": {
           "incompleteEmployerData": "Employer data is incomplete",
           "unclearWorkerData": "Worker data is unclear",
@@ -217,6 +232,13 @@
           "unclearDocument": "Unclear document",
           "dataConflict": "Data conflict",
           "other": "Other reason"
+        },
+        "route": {
+          "unauthorized": "Unauthorized",
+          "invalidId": "Renewal request ID is required",
+          "invalidJson": "Invalid request body",
+          "holdReasonRequired": "A valid hold reason is required",
+          "unableToComplete": "Unable to suspend this order. Please try again."
         }
       },
       "Review": {
@@ -405,7 +427,17 @@
         "view": "View",
         "confirm": "Confirm Replacement",
         "cancel": "Back and Cancel",
-        "close": "Close"
+        "close": "Close",
+        "successToast": "Document replaced successfully",
+        "errorToast": "Unable to replace this document. Please try again.",
+        "route": {
+          "unauthorized": "Unauthorized",
+          "invalidId": "Renewal request ID is required",
+          "invalidForm": "Invalid upload form data",
+          "collectionRequired": "A valid document collection is required",
+          "fileRequired": "A document file is required",
+          "unableToComplete": "Unable to replace this document. Please try again."
+        }
       },
       "markProcessedDialog": {
         "title": "Move Order to Processed",
@@ -419,7 +451,8 @@
         "close": "Close",
         "copy": "Copy ID",
         "copied": "Copied!",
-        "toastSuccess": "Order {orderNumber} has been successfully approved for processing."
+        "toastSuccess": "Order {orderNumber} has been successfully approved for processing.",
+        "errorToast": "Unable to process this order. Please try again."
       }
     },
     "Processed": {
@@ -491,7 +524,13 @@
         "close": "Close",
         "copy": "Copy ID",
         "copied": "Copied!",
-        "toastSuccess": "Contract {orderNumber} has been sent for authentication successfully."
+        "toastSuccess": "Contract {orderNumber} has been sent for authentication successfully.",
+        "errorToast": "Unable to send this contract for authentication. Please try again.",
+        "route": {
+          "unauthorized": "Unauthorized",
+          "invalidId": "Renewal request ID is required",
+          "unableToComplete": "Unable to send this contract for authentication. Please try again."
+        }
       }
     },
     "Verification": {
@@ -666,6 +705,60 @@
         "title": "No completed orders",
         "description": "Completed orders will appear here once the full process is finished."
       }
+    },
+    "Cancelled": {
+      "title": "Cancelled Orders",
+      "description": "All cancelled contract freeze requests, showing the cancellation reason and the stage where the request stopped.",
+      "listTitle": "Cancelled Orders List",
+      "periodWeek": "This week",
+      "manualOrder": "Manual Order Entry",
+      "indicators": {
+        "total": "Total Cancelled Orders",
+        "byCustomer": "Orders Cancelled by Customer",
+        "byAdmin": "Orders Cancelled by Admin"
+      },
+      "filters": {
+        "cancelledAt": "Cancellation Date",
+        "searchLabel": "Search",
+        "searchPlaceholder": "Search by order number or employer name...",
+        "orderType": "Type",
+        "typeAll": "All",
+        "typeEform": "E-form",
+        "typeManual": "Manual",
+        "cancellationSource": "Cancellation Source",
+        "sourceAll": "All",
+        "cancellationReason": "Cancellation Reason",
+        "reasonAll": "All",
+        "apply": "Apply Filter",
+        "pickDate": "Select date"
+      },
+      "route": {
+        "unauthorized": "Unauthorized",
+        "unableToFetch": "Unable to load cancellation options. Please try again."
+      },
+      "table": {
+        "orderNumber": "Order Number",
+        "employer": "Employer / Mobile",
+        "worker": "Worker Name",
+        "cancelledAt": "Cancellation Date",
+        "type": "Order Type",
+        "typeEform": "E-form",
+        "typeManual": "Manual",
+        "cancellationReason": "Cancellation Reason",
+        "by": "By",
+        "byCustomer": "Customer",
+        "byReviewEmployee": "Review Employee",
+        "byContractsEmployee": "Contracts Employee",
+        "byAdmin": "Management",
+        "status": "Status",
+        "statusCancelled": "Cancelled",
+        "action": "Action",
+        "viewOrder": "View order"
+      },
+      "empty": {
+        "title": "No cancelled orders",
+        "description": "No cancelled orders have been registered yet — and that is a good sign!"
+      }
     }
   },
   "Dashboard": {
@@ -679,6 +772,7 @@
       },
       "links": {
         "home": "Home",
+        "manualOrder": "Manual Order Entry",
         "newOrders": "New Orders",
         "pendingOrders": "Pending Orders",
         "processedOrders": "Processed Orders",
@@ -715,5 +809,13 @@
     "description": "Sorry, the page you are looking for doesn't exist, has been removed, or is temporarily unavailable.",
     "backHome": "Back to Home",
     "previousPage": "Go Back"
+  },
+  "Common": {
+    "Pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "goToPage": "Go to page {page}",
+      "summary": "Page {page} of {lastPage} · {total} results"
+    }
   }
 }

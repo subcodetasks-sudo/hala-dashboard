@@ -21,8 +21,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { useUpdateOrder } from "@/features/orders/queries/use-orders";
+import { useHoldRenewalRequest } from "@/features/orders/queries/use-hold-renewal-request";
+import type { HoldReasonValue } from "@/features/orders/types";
+import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 const PEND_REASON_IDS = [
@@ -36,6 +39,15 @@ const PEND_REASON_IDS = [
 
 type PendReasonId = (typeof PEND_REASON_IDS)[number];
 
+const PEND_REASON_TO_API: Record<PendReasonId, HoldReasonValue> = {
+  incompleteEmployerData: "employer_data_incomplete",
+  unclearWorkerData: "worker_data_unclear",
+  missingDocument: "missing_document",
+  unclearDocument: "unclear_document",
+  dataConflict: "data_conflict",
+  other: "other",
+};
+
 type PendOrderDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -48,61 +60,73 @@ export default function PendOrderDialog({
   orderId,
 }: PendOrderDialogProps) {
   const t = useTranslations("Orders.New.pendOrderDialog");
-  const [reasons, setReasons] = useState<PendReasonId[]>([]);
+  const router = useRouter();
+  const holdRequest = useHoldRenewalRequest();
+  const [reason, setReason] = useState<PendReasonId | null>(null);
   const [notes, setNotes] = useState("");
   const [reasonError, setReasonError] = useState(false);
   const [reasonsOpen, setReasonsOpen] = useState(false);
 
-  const updateOrderMutation = useUpdateOrder();
+  const isPending = holdRequest.isPending;
 
   const resetForm = () => {
-    setReasons([]);
+    setReason(null);
     setNotes("");
     setReasonError(false);
     setReasonsOpen(false);
   };
 
-  const toggleReason = (id: PendReasonId) => {
-    setReasons((prev) => {
-      const next = prev.includes(id)
-        ? prev.filter((reason) => reason !== id)
-        : [...prev, id];
-      if (next.length > 0) setReasonError(false);
-      return next;
-    });
+  const selectReason = (id: PendReasonId) => {
+    setReason(id);
+    setReasonError(false);
+    setReasonsOpen(false);
   };
 
   const handleConfirm = () => {
-    if (reasons.length === 0) {
+    if (isPending) return;
+
+    if (!reason) {
       setReasonError(true);
       setReasonsOpen(true);
       return;
     }
 
-    if (orderId) {
-      updateOrderMutation.mutate({
-        id: orderId,
-        updates: { status: "pending" },
-      });
-    }
-    toast.success(t("toastSuccess"));
-    resetForm();
-    onOpenChange(false);
+    if (!orderId) return;
+
+    holdRequest.mutate(
+      {
+        renewalRequestId: orderId,
+        holdReason: PEND_REASON_TO_API[reason],
+        holdNotes: notes.trim(),
+      },
+      {
+        onSuccess: () => {
+          toast.success(t("toastSuccess"));
+          resetForm();
+          onOpenChange(false);
+          router.push("/orders/pending");
+          router.refresh();
+        },
+        onError: (error) => {
+          toast.error(
+            error instanceof Error && error.message
+              ? error.message
+              : t("errorToast"),
+          );
+        },
+      },
+    );
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
+      if (isPending) return;
       resetForm();
     }
     onOpenChange(nextOpen);
   };
 
-  const selectedSummary =
-    reasons.length === 0
-      ? null
-      : reasons.length === 1
-        ? t(`reasons.${reasons[0]}`)
-        : t("reasonsSelected", { count: reasons.length });
+  const selectedSummary = reason ? t(`reasons.${reason}`) : null;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -119,6 +143,7 @@ export default function PendOrderDialog({
             <Button
               type="button"
               variant="ghost"
+              disabled={isPending}
               aria-label={t("close")}
               className="size-9 shrink-0 rounded-xl bg-brand-background p-0 text-brand-gris hover:bg-brand-background/80 hover:text-brand-black"
             >
@@ -160,12 +185,13 @@ export default function PendOrderDialog({
                 <button
                   id="pend-reason"
                   type="button"
+                  disabled={isPending}
                   aria-expanded={reasonsOpen}
                   aria-controls="pend-reason-list"
                   data-invalid={reasonError || undefined}
                   onClick={() => setReasonsOpen((next) => !next)}
                   className={cn(
-                    "flex h-12 w-full min-w-0 items-center justify-between gap-3 overflow-hidden rounded-full border border-black/10 bg-white px-4 text-sm transition-colors outline-none focus-visible:border-brand-primary focus-visible:ring-3 focus-visible:ring-brand-primary/20",
+                    "flex h-12 w-full min-w-0 items-center justify-between gap-3 overflow-hidden rounded-full border border-black/10 bg-white px-4 text-sm transition-colors outline-none focus-visible:border-brand-primary focus-visible:ring-3 focus-visible:ring-brand-primary/20 disabled:opacity-60",
                     reasonError && "border-brand-accent"
                   )}
                 >
@@ -192,18 +218,18 @@ export default function PendOrderDialog({
                   <ul
                     id="pend-reason-list"
                     role="listbox"
-                    aria-multiselectable
                     className="absolute inset-x-0 top-full z-50 mt-2 flex w-full min-w-0 max-h-56 flex-col gap-1.5 overflow-y-auto overscroll-contain rounded-[1.25rem] no-scrollbar bg-white p-2 shadow-lg ring-1 ring-black/5"
                   >
                     {PEND_REASON_IDS.map((id) => {
-                      const selected = reasons.includes(id);
+                      const selected = reason === id;
                       return (
                         <li key={id} className="min-w-0 ">
                           <button
                             type="button"
                             role="option"
                             aria-selected={selected}
-                            onClick={() => toggleReason(id)}
+                            disabled={isPending}
+                            onClick={() => selectReason(id)}
                             className={cn(
                               "flex w-full min-w-0 items-center justify-between gap-3 rounded-2xl bg-[#F5F5F5] px-3.5 py-3 text-start text-sm font-medium text-brand-black transition-colors",
                               selected
@@ -246,6 +272,7 @@ export default function PendOrderDialog({
               <Textarea
                 id="pend-notes"
                 value={notes}
+                disabled={isPending}
                 onChange={(event) => setNotes(event.target.value)}
                 placeholder={t("notesPlaceholder")}
                 className="min-h-28 w-full max-w-full rounded-2xl border-black/10 bg-white px-4 py-3 text-sm placeholder:text-brand-gris/70"
@@ -268,6 +295,7 @@ export default function PendOrderDialog({
           <Button
             type="button"
             variant="ghost"
+            disabled={isPending}
             onClick={() => onOpenChange(false)}
             className="h-12 w-full flex-1 rounded-2xl bg-brand-background font-semibold text-brand-black hover:bg-brand-background/80 sm:w-auto"
           >
@@ -275,28 +303,35 @@ export default function PendOrderDialog({
           </Button>
           <Button
             type="button"
+            disabled={isPending}
             onClick={handleConfirm}
             className="group relative h-12 w-full flex-[1.4] items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-warning px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-warning/90 hover:shadow-md hover:shadow-brand-warning/20 active:scale-[0.98] sm:w-auto"
           >
-            <span
-              className="confirm-chevron-start inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsLeft
-                className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
-            <span className="tracking-wide">{t("confirm")}</span>
-            <span
-              className="confirm-chevron-end inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsRight
-                className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
+            {isPending ? (
+              <Spinner className="size-5 text-brand-white" />
+            ) : (
+              <>
+                <span
+                  className="confirm-chevron-start inline-flex items-center"
+                  aria-hidden
+                >
+                  <ChevronsLeft
+                    className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
+                    strokeWidth={2.25}
+                  />
+                </span>
+                <span className="tracking-wide">{t("confirm")}</span>
+                <span
+                  className="confirm-chevron-end inline-flex items-center"
+                  aria-hidden
+                >
+                  <ChevronsRight
+                    className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
+                    strokeWidth={2.25}
+                  />
+                </span>
+              </>
+            )}
           </Button>
         </div>
       </DialogContent>

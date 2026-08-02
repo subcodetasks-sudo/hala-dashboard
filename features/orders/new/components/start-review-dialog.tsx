@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
+import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
 import { Button } from "@/components/ui/button";
@@ -18,12 +19,14 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useStartReview } from "@/features/orders/new/queries/use-start-review";
 import { copyTextWithFeedback } from "@/features/orders/utils";
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -47,8 +50,11 @@ export default function StartReviewDialog({
 }: StartReviewDialogProps) {
   const t = useTranslations("Orders.New.startReviewDialog");
   const router = useRouter();
+  const startReview = useStartReview();
   const [copied, setCopied] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+
+  const isPending = startReview.isPending;
 
   const handleCopy = () => {
     if (!orderNumber) return;
@@ -59,12 +65,28 @@ export default function StartReviewDialog({
   };
 
   const handleConfirm = () => {
-    onOpenChange(false);
-    router.push(`/orders/${orderId}`);
+    if (!orderId || isPending) return;
+
+    startReview.mutate(orderId, {
+      onSuccess: () => {
+        toast.success(t("successToast"));
+        onOpenChange(false);
+        router.push(`/orders/${orderId}`);
+        router.refresh();
+      },
+      onError: (error) => {
+        toast.error(
+          error instanceof Error && error.message
+            ? error.message
+            : t("errorToast"),
+        );
+      },
+    });
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
+      if (isPending) return;
       setCopied(false);
       setTooltipOpen(false);
     }
@@ -86,6 +108,7 @@ export default function StartReviewDialog({
             <Button
               type="button"
               variant="ghost"
+              disabled={isPending}
               aria-label={t("close")}
               className="size-9 shrink-0 rounded-xl bg-brand-background p-0 text-brand-gris hover:bg-brand-background/80 hover:text-brand-black"
             >
@@ -179,35 +202,44 @@ export default function StartReviewDialog({
           <Button
             type="button"
             variant="ghost"
+            disabled={isPending}
             onClick={() => onOpenChange(false)}
-            className="h-12 flex-1 rounded-2xl bg-brand-background font-semibold text-brand-black hover:bg-brand-background/80"
+            className="h-12 flex-1 gap-2 rounded-2xl bg-brand-background font-semibold text-brand-black hover:bg-brand-background/80 disabled:opacity-70"
           >
+            {isPending ? <Spinner className="size-4 text-brand-gris" /> : null}
             {t("cancel")}
           </Button>
           <Button
             type="button"
+            disabled={isPending}
             onClick={handleConfirm}
-            className="group relative h-12 flex-[1.4] items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-primary px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-primary/90 hover:shadow-md hover:shadow-brand-primary/20 active:scale-[0.98]"
+            className="group relative h-12 flex-[1.4] items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-primary px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-primary/90 hover:shadow-md hover:shadow-brand-primary/20 active:scale-[0.98] disabled:opacity-70"
           >
-            <span
-              className="confirm-chevron-start inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsLeft
-                className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
+            {isPending ? (
+              <Spinner className="size-4 text-brand-white" />
+            ) : (
+              <span
+                className="confirm-chevron-start inline-flex items-center"
+                aria-hidden
+              >
+                <ChevronsLeft
+                  className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
+                  strokeWidth={2.25}
+                />
+              </span>
+            )}
             <span className="tracking-wide">{t("confirm")}</span>
-            <span
-              className="confirm-chevron-end inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsRight
-                className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
+            {isPending ? null : (
+              <span
+                className="confirm-chevron-end inline-flex items-center"
+                aria-hidden
+              >
+                <ChevronsRight
+                  className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
+                  strokeWidth={2.25}
+                />
+              </span>
+            )}
           </Button>
         </div>
       </DialogContent>
