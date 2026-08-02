@@ -11,6 +11,7 @@ import type {
 } from "@/features/orders/types";
 import {
   extractCollection,
+  extractPaginationMeta,
   readStringField,
 } from "@/features/orders/utils/api-payload";
 
@@ -147,14 +148,15 @@ async function fetchCities(
       .map(normalizeCity)
       .filter((city): city is City => city !== null);
 
+    const pagination = extractPaginationMeta(payload.data, {
+      fallbackPage: pageFilters.page ?? 1,
+      fallbackPerPage: pageFilters.perPage ?? 15,
+      itemCount: cities.length,
+    });
+
     return {
       cities,
-      lastPage:
-        typeof payload.data.last_page === "number"
-          ? payload.data.last_page
-          : typeof (payload.data as { lastPage?: number }).lastPage === "number"
-            ? (payload.data as { lastPage: number }).lastPage
-            : 1,
+      lastPage: pagination.lastPage,
     };
   };
 
