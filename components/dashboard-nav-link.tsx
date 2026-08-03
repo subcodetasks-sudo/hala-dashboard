@@ -27,7 +27,7 @@ type DashboardNavLinkProps = {
 const badgeToneClass: Record<NavBadge["tone"], string> = {
   accent: "bg-brand-accent",
   orange: "bg-[#E8913A]",
-  purple: "bg-[#8B6BB5]",
+  purple: "bg-brand-purple-dark",
 };
 
 const buttonClassName = (isActive: boolean) =>

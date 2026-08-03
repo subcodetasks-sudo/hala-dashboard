@@ -60,7 +60,7 @@ export default function SaudiPhoneField({
   return (
     <InputGroup
       dir="ltr"
-      className={cn("h-11 rounded-xl border-black/10 bg-white", className)}
+      className={cn("h-11 rounded-full border-black/10 bg-white", className)}
       data-disabled={disabled || readOnly ? true : undefined}
     >
       <InputGroupAddon

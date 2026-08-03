@@ -36,7 +36,7 @@
     "table": {
       "orderNumber": "رقم الطلب",
       "customer": "اسم العميل / الجوال",
-      "handler": "اسم المسؤول",
+      "handler": "اسم العامل",
       "createdAt": "تاريخ الإنشاء",
       "source": "المصدر",
       "executionDate": "تاريخ التنفيذ",
@@ -110,6 +110,11 @@
     }
   },
   "Orders": {
+    "Common": {
+      "copyPhone": "نسخ رقم الجوال",
+      "copyOrderNumber": "نسخ رقم الطلب",
+      "copied": "تم النسخ!"
+    },
     "route": {
       "unauthorized": "غير مصرح",
       "unableToFetch": "تعذر تحميل الطلبات. يرجى المحاولة مرة أخرى.",
@@ -244,6 +249,8 @@
       "Review": {
         "title": "مراجعة الطلب",
         "subtitle": "راجع بيانات الطلب والمرفقات قبل اعتماد للمعالجة أو تعليق الطلب.",
+        "titleCancelled": "بيانات الطلب للملغي",
+        "subtitleCancelled": "مسار الطلب متوقف بعد الإلغاء، ولا يمكن تنفيذ أي إجراءات إضافية.",
         "orderStatus": "حالة الطلب :",
         "statusNew": "جديد",
         "refreshData": "تحديث البيانات",
@@ -253,9 +260,11 @@
           "pendingOrders": "الطلبات المعلقة",
           "processedOrders": "الطلبات المعالجة",
           "verificationOrders": "الطلبات المرسلة للمصادقة",
+          "cancelledOrders": "الطلبات الملغاة",
           "review": "مراجعة الطلب {orderNumber}"
         },
         "summary": {
+          "orderNumber": "رقم الطلب",
           "employerName": "اسم صاحب العمل",
           "contactNumber": "رقم التواصل",
           "city": "المدينة",
@@ -273,17 +282,27 @@
           "reasonLabel": "سبب التعليق:",
           "notesLabel": "ملاحظة الموظف للعميل"
         },
+        "cancellation": {
+          "reasonLabel": "سبب الإلغاء:",
+          "notesLabel": "ملاحظة الإدارة"
+        },
         "employer": {
           "sectionTitle": "بيانات صاحب العمل",
           "edit": "تعديل البيانات",
           "save": "حفظ التغييرات",
           "cancel": "إلغاء",
-          "employerName": "اسم صاحب العمل (المقصود الكفيل)",
           "nationalId": "رقم الهوية الوطنية",
-          "phone": "رقم التواصل (المقصود رقم الجوال للكفيل)",
-          "phonePlaceholder": "5XXXXXXXX",
+          "nationalIdPlaceholder": "مثال: 1234567890",
+          "phone": "رقم التواصل (رقم الجوال للكفيل)",
+          "phonePlaceholder": "05XXXXXXXX",
+          "employerNameAr": "اسم صاحب العمل بالعربية (الكفيل)",
+          "employerNameArPlaceholder": "أدخل الاسم الكامل بالعربية هنا ...",
+          "employerNameEn": "اسم صاحب العمل بالإنجليزية (الكفيل)",
+          "employerNameEnPlaceholder": "أدخل الاسم الكامل بالإنجليزية هنا ...",
           "city": "المدينة",
-          "address": "العنوان المدني (المقصود الموقع)",
+          "cityPlaceholder": "اختر المدينة هنا ...",
+          "passportIssuePlace": "مكان الإصدار",
+          "passportIssuePlacePlaceholder": "اختر مكان الإصدار هنا ...",
           "changeHistory": "سجل التعديلات",
           "historyEmployee": "الموظف",
           "historyAction": "نوع الإجراء",
@@ -291,19 +310,25 @@
           "actionStartReview": "بدء المراجعة"
         },
         "worker": {
-          "sectionTitle": "بيانات العامل",
+          "sectionTitle": "بيانات العامل (المكفول)",
           "edit": "تعديل البيانات",
           "save": "حفظ التغييرات",
           "cancel": "إلغاء",
-          "workerName": "اسم العامل",
-          "workerPhone": "رقم التواصل (المقصود رقم الجوال للعامل)",
-          "phonePlaceholder": "5XXXXXXXX",
+          "workerNameAr": "اسم العامل بالعربية (المكفول)",
+          "workerNameArPlaceholder": "أدخل الاسم الكامل بالعربية هنا ...",
+          "workerNameEn": "اسم العامل بالإنجليزية (المكفول)",
+          "workerNameEnPlaceholder": "أدخل الاسم الكامل بالإنجليزية هنا ...",
+          "workerPhone": "رقم التواصل (رقم الجوال للمكفول)",
+          "phonePlaceholder": "05XXXXXXXX",
           "birthDate": "تاريخ الميلاد",
           "homeAddress": "العنوان في الفلبين",
-          "passportIssuePlace": "عنوان (المقصود مكان اصدار الجواز)",
-          "passportNumber": "رقم جواز السفر",
-          "passportIssueDate": "تاريخ الإصدار",
-          "passportExpiryDate": "تاريخ الانتهاء للجواز"
+          "homeAddressPlaceholder": "أدخل العنوان في الفلبين هنا ...",
+          "passportIssuePlace": "مكان إصدار الجواز بالإنجليزية",
+          "passportIssuePlacePlaceholder": "أدخل المكان هنا ...",
+          "passportNumber": "رقم جواز السفر بالعربي",
+          "passportNumberPlaceholder": "أدخل رقم جواز السفر هنا ...",
+          "passportIssueDate": "تاريخ إصدار الجواز",
+          "passportExpiryDate": "تاريخ انتهاء الجواز"
         },
         "documents": {
           "sectionTitle": "المستندات",
@@ -330,7 +355,7 @@
           "orderNumber": "رقم الطلب",
           "source": "مصدر الطلب",
           "createdAt": "تاريخ الإنشاء",
-          "assignee": "الوظيفة",
+          "assignee": "الموظف",
           "status": "الحالة",
           "statusNew": "جديد",
           "sourceEform": "E-form",
@@ -352,14 +377,15 @@
           "uploadFinalContract": "رفع العقد النهائي"
         },
         "validation": {
-          "employerNameRequired": "اسم صاحب العمل مطلوب",
+          "employerNameArRequired": "اسم صاحب العمل بالعربية مطلوب",
+          "employerNameEnRequired": "اسم صاحب العمل بالإنجليزية مطلوب",
           "nationalIdRequired": "رقم الهوية الوطنية مطلوب",
           "nationalIdFormat": "يجب أن يتكون رقم الهوية من 10 أرقام ويبدأ بـ 1 أو 2",
           "phoneRequired": "رقم الجوال مطلوب",
           "phoneFormat": "أدخل رقم جوال سعودي صحيح من 9 أرقام يبدأ بـ 5",
           "cityRequired": "المدينة مطلوبة",
-          "addressRequired": "العنوان مطلوب",
-          "workerNameRequired": "اسم العامل مطلوب",
+          "workerNameArRequired": "اسم العامل بالعربية مطلوب",
+          "workerNameEnRequired": "اسم العامل بالإنجليزية مطلوب",
           "workerPhoneRequired": "رقم جوال العامل مطلوب",
           "workerPhoneFormat": "أدخل رقم جوال سعودي صحيح من 9 أرقام يبدأ بـ 5",
           "birthDateRequired": "تاريخ الميلاد مطلوب",
@@ -758,6 +784,60 @@
       "empty": {
         "title": "لا توجد طلبات ملغاة",
         "description": "لم يتم تسجيل أي طلبات ملغاة حتى الآن - وهذا مؤشر جيد!"
+      }
+    },
+    "Refunds": {
+      "title": "طلبات الاسترداد",
+      "description": "جميع طلبات الاسترداد المرتبطة بالطلبات الملغاة، مع عرض حالة الاسترداد وطريقته والمبلغ المطلوب.",
+      "listTitle": "قائمة طلبات الاسترداد",
+      "periodWeek": "هذا الأسبوع",
+      "manualOrder": "إدخال طلب يدوي",
+      "indicators": {
+        "total": "إجمالي طلبات الاسترداد",
+        "pending": "بانتظار القرار",
+        "refunded": "تم الاسترداد",
+        "totalAmount": "إجمالي المبالغ المستردة (ر.س)"
+      },
+      "filters": {
+        "requestedAt": "تاريخ طلب الاسترداد",
+        "searchLabel": "البحث",
+        "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
+        "orderType": "نوع الطلب",
+        "typeAll": "الكل",
+        "typeEform": "E-form",
+        "typeManual": "يدوي",
+        "refundStatus": "الحالة",
+        "statusAll": "الكل",
+        "refundMethod": "طريقة الاسترداد",
+        "methodAll": "الكل",
+        "apply": "تطبيق الفلترة",
+        "pickDate": "اختر التاريخ"
+      },
+      "table": {
+        "orderNumber": "رقم الطلب",
+        "employer": "صاحب العمل / الجوال",
+        "worker": "اسم العامل",
+        "requestedAt": "تاريخ طلب الاسترداد",
+        "type": "نوع الطلب",
+        "typeEform": "E-form",
+        "typeManual": "يدوي",
+        "refundReason": "سبب الاسترداد",
+        "refundMethod": "طريقة الاسترداد",
+        "methodBankTransfer": "تحويل بنكي",
+        "methodWallet": "محفظة",
+        "methodCash": "نقداً",
+        "amount": "مبلغ الاسترداد",
+        "status": "حالة الاسترداد",
+        "statusPending": "قيد المراجعة",
+        "statusApproved": "موافق عليه",
+        "statusRejected": "مرفوض",
+        "statusCompleted": "تم الاسترداد",
+        "action": "إجراء",
+        "viewOrder": "عرض الطلب"
+      },
+      "empty": {
+        "title": "لا توجد طلبات استرداد",
+        "description": "لم يتم تسجيل أي طلبات استرداد حتى الآن - وهذا مؤشر جيد!"
       }
     }
   },

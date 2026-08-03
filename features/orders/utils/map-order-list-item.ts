@@ -5,8 +5,11 @@ import type {
   OrderListItem,
   OrderNamedRef,
 } from "@/features/orders/types";
-
-type AppLocale = "ar" | "en";
+import {
+  formatApiDateTime,
+  formatDateOnly,
+  type AppLocale,
+} from "@/features/orders/utils/format-datetime";
 
 function pickLocalizedName(
   locale: AppLocale,
@@ -26,52 +29,6 @@ function pickRefName(locale: AppLocale, ref: OrderNamedRef | null | undefined) {
     ref.name_en ?? ref.name,
     ref.name_ar ?? ref.name,
   );
-}
-
-function formatApiDateTime(value: string | null | undefined) {
-  if (!value) {
-    return { dateLabel: "—", timeLabel: "—", isoDate: "" };
-  }
-
-  const [datePart = "", timePart = ""] = value.split(" ");
-  const [year, month, day] = datePart.split("-").map(Number);
-  const timeSubparts = timePart.split(":");
-  const hour = Number(timeSubparts[0] ?? 0);
-  const minute = Number(timeSubparts[1] ?? 0);
-  const second = Number(timeSubparts[2] ?? 0);
-
-  if (!year || !month || !day) {
-    return { dateLabel: value, timeLabel: timePart || "—", isoDate: datePart };
-  }
-
-  const date = new Date(year, month - 1, day, hour, minute, second);
-  const dateLabel = date.toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const timeLabel = date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-
-  return { dateLabel, timeLabel, isoDate: datePart };
-}
-
-function formatDateOnly(value: string | null | undefined) {
-  if (!value) return "—";
-
-  const [year, month, day] = value.split("-").map(Number);
-  if (!year || !month || !day) return value;
-
-  return new Date(year, month - 1, day).toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
 }
 
 function formatPhoneDisplay(phone: string | null | undefined) {
@@ -145,8 +102,11 @@ export function getOrderCancelledByName(
   return pickRefName(locale, item.cancelled_by);
 }
 
-export function getOrderCancelledAtDisplay(item: OrderListItem) {
-  return formatApiDateTime(item.cancelled_at);
+export function getOrderCancelledAtDisplay(
+  item: OrderListItem,
+  locale: AppLocale = "en",
+) {
+  return formatApiDateTime(item.cancelled_at, locale);
 }
 
 export function getOrderRefInitials(name: string) {
@@ -159,20 +119,32 @@ export function getOrderRefInitials(name: string) {
   return `${parts[0][0] ?? ""}${parts[parts.length - 1]?.[0] ?? ""}`.toUpperCase();
 }
 
-export function getOrderCreatedDisplay(item: OrderListItem) {
-  return formatApiDateTime(item.created_at);
+export function getOrderCreatedDisplay(
+  item: OrderListItem,
+  locale: AppLocale = "en",
+) {
+  return formatApiDateTime(item.created_at, locale);
 }
 
-export function getOrderHeldAtDisplay(item: OrderListItem) {
-  return formatApiDateTime(item.held_at);
+export function getOrderHeldAtDisplay(
+  item: OrderListItem,
+  locale: AppLocale = "en",
+) {
+  return formatApiDateTime(item.held_at, locale);
 }
 
-export function getOrderProcessedAtDisplay(item: OrderListItem) {
-  return formatApiDateTime(item.processed_at);
+export function getOrderProcessedAtDisplay(
+  item: OrderListItem,
+  locale: AppLocale = "en",
+) {
+  return formatApiDateTime(item.processed_at, locale);
 }
 
-export function getOrderExecutionDisplay(item: OrderListItem) {
-  return formatDateOnly(item.expected_completion_date);
+export function getOrderExecutionDisplay(
+  item: OrderListItem,
+  locale: AppLocale = "en",
+) {
+  return formatDateOnly(item.expected_completion_date, locale);
 }
 
 export function getOrderPhoneDisplay(item: OrderListItem) {
@@ -184,7 +156,7 @@ export function mapOrderListItemToNewOrderRow(
   item: OrderListItem,
   locale: AppLocale,
 ): NewOrderRow {
-  const created = formatApiDateTime(item.created_at);
+  const created = formatApiDateTime(item.created_at, locale);
   const executionIso = item.expected_completion_date ?? "";
 
   return {
@@ -196,7 +168,7 @@ export function mapOrderListItemToNewOrderRow(
     createdDate: created.dateLabel,
     createdTime: created.timeLabel,
     source: toUiOrderSource(item.source),
-    executionDate: formatDateOnly(item.expected_completion_date),
+    executionDate: formatDateOnly(item.expected_completion_date, locale),
     status: "new",
     createdAtIso: created.isoDate,
     executionDateIso: executionIso,

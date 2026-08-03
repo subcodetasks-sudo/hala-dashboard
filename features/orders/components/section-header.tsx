@@ -43,14 +43,14 @@ export default function ReviewFormSectionHeader({
               type="button"
               variant="ghost"
               onClick={onCancel}
-              className="h-10 rounded-xl bg-brand-background px-4 font-semibold text-brand-black hover:bg-brand-background/80"
+              className="h-10 rounded-full bg-brand-background px-4 font-semibold text-brand-black hover:bg-brand-background/80"
             >
               {cancelLabel}
             </Button>
             <Button
               type="button"
               onClick={onSave}
-              className="h-10 gap-2 rounded-xl border-none bg-brand-primary px-4 font-semibold text-brand-white hover:bg-brand-primary/90"
+              className="h-10 gap-2 rounded-full border-none bg-brand-primary px-4 font-semibold text-brand-white hover:bg-brand-primary/90"
             >
               {saveLabel}
             </Button>
@@ -59,7 +59,7 @@ export default function ReviewFormSectionHeader({
           <Button
             type="button"
             onClick={onEdit}
-            className="h-10 gap-2 rounded-xl border-none bg-brand-primary px-4 font-semibold text-brand-white hover:bg-brand-primary/90"
+            className="h-10 gap-2 rounded-full border-none bg-brand-primary px-4 font-semibold text-brand-white hover:bg-brand-primary/90"
           >
             <CustomIcon
               src="/svg/brush.svg"

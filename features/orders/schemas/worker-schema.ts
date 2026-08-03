@@ -3,7 +3,8 @@ import { z } from "zod";
 import { toSaudiPhoneLocal } from "@/features/orders/mock-data";
 
 export type WorkerFormValues = {
-  workerName: string;
+  workerNameAr: string;
+  workerNameEn: string;
   workerPhoneLocal: string;
   birthDate: string;
   homeAddress: string;
@@ -14,7 +15,8 @@ export type WorkerFormValues = {
 };
 
 export type WorkerValidationMessages = {
-  workerNameRequired: string;
+  workerNameArRequired: string;
+  workerNameEnRequired: string;
   workerPhoneRequired: string;
   workerPhoneFormat: string;
   birthDateRequired: string;
@@ -27,7 +29,8 @@ export type WorkerValidationMessages = {
 
 export function createWorkerSchema(messages: WorkerValidationMessages) {
   return z.object({
-    workerName: z.string().trim().min(1, messages.workerNameRequired),
+    workerNameAr: z.string().trim().min(1, messages.workerNameArRequired),
+    workerNameEn: z.string().trim().min(1, messages.workerNameEnRequired),
     workerPhoneLocal: z
       .string()
       .trim()

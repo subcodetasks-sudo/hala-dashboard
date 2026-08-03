@@ -64,7 +64,7 @@ export default function ReviewFormSelectField({
           id={id}
           aria-invalid={!!error}
           className={cn(
-            "h-11! w-full rounded-xl border-black/10 px-3",
+            "h-11! w-full rounded-full border-black/10 px-3",
             readOnly && "bg-brand-background/40 opacity-100"
           )}
         >

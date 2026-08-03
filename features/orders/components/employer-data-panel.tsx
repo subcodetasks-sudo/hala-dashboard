@@ -25,6 +25,10 @@ type EmployerDataPanelProps = {
   onSaved?: (values: EmployerFormValues) => void;
 };
 
+function displayOrEmpty(value: string): string {
+  return value === "—" ? "" : value;
+}
+
 export default function EmployerDataPanel({
   order,
   isEditing,
@@ -40,24 +44,25 @@ export default function EmployerDataPanel({
   const schema = useMemo(
     () =>
       createEmployerSchema({
-        employerNameRequired: tValidation("employerNameRequired"),
+        employerNameArRequired: tValidation("employerNameArRequired"),
+        employerNameEnRequired: tValidation("employerNameEnRequired"),
         nationalIdRequired: tValidation("nationalIdRequired"),
         nationalIdFormat: tValidation("nationalIdFormat"),
         phoneRequired: tValidation("phoneRequired"),
         phoneFormat: tValidation("phoneFormat"),
         cityRequired: tValidation("cityRequired"),
-        addressRequired: tValidation("addressRequired"),
       }),
     [tValidation]
   );
 
   const defaultValues: EmployerFormValues = useMemo(
     () => ({
-      employerName: order.employerName,
-      nationalId: order.nationalId,
+      nationalId: displayOrEmpty(order.nationalId),
       phoneLocal: order.phoneLocal,
-      city: order.city,
-      address: order.address,
+      employerNameAr: displayOrEmpty(order.employerNameAr),
+      employerNameEn: displayOrEmpty(order.employerNameEn),
+      city: displayOrEmpty(order.city),
+      passportIssuePlace: displayOrEmpty(order.passportIssuePlace),
     }),
     [order]
   );
@@ -80,24 +85,30 @@ export default function EmployerDataPanel({
   }, [defaultValues, reset]);
 
   const selectedCity = watch("city");
+  const selectedIssuePlace = watch("passportIssuePlace");
 
   const cityOptions = useMemo(() => {
     const options = cities.map((city) => {
       const label = getCityLabel(city, locale);
       return { value: label, label };
     });
-    const current = selectedCity?.trim();
 
-    if (
-      current &&
-      current !== "—" &&
-      !options.some((option) => option.value === current)
-    ) {
-      return [{ value: current, label: current }, ...options];
-    }
+    const extras = [selectedCity, selectedIssuePlace]
+      .map((value) => value?.trim())
+      .filter(
+        (value): value is string =>
+          Boolean(value) &&
+          value !== "—" &&
+          !options.some((option) => option.value === value)
+      );
 
-    return options;
-  }, [cities, locale, selectedCity]);
+    const uniqueExtras = [...new Set(extras)].map((value) => ({
+      value,
+      label: value,
+    }));
+
+    return [...uniqueExtras, ...options];
+  }, [cities, locale, selectedCity, selectedIssuePlace]);
 
   const editing = canEdit && isEditing;
 
@@ -133,20 +144,12 @@ export default function EmployerDataPanel({
         noValidate
       >
         <ReviewFormTextField
-          id="employerName"
-          label={t("employerName")}
-          iconSrc="/svg/person.svg"
-          readOnly={!editing}
-          error={errors.employerName}
-          {...register("employerName")}
-        />
-
-        <ReviewFormTextField
           id="nationalId"
           label={t("nationalId")}
           iconSrc="/svg/identity-2.svg"
           readOnly={!editing}
           error={errors.nationalId}
+          placeholder={t("nationalIdPlaceholder")}
           inputMode="numeric"
           maxLength={10}
           {...register("nationalId", {
@@ -166,10 +169,29 @@ export default function EmployerDataPanel({
               readOnly={!editing}
               error={errors.phoneLocal}
               placeholder={t("phonePlaceholder")}
-              className="md:col-span-2"
               field={field}
             />
           )}
+        />
+
+        <ReviewFormTextField
+          id="employerNameAr"
+          label={t("employerNameAr")}
+          iconSrc="/svg/person.svg"
+          readOnly={!editing}
+          error={errors.employerNameAr}
+          placeholder={t("employerNameArPlaceholder")}
+          {...register("employerNameAr")}
+        />
+
+        <ReviewFormTextField
+          id="employerNameEn"
+          label={t("employerNameEn")}
+          iconSrc="/svg/person.svg"
+          readOnly={!editing}
+          error={errors.employerNameEn}
+          placeholder={t("employerNameEnPlaceholder")}
+          {...register("employerNameEn")}
         />
 
         <Controller
@@ -180,23 +202,34 @@ export default function EmployerDataPanel({
               id="city"
               label={t("city")}
               iconSrc="/svg/location.svg"
-              value={field.value === "—" ? undefined : field.value}
+              value={field.value || undefined}
               onChange={field.onChange}
               readOnly={!editing}
               disabled={editing && isCitiesLoading}
               error={errors.city}
               options={cityOptions}
+              placeholder={t("cityPlaceholder")}
             />
           )}
         />
 
-        <ReviewFormTextField
-          id="address"
-          label={t("address")}
-          iconSrc="/svg/clipboard.svg"
-          readOnly={!editing}
-          error={errors.address}
-          {...register("address")}
+        <Controller
+          name="passportIssuePlace"
+          control={control}
+          render={({ field }) => (
+            <ReviewFormSelectField
+              id="passportIssuePlace"
+              label={t("passportIssuePlace")}
+              iconSrc="/svg/location.svg"
+              value={field.value || undefined}
+              onChange={field.onChange}
+              readOnly={!editing}
+              disabled={editing && isCitiesLoading}
+              error={errors.passportIssuePlace}
+              options={cityOptions}
+              placeholder={t("passportIssuePlacePlaceholder")}
+            />
+          )}
         />
       </form>
     </div>

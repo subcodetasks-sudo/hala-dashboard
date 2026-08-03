@@ -3,26 +3,27 @@ import { z } from "zod";
 import { toSaudiPhoneLocal } from "@/features/orders/mock-data";
 
 export type EmployerFormValues = {
-  employerName: string;
   nationalId: string;
   phoneLocal: string;
+  employerNameAr: string;
+  employerNameEn: string;
   city: string;
-  address: string;
+  /** Optional — matches website form. */
+  passportIssuePlace: string;
 };
 
 export type EmployerValidationMessages = {
-  employerNameRequired: string;
+  employerNameArRequired: string;
+  employerNameEnRequired: string;
   nationalIdRequired: string;
   nationalIdFormat: string;
   phoneRequired: string;
   phoneFormat: string;
   cityRequired: string;
-  addressRequired: string;
 };
 
 export function createEmployerSchema(messages: EmployerValidationMessages) {
   return z.object({
-    employerName: z.string().trim().min(1, messages.employerNameRequired),
     nationalId: z
       .string()
       .trim()
@@ -36,7 +37,9 @@ export function createEmployerSchema(messages: EmployerValidationMessages) {
         (value) => /^5\d{8}$/.test(toSaudiPhoneLocal(value)),
         messages.phoneFormat
       ),
+    employerNameAr: z.string().trim().min(1, messages.employerNameArRequired),
+    employerNameEn: z.string().trim().min(1, messages.employerNameEnRequired),
     city: z.string().trim().min(1, messages.cityRequired),
-    address: z.string().trim().min(1, messages.addressRequired),
+    passportIssuePlace: z.string().trim(),
   });
 }

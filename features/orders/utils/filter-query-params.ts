@@ -3,12 +3,15 @@ import type {
   CancelledOrdersFilterValues,
   CompletedOrdersFilterValues,
   DeliveryStatus,
+  OrderRefundMethod,
+  OrderRefundStatus,
   OrderStatus,
   OrdersFilterValues,
   PaymentMethod,
   PaymentOrdersFilterValues,
   PendingOrdersFilterValues,
   ProcessedOrdersFilterValues,
+  RefundOrdersFilterValues,
   SuspensionReason,
   VerificationOrderStatus,
   VerificationOrdersFilterValues,
@@ -22,6 +25,7 @@ export const ORDER_FILTER_PARAM_KEYS = {
   createdAt: "createdAt",
   contractUploadedAt: "contractUploadedAt",
   cancelledAt: "cancelledAt",
+  requestedAt: "requestedAt",
   search: "search",
   source: "source",
   orderType: "orderType",
@@ -31,6 +35,8 @@ export const ORDER_FILTER_PARAM_KEYS = {
   paymentMethod: "paymentMethod",
   cancellationSource: "cancellationSource",
   cancellationReason: "cancellationReason",
+  refundStatus: "refundStatus",
+  refundMethod: "refundMethod",
 } as const;
 
 export type OrderFilterParamKey =
@@ -97,6 +103,19 @@ const PAYMENT_METHODS = [
   "manual",
 ] as const satisfies readonly PaymentMethod[];
 const PAYMENT_METHOD_FILTERS = ["all", ...PAYMENT_METHODS] as const;
+const REFUND_STATUSES = [
+  "pending",
+  "approved",
+  "rejected",
+  "completed",
+] as const satisfies readonly OrderRefundStatus[];
+const REFUND_STATUS_FILTERS = ["all", ...REFUND_STATUSES] as const;
+const REFUND_METHODS = [
+  "bank_transfer",
+  "wallet",
+  "cash",
+] as const satisfies readonly OrderRefundMethod[];
+const REFUND_METHOD_FILTERS = ["all", ...REFUND_METHODS] as const;
 const VERIFICATION_STATUSES = [
   "sentForVerification",
   "finalContractUploaded",
@@ -463,5 +482,63 @@ export function parseCancelledOrdersFilters(
     ),
     cancellationSource: sourceParam || defaults.cancellationSource,
     cancellationReason: reasonParam || defaults.cancellationReason,
+  };
+}
+
+export function serializeRefundOrdersFilters(
+  filters: RefundOrdersFilterValues
+): URLSearchParams {
+  const params = new URLSearchParams();
+  setDateParam(
+    params,
+    ORDER_FILTER_PARAM_KEYS.requestedAt,
+    filters.requestedAt
+  );
+  setSearchParam(params, filters.search);
+  setEnumParam(
+    params,
+    ORDER_FILTER_PARAM_KEYS.orderType,
+    filters.orderType,
+    "all"
+  );
+  setEnumParam(
+    params,
+    ORDER_FILTER_PARAM_KEYS.refundStatus,
+    filters.refundStatus,
+    "all"
+  );
+  setEnumParam(
+    params,
+    ORDER_FILTER_PARAM_KEYS.refundMethod,
+    filters.refundMethod,
+    "all"
+  );
+  return params;
+}
+
+export function parseRefundOrdersFilters(
+  params: URLSearchParams,
+  defaults: RefundOrdersFilterValues
+): RefundOrdersFilterValues {
+  return {
+    requestedAt:
+      parseIsoDateParam(params.get(ORDER_FILTER_PARAM_KEYS.requestedAt)) ??
+      defaults.requestedAt,
+    search: params.get(ORDER_FILTER_PARAM_KEYS.search)?.trim() ?? defaults.search,
+    orderType: parseEnumParam(
+      params.get(ORDER_FILTER_PARAM_KEYS.orderType),
+      ORDER_SOURCE_FILTERS,
+      defaults.orderType
+    ),
+    refundStatus: parseEnumParam(
+      params.get(ORDER_FILTER_PARAM_KEYS.refundStatus),
+      REFUND_STATUS_FILTERS,
+      defaults.refundStatus
+    ),
+    refundMethod: parseEnumParam(
+      params.get(ORDER_FILTER_PARAM_KEYS.refundMethod),
+      REFUND_METHOD_FILTERS,
+      defaults.refundMethod
+    ),
   };
 }

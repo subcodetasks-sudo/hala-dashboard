@@ -57,11 +57,13 @@ export default function ReviewOrderSidebar({
 
   // Held / under-review orders keep the checklist and process actions (same as new).
   const isHeld = order.status === "held";
+  const isCancelled = order.status === "cancelled";
   const isNewOrUnderReview =
     order.status === "new" || order.status === "under_review";
   const isProcessed = order.status === "processed";
   const isSentForAuth = order.status === "sent_for_authentication";
   const canReview = isNewOrUnderReview || isHeld;
+  const showChecklist = !isCancelled;
   const showReviewActions = canReview && !isEditing;
   const showProcessedActions = isProcessed && !isEditing;
   const showSentForAuthActions = isSentForAuth && !isEditing;
@@ -79,9 +81,9 @@ export default function ReviewOrderSidebar({
     });
   };
 
-  const relativeTime = locale.startsWith("ar")
-    ? "10د"
-    : order.relativeTimeLabel;
+  const relativeTime = order.relativeTimeLabel;
+  const isInstantRelative =
+    relativeTime === "just now" || relativeTime === "الآن";
 
   const handleCopy = () =>
     copyTextWithFeedback(order.orderNumber, { setCopied, setTooltipOpen });
@@ -132,7 +134,7 @@ export default function ReviewOrderSidebar({
           <InfoRow iconSrc="/svg/tag-2.svg" label={t("source")}>
             <Badge
               className={cn(
-                "rounded-lg border-transparent px-2.5 py-1 text-xs font-semibold",
+                "rounded-lg border-transparent p-4 text-xs font-semibold",
                 order.source === "eform"
                   ? "bg-[#8B6BB5]/15 text-[#8B6BB5]"
                   : "bg-brand-success/15 text-brand-success"
@@ -149,22 +151,38 @@ export default function ReviewOrderSidebar({
               </p>
               <p className="mt-0.5 text-xs text-brand-gris" dir="ltr">
                 {order.createdTimeLabel}
-                <span className="mx-1 text-brand-gris/50">•</span>
-                {t("relativeAgo", { time: relativeTime })}
+                {relativeTime ? (
+                  <>
+                    <span className="mx-1 text-brand-gris/50">•</span>
+                    {isInstantRelative
+                      ? relativeTime
+                      : t("relativeAgo", { time: relativeTime })}
+                  </>
+                ) : null}
               </p>
             </div>
           </InfoRow>
 
           <InfoRow iconSrc="/svg/user-square.svg" label={t("assignee")}>
-            <span className="rounded-xl border border-black/10 bg-white px-2.5 py-1 text-xs font-semibold text-brand-black">
+            <Badge className="rounded-lg border border-black/10 bg-white p-4 text-xs font-semibold text-brand-black">
               {order.assignee}
-            </span>
+            </Badge>
           </InfoRow>
 
           <InfoRow iconSrc="/svg/document-text.svg" label={t("status")}>
-            <Badge className="gap-1.5 rounded-lg border-transparent bg-[#E8913A]/15 px-2.5 py-1 text-xs font-semibold text-[#E8913A]">
+            <Badge
+              className={cn(
+                "gap-1.5 rounded-lg border-transparent p-4 text-xs font-semibold",
+                isCancelled
+                  ? "bg-brand-accent/10 text-brand-accent"
+                  : "bg-[#E8913A]/15 text-[#E8913A]"
+              )}
+            >
               <span
-                className="size-1.5 rounded-full bg-[#E8913A]"
+                className={cn(
+                  "size-1.5 rounded-full",
+                  isCancelled ? "bg-brand-accent" : "bg-[#E8913A]"
+                )}
                 aria-hidden
               />
               {order.statusLabel}
@@ -173,51 +191,55 @@ export default function ReviewOrderSidebar({
         </dl>
       </section>
 
-      <section className="rounded-[1.75rem] bg-[#F5F5F5] p-4">
-        <SectionTitle iconSrc="/svg/receipt-edit.svg" title={t("checklist")} />
+      {showChecklist ? (
+        <section className="rounded-[1.75rem] bg-[#F5F5F5] p-4">
+          <SectionTitle iconSrc="/svg/receipt-edit.svg" title={t("checklist")} />
 
-        <ul className="mt-1 divide-y divide-black/5">
-          {NEW_ORDER_CHECKLIST_IDS.map((key) => {
-            // Interactive only for new / under_review / held; later stages are complete.
-            const checked = canReview ? checklist[key] : true;
-            return (
-              <li key={key}>
-                <button
-                  type="button"
-                  disabled={!canReview}
-                  onClick={() => toggleChecklistItem(key)}
-                  className={cn(
-                    "flex w-full items-center justify-between gap-3 py-3 text-start",
-                    !canReview && "cursor-default opacity-80"
-                  )}
-                >
-                  <span
+          <ul className="mt-1 divide-y divide-black/5">
+            {NEW_ORDER_CHECKLIST_IDS.map((key) => {
+              // Interactive only for new / under_review / held; later stages are complete.
+              const checked = canReview ? checklist[key] : true;
+              return (
+                <li key={key}>
+                  <button
+                    type="button"
+                    disabled={!canReview}
+                    onClick={() => toggleChecklistItem(key)}
                     className={cn(
-                      "text-sm leading-snug",
-                      checked ? "font-medium text-brand-black" : "text-brand-gris"
+                      "flex w-full items-center justify-between gap-3 py-3 text-start",
+                      !canReview && "cursor-default opacity-80"
                     )}
                   >
-                    {t(key)}
-                  </span>
-                  <span
-                    className={cn(
-                      "inline-flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-                      checked
-                        ? "border-brand-success bg-brand-success text-brand-white"
-                        : "border-brand-gris/30 bg-white"
-                    )}
-                    aria-hidden
-                  >
-                    {checked ? (
-                      <Check className="size-3" strokeWidth={3} />
-                    ) : null}
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+                    <span
+                      className={cn(
+                        "text-sm leading-snug",
+                        checked
+                          ? "font-medium text-brand-black"
+                          : "text-brand-gris"
+                      )}
+                    >
+                      {t(key)}
+                    </span>
+                    <span
+                      className={cn(
+                        "inline-flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+                        checked
+                          ? "border-brand-success bg-brand-success text-brand-white"
+                          : "border-brand-gris/30 bg-white"
+                      )}
+                      aria-hidden
+                    >
+                      {checked ? (
+                        <Check className="size-3" strokeWidth={3} />
+                      ) : null}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
 
       {showReviewActions ? (
         <section className="rounded-[1.75rem] bg-[#F5F5F5] p-4">

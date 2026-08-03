@@ -717,6 +717,32 @@ export type CancelledOrdersFilterValues = {
   cancellationReason: "all" | string;
 };
 
+export type RefundOrderRow = {
+  id: string;
+  orderNumber: string;
+  employerName: string;
+  employerPhone: string;
+  workerName: string;
+  requestedDate: string;
+  requestedTime: string;
+  requestedAtIso: string;
+  /** Full datetime used for relative-time labels (`YYYY-MM-DD HH:mm:ss`). */
+  requestedAtDateTime: string;
+  source: OrderSource;
+  refundReason: string;
+  refundMethod: OrderRefundMethod;
+  refundAmount: number;
+  status: OrderRefundStatus;
+};
+
+export type RefundOrdersFilterValues = {
+  requestedAt: Date | undefined;
+  search: string;
+  orderType: "all" | OrderSource;
+  refundStatus: "all" | OrderRefundStatus;
+  refundMethod: "all" | OrderRefundMethod;
+};
+
 export type ChangeHistoryRow = {
   id: string;
   employee: string;
@@ -759,18 +785,34 @@ export type OrderHoldInfo = {
   relativeTimeLabel?: string;
 };
 
+/** Cancellation details surfaced on the review page of a cancelled order. */
+export type OrderCancellationInfo = {
+  reasonLabel: string;
+  notes: string | null;
+  cancelledAtDateLabel: string;
+  cancelledAtTimeLabel: string;
+};
+
 export type OrderReviewDetail = {
   id: string;
   orderNumber: string;
+  /** Locale-resolved display name (sidebar / summary). */
   employerName: string;
+  employerNameAr: string;
+  employerNameEn: string;
   nationalId: string;
   phoneLocal: string;
   city: string;
-  address: string;
+  /** Employer passport / ID place of issue (optional on website form). */
+  passportIssuePlace: string;
+  /** Locale-resolved display name (sidebar / summary). */
   workerName: string;
+  workerNameAr: string;
+  workerNameEn: string;
   workerPhoneLocal: string;
   workerBirthDate: string;
   workerHomeAddress: string;
+  /** Passport issue place in English (website form). */
   workerPassportIssuePlace: string;
   workerPassportNumber: string;
   workerPassportIssueDate: string;
@@ -784,6 +826,7 @@ export type OrderReviewDetail = {
   createdTimeLabel: string;
   relativeTimeLabel: string;
   hold: OrderHoldInfo | null;
+  cancellation: OrderCancellationInfo | null;
   changeHistory: ChangeHistoryRow[];
   documents: OrderDocument[];
 };

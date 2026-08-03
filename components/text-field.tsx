@@ -35,7 +35,7 @@ export default function ReviewFormTextField({
           readOnly={readOnly}
           aria-invalid={!!error}
           className={cn(
-            "h-11 rounded-xl border-black/10 pe-3 ps-9",
+            "h-11 rounded-full border-black/10 pe-3 ps-9",
             readOnly && "bg-brand-background/40"
           )}
           {...inputProps}

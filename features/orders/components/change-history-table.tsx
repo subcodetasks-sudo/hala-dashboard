@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import CustomIcon from "@/components/custom-svg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -159,16 +159,19 @@ function formatHistoryDateTime(rawDate: string, locale: string) {
 
   const isAr = locale.startsWith("ar");
 
-  const dateStr = date.toLocaleDateString(isAr ? "ar-SA" : "en-GB", {
+  const dateStr = date.toLocaleDateString(isAr ? "ar" : "en-GB", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
+    calendar: "gregory",
   });
 
-  const timeStr = date.toLocaleTimeString(isAr ? "ar-SA" : "en-US", {
+  const timeStr = date.toLocaleTimeString(isAr ? "ar" : "en-US", {
     hour: "2-digit",
     minute: "2-digit",
+    hour12: true,
+    calendar: "gregory",
   });
 
   const now = new Date();
@@ -193,7 +196,7 @@ function formatHistoryDateTime(rawDate: string, locale: string) {
 
 export default function ChangeHistoryTable({ rows }: ChangeHistoryTableProps) {
   const t = useTranslations("Orders.New.Review.employer");
-  const locale = "ar";
+  const locale = useLocale();
 
   return (
     <section className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm sm:p-5">

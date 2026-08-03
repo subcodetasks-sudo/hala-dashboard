@@ -93,11 +93,6 @@ const navGroups: NavGroupItem[] = [
         labelKey: "refundOrders",
         icon: "/svg/refresh-2.svg",
       },
-      {
-        href: "/orders/manual",
-        labelKey: "manualOrder",
-        icon: "/svg/receipt-edit.svg",
-      },
     ],
   },
   {

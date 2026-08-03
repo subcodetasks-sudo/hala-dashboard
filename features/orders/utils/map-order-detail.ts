@@ -1,5 +1,6 @@
 import type {
   DocumentCollection,
+  OrderCancellationInfo,
   OrderDetail,
   OrderDocumentType,
   OrderHoldInfo,
@@ -7,11 +8,16 @@ import type {
   OrderReviewDetail,
 } from "@/features/orders/types";
 import {
+  formatApiDateTime,
+  formatDateOnly,
+  formatRelativeTimeLabel,
+  formatRelativeTimeShort,
+  type AppLocale,
+} from "@/features/orders/utils/format-datetime";
+import {
   getOrderRefInitials,
   toUiOrderSource,
 } from "@/features/orders/utils/map-order-list-item";
-
-type AppLocale = "ar" | "en";
 
 const DOCUMENT_FIELD_MAP: {
   key: DocumentCollection;
@@ -45,38 +51,6 @@ function pickRefName(locale: AppLocale, ref: OrderNamedRef | null | undefined) {
   );
 }
 
-function formatApiDateTime(value: string | null | undefined) {
-  if (!value) {
-    return { dateLabel: "—", timeLabel: "—", isoDate: "" };
-  }
-
-  const [datePart = "", timePart = ""] = value.split(" ");
-  const [year, month, day] = datePart.split("-").map(Number);
-  const timeSubparts = timePart.split(":");
-  const hour = Number(timeSubparts[0] ?? 0);
-  const minute = Number(timeSubparts[1] ?? 0);
-  const second = Number(timeSubparts[2] ?? 0);
-
-  if (!year || !month || !day) {
-    return { dateLabel: value, timeLabel: timePart || "—", isoDate: datePart };
-  }
-
-  const date = new Date(year, month - 1, day, hour, minute, second);
-  const dateLabel = date.toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const timeLabel = date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-
-  return { dateLabel, timeLabel, isoDate: datePart };
-}
-
 function toLocalPhoneDigits(phone: string | null | undefined) {
   const digits = (phone ?? "").replace(/\D/g, "");
   if (digits.startsWith("966") && digits.length >= 12) {
@@ -97,7 +71,7 @@ function mapHoldInfo(
 ): OrderHoldInfo | null {
   if (detail.status !== "held") return null;
 
-  const held = formatApiDateTime(detail.held_at);
+  const held = formatApiDateTime(detail.held_at, locale);
   const heldByName = pickRefName(locale, detail.held_by);
 
   return {
@@ -108,6 +82,26 @@ function mapHoldInfo(
     heldByInitials: getOrderRefInitials(heldByName),
     heldAtDateLabel: held.dateLabel,
     heldAtTimeLabel: held.timeLabel,
+    relativeTimeLabel: formatRelativeTimeLabel(detail.held_at, locale),
+  };
+}
+
+function mapCancellationInfo(
+  detail: OrderDetail,
+  locale: AppLocale,
+): OrderCancellationInfo | null {
+  if (detail.status !== "cancelled") return null;
+
+  const cancelled = formatApiDateTime(detail.cancelled_at, locale);
+
+  return {
+    reasonLabel:
+      detail.cancellation_reason_label?.trim() ||
+      detail.cancellation_reason?.trim() ||
+      "—",
+    notes: detail.cancellation_notes,
+    cancelledAtDateLabel: cancelled.dateLabel,
+    cancelledAtTimeLabel: cancelled.timeLabel,
   };
 }
 
@@ -116,7 +110,7 @@ export function mapOrderDetailToReview(
   detail: OrderDetail,
   locale: AppLocale = "en",
 ): OrderReviewDetail {
-  const created = formatApiDateTime(detail.created_at);
+  const created = formatApiDateTime(detail.created_at, locale);
   const assignee = pickRefName(locale, detail.assigned_to);
   const cityName = detail.employer.city
     ? pickLocalizedName(
@@ -154,10 +148,19 @@ export function mapOrderDetailToReview(
     ];
   });
 
-  const passportIssuePlace = pickRefName(
-    locale,
-    detail.worker.passport_issue_place ?? detail.employer.passport_issue_place,
-  );
+  const employerPassportIssuePlace = detail.employer.passport_issue_place
+    ? pickLocalizedName(
+        locale,
+        detail.employer.passport_issue_place.name_en,
+        detail.employer.passport_issue_place.name_ar,
+      )
+    : "—";
+
+  const workerPassportIssuePlace = detail.worker.passport_issue_place
+    ? detail.worker.passport_issue_place.name_en?.trim() ||
+      detail.worker.passport_issue_place.name_ar?.trim() ||
+      "—"
+    : "—";
 
   return {
     id: String(detail.id),
@@ -167,31 +170,39 @@ export function mapOrderDetailToReview(
       detail.employer.employer_name_en,
       detail.employer.employer_name_ar,
     ),
+    employerNameAr: detail.employer.employer_name_ar?.trim() || "—",
+    employerNameEn: detail.employer.employer_name_en?.trim() || "—",
     nationalId: detail.employer.national_id ?? "—",
     phoneLocal: toLocalPhoneDigits(detail.employer.phone),
     city: cityName,
-    address: cityName,
+    passportIssuePlace: employerPassportIssuePlace,
     workerName: pickLocalizedName(
       locale,
       detail.worker.worker_name_en,
       detail.worker.worker_name_ar,
     ),
+    workerNameAr: detail.worker.worker_name_ar?.trim() || "—",
+    workerNameEn: detail.worker.worker_name_en?.trim() || "—",
     workerPhoneLocal: toLocalPhoneDigits(detail.worker.worker_phone),
     workerBirthDate: detail.worker.birth_date ?? "",
     workerHomeAddress: detail.worker.philippines_address ?? "—",
-    workerPassportIssuePlace: passportIssuePlace,
+    workerPassportIssuePlace,
     workerPassportNumber: detail.worker.passport_number ?? "—",
     workerPassportIssueDate: detail.worker.passport_issue_date ?? "",
     workerPassportExpiryDate: detail.worker.passport_expiry_date ?? "",
-    expectedExecutionLabel: detail.expected_completion_date ?? "—",
+    expectedExecutionLabel: formatDateOnly(
+      detail.expected_completion_date,
+      locale,
+    ),
     source: toUiOrderSource(detail.source),
     status: detail.status,
     statusLabel: detail.status_label,
     assignee,
     createdAtLabel: created.dateLabel,
     createdTimeLabel: created.timeLabel,
-    relativeTimeLabel: "",
+    relativeTimeLabel: formatRelativeTimeShort(detail.created_at, locale),
     hold: mapHoldInfo(detail, locale),
+    cancellation: mapCancellationInfo(detail, locale),
     changeHistory: detail.activities.map((activity) => ({
       id: String(activity.id),
       employee: pickRefName(locale, activity.admin ?? activity.performed_by),

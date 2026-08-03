@@ -3,6 +3,7 @@ import type {
   CompletedOrdersFilterValues,
   OrdersFilterValues,
   PaymentOrdersFilterValues,
+  RefundOrdersFilterValues,
   RenewalRequestsFilters,
   VerificationOrdersFilterValues,
 } from "@/features/orders/types";
@@ -64,4 +65,12 @@ export const completedOrderKeys = {
   list: (filters?: CompletedOrdersFilterValues) =>
     [...completedOrderKeys.lists(), { filters }] as const,
   indicators: () => [...completedOrderKeys.all, "indicators"] as const,
+};
+
+export const refundOrderKeys = {
+  all: [...orderKeys.all, "refunds"] as const,
+  lists: () => [...refundOrderKeys.all, "list"] as const,
+  list: (filters?: RefundOrdersFilterValues) =>
+    [...refundOrderKeys.lists(), { filters }] as const,
+  indicators: () => [...refundOrderKeys.all, "indicators"] as const,
 };

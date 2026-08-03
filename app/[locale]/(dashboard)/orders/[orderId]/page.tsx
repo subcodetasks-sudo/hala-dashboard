@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import OrderView from "@/features/orders/components/order-view";
 
 type OrderPageProps = {
@@ -6,5 +8,9 @@ type OrderPageProps = {
 
 export default async function OrderPage({ params }: OrderPageProps) {
   const { orderId } = await params;
-  return <OrderView orderId={orderId} />;
+  return (
+    <Suspense fallback={null}>
+      <OrderView orderId={orderId} />
+    </Suspense>
+  );
 }

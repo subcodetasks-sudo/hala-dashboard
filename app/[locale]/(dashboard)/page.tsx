@@ -4,9 +4,8 @@ import { can } from "@/features/auth/lib/can";
 import { getAuthAdmin } from "@/features/auth/lib/session";
 import EmployeesSection from "@/features/home/components/employees-section";
 import IndicatorsSection from "@/features/home/components/indicators-section";
-import LatestOrdersSection, {
-  ManualOrderButton,
-} from "@/features/home/components/latest-orders-section";
+import LatestOrdersSection from "@/features/home/components/latest-orders-section";
+import ManualOrderButton from "@/components/manual-order-button";
 
 export default async function HomePage() {
   const t = await getTranslations("HomePage");

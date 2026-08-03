@@ -1,6 +1,5 @@
 "use client";
 
-import { Phone, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -10,7 +9,9 @@ import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
 import TablePagination from "@/components/table-pagination";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import ManualOrderButton from "@/components/manual-order-button";
+import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
+import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
 import { useRenewalRequestAuthenticationSentStats } from "@/features/orders/queries/use-renewal-request-authentication-sent-stats";
 import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
 import type {
@@ -113,9 +114,10 @@ export default function VerificationOrdersView() {
       id: "orderNumber",
       header: t("table.orderNumber"),
       cell: (row) => (
-        <span className="font-semibold text-brand-black">
-          {row.request_number ?? `#ORD-${row.id}`}
-        </span>
+        <CopyableOrderNumber
+          orderNumber={row.request_number ?? `#ORD-${row.id}`}
+          className="font-semibold text-brand-black"
+        />
       ),
     },
     {
@@ -135,10 +137,7 @@ export default function VerificationOrdersView() {
           <span className="font-semibold text-brand-black">
             {getOrderEmployerName(row, locale)}
           </span>
-          <span className="inline-flex items-center gap-1.5 text-xs text-brand-gris">
-            <Phone className="size-3.5 shrink-0" strokeWidth={1.75} />
-            <span dir="ltr">{getOrderPhoneDisplay(row)}</span>
-          </span>
+          <CopyablePhoneNumber phone={getOrderPhoneDisplay(row)} />
         </div>
       ),
     },
@@ -155,7 +154,7 @@ export default function VerificationOrdersView() {
       id: "createdAt",
       header: t("table.createdAt"),
       cell: (row) => {
-        const created = getOrderCreatedDisplay(row);
+        const created = getOrderCreatedDisplay(row, locale);
         return (
           <div className="flex flex-col gap-0.5">
             <span className="text-brand-black">{created.dateLabel}</span>
@@ -210,14 +209,7 @@ export default function VerificationOrdersView() {
           </h1>
           <p className="max-w-2xl text-sm text-brand-gris">{t("description")}</p>
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          className="h-11 gap-2 rounded-xl border-black/10 bg-brand-gris px-5 text-brand-white hover:bg-brand-gris/80 hover:text-brand-white"
-        >
-          <Plus className="size-4" strokeWidth={2} />
-          <span>{t("manualOrder")}</span>
-        </Button>
+        <ManualOrderButton />
       </div>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">

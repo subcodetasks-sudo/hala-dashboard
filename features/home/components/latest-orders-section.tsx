@@ -1,6 +1,5 @@
 "use client";
 
-import { Phone, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -10,7 +9,6 @@ import SearchBar from "@/components/search-bar";
 import DataTable, { type DataTableColumn } from "@/components/table";
 import TablePagination from "@/components/table-pagination";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -19,17 +17,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCan } from "@/features/auth/lib/use-can";
+import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
+import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
 import OrderRowActions from "@/features/orders/components/order-row-actions";
 import { DEFAULT_HOME_ORDERS_FILTERS } from "@/features/orders/mock-data";
 import { useOrderStatuses } from "@/features/orders/queries/use-order-statuses";
 import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
 import type { OrderListItem, OrderStatus, OrdersFilterValues } from "@/features/orders/types";
 import {
-  getOrderAssigneeName,
   getOrderCreatedDisplay,
   getOrderEmployerName,
   getOrderExecutionDisplay,
   getOrderPhoneDisplay,
+  getOrderWorkerName,
   parseOrdersFilters,
   serializeOrdersFilters,
   toUiOrderSource,
@@ -106,9 +106,10 @@ export default function LatestOrdersSection() {
       id: "orderNumber",
       header: t("table.orderNumber"),
       cell: (row) => (
-        <span className="font-semibold text-brand-black">
-          {row.request_number ?? `#ORD-${row.id}`}
-        </span>
+        <CopyableOrderNumber
+          orderNumber={row.request_number ?? `#ORD-${row.id}`}
+          className="font-semibold text-brand-black"
+        />
       ),
     },
     {
@@ -119,10 +120,7 @@ export default function LatestOrdersSection() {
           <span className="font-semibold text-brand-black">
             {getOrderEmployerName(row, locale)}
           </span>
-          <span className="inline-flex items-center gap-1.5 text-xs text-brand-gris">
-            <Phone className="size-3.5 shrink-0" strokeWidth={1.75} />
-            <span dir="ltr">{getOrderPhoneDisplay(row)}</span>
-          </span>
+          <CopyablePhoneNumber phone={getOrderPhoneDisplay(row)} />
         </div>
       ),
     },
@@ -131,7 +129,7 @@ export default function LatestOrdersSection() {
       header: t("table.handler"),
       cell: (row) => (
         <span className="text-brand-black">
-          {getOrderAssigneeName(row, locale)}
+          {getOrderWorkerName(row, locale)}
         </span>
       ),
     },
@@ -139,7 +137,7 @@ export default function LatestOrdersSection() {
       id: "createdAt",
       header: t("table.createdAt"),
       cell: (row) => {
-        const created = getOrderCreatedDisplay(row);
+        const created = getOrderCreatedDisplay(row, locale);
         return (
           <div className="flex flex-col gap-0.5">
             <span className="text-brand-black">{created.dateLabel}</span>
@@ -173,7 +171,7 @@ export default function LatestOrdersSection() {
       header: t("table.executionDate"),
       cell: (row) => (
         <span className="text-brand-black">
-          {getOrderExecutionDisplay(row)}
+          {getOrderExecutionDisplay(row, locale)}
         </span>
       ),
     },
@@ -189,8 +187,8 @@ export default function LatestOrdersSection() {
     {
       id: "action",
       header: t("table.action"),
-      headerClassName: "w-44 text-center",
-      className: "w-44 text-center",
+      headerClassName: "min-w-40 w-48 text-center",
+      className: "min-w-40 w-48 text-center",
       cell: (row) => (
         <OrderRowActions
           order={row}
@@ -214,7 +212,7 @@ export default function LatestOrdersSection() {
         </h2>
 
         <div className="flex flex-wrap items-end gap-3 flex-1 justify-end">
-          <div className="flex flex-col gap-1.5 flex-1 min-w-[240px] max-w-md">
+          <div className="flex flex-col gap-1.5 flex-1 min-w-[240px] max-w-fit">
             <span className="text-xs font-semibold text-brand-black px-1">
               {t("filters.searchLabel")}
             </span>
@@ -284,20 +282,5 @@ export default function LatestOrdersSection() {
         onPageChange={setPage}
       />
     </section>
-  );
-}
-
-export function ManualOrderButton() {
-  const t = useTranslations("HomePage");
-
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      className="h-11 gap-2 rounded-xl border-black/10 bg-brand-gris px-5 text-brand-white hover:bg-brand-gris/80 hover:text-brand-white"
-    >
-      <Plus className="size-4" strokeWidth={2} />
-      <span>{t("manualOrder")}</span>
-    </Button>
   );
 }

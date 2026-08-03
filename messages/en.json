@@ -36,7 +36,7 @@
     "table": {
       "orderNumber": "Order Number",
       "customer": "Customer Name / Mobile",
-      "handler": "Handler Name",
+      "handler": "Worker Name",
       "createdAt": "Creation Date",
       "source": "Source",
       "executionDate": "Execution Date",
@@ -110,6 +110,11 @@
     }
   },
   "Orders": {
+    "Common": {
+      "copyPhone": "Copy Phone Number",
+      "copyOrderNumber": "Copy Order Number",
+      "copied": "Copied!"
+    },
     "route": {
       "unauthorized": "Unauthorized",
       "unableToFetch": "Unable to load orders. Please try again.",
@@ -244,6 +249,8 @@
       "Review": {
         "title": "Review Order",
         "subtitle": "Review order details and attachments before approval for processing or suspending.",
+        "titleCancelled": "Cancelled Order Data",
+        "subtitleCancelled": "The order path is frozen after cancellation — no further actions are available.",
         "orderStatus": "Order Status:",
         "statusNew": "New",
         "refreshData": "Refresh Data",
@@ -253,9 +260,11 @@
           "pendingOrders": "Pending Orders",
           "processedOrders": "Processed Orders",
           "verificationOrders": "Sent for Authentication Orders",
+          "cancelledOrders": "Cancelled Orders",
           "review": "Review Order {orderNumber}"
         },
         "summary": {
+          "orderNumber": "Order Number",
           "employerName": "Employer Name",
           "contactNumber": "Contact Number",
           "city": "City",
@@ -273,17 +282,27 @@
           "reasonLabel": "Suspension reason:",
           "notesLabel": "Staff note for client"
         },
+        "cancellation": {
+          "reasonLabel": "Cancellation reason:",
+          "notesLabel": "Management note"
+        },
         "employer": {
           "sectionTitle": "Employer Data",
           "edit": "Edit Data",
           "save": "Save Changes",
           "cancel": "Cancel",
-          "employerName": "Employer Name (Sponsor)",
           "nationalId": "National ID Number",
+          "nationalIdPlaceholder": "Example: 1234567890",
           "phone": "Contact Number (Sponsor Mobile)",
-          "phonePlaceholder": "5XXXXXXXX",
+          "phonePlaceholder": "05XXXXXXXX",
+          "employerNameAr": "Employer Name in Arabic (Sponsor)",
+          "employerNameArPlaceholder": "Enter the full name in Arabic...",
+          "employerNameEn": "Employer Name in English (Sponsor)",
+          "employerNameEnPlaceholder": "Enter the full name in English...",
           "city": "City",
-          "address": "Civil Address (Location)",
+          "cityPlaceholder": "Select city...",
+          "passportIssuePlace": "Place of Issue",
+          "passportIssuePlacePlaceholder": "Select place of issue...",
           "changeHistory": "Change History",
           "historyEmployee": "Employee",
           "historyAction": "Action Type",
@@ -291,18 +310,24 @@
           "actionStartReview": "Start Review"
         },
         "worker": {
-          "sectionTitle": "Worker Data",
+          "sectionTitle": "Worker Data (Sponsored)",
           "edit": "Edit Data",
           "save": "Save Changes",
           "cancel": "Cancel",
-          "workerName": "Worker Name",
-          "workerPhone": "Contact Number (Worker Mobile)",
-          "phonePlaceholder": "5XXXXXXXX",
+          "workerNameAr": "Worker Name in Arabic (Sponsored)",
+          "workerNameArPlaceholder": "Enter the full name in Arabic...",
+          "workerNameEn": "Worker Name in English (Sponsored)",
+          "workerNameEnPlaceholder": "Enter the full name in English...",
+          "workerPhone": "Contact Number (Sponsored Mobile)",
+          "phonePlaceholder": "05XXXXXXXX",
           "birthDate": "Date of Birth",
           "homeAddress": "Address in the Philippines",
-          "passportIssuePlace": "Passport Issue Place",
-          "passportNumber": "Passport Number",
-          "passportIssueDate": "Issue Date",
+          "homeAddressPlaceholder": "Enter the address in the Philippines...",
+          "passportIssuePlace": "Passport Issue Place in English",
+          "passportIssuePlacePlaceholder": "Enter the place here...",
+          "passportNumber": "Passport Number in Arabic",
+          "passportNumberPlaceholder": "Enter the passport number here...",
+          "passportIssueDate": "Passport Issue Date",
           "passportExpiryDate": "Passport Expiry Date"
         },
         "documents": {
@@ -330,7 +355,7 @@
           "orderNumber": "Order Number",
           "source": "Order Source",
           "createdAt": "Creation Date",
-          "assignee": "Role",
+          "assignee": "Employee",
           "status": "Status",
           "statusNew": "New",
           "sourceEform": "E-form",
@@ -352,14 +377,15 @@
           "uploadFinalContract": "Upload Final Contract"
         },
         "validation": {
-          "employerNameRequired": "Employer name is required",
+          "employerNameArRequired": "Employer name in Arabic is required",
+          "employerNameEnRequired": "Employer name in English is required",
           "nationalIdRequired": "National ID is required",
           "nationalIdFormat": "National ID must be 10 digits starting with 1 or 2",
           "phoneRequired": "Mobile number is required",
           "phoneFormat": "Enter a valid 9-digit Saudi mobile starting with 5",
           "cityRequired": "City is required",
-          "addressRequired": "Address is required",
-          "workerNameRequired": "Worker name is required",
+          "workerNameArRequired": "Worker name in Arabic is required",
+          "workerNameEnRequired": "Worker name in English is required",
           "workerPhoneRequired": "Worker mobile number is required",
           "workerPhoneFormat": "Enter a valid 9-digit Saudi mobile starting with 5",
           "birthDateRequired": "Birth date is required",
@@ -758,6 +784,60 @@
       "empty": {
         "title": "No cancelled orders",
         "description": "No cancelled orders have been registered yet — and that is a good sign!"
+      }
+    },
+    "Refunds": {
+      "title": "Refund Requests",
+      "description": "All refund requests linked to cancelled orders, showing refund status, method, and requested amount.",
+      "listTitle": "Refund Requests List",
+      "periodWeek": "This week",
+      "manualOrder": "Manual Order Entry",
+      "indicators": {
+        "total": "Total Refund Requests",
+        "pending": "Pending Decision",
+        "refunded": "Refunded",
+        "totalAmount": "Total Refunded Amounts (SAR)"
+      },
+      "filters": {
+        "requestedAt": "Refund Request Date",
+        "searchLabel": "Search",
+        "searchPlaceholder": "Search by order number or employer name...",
+        "orderType": "Order Type",
+        "typeAll": "All",
+        "typeEform": "E-form",
+        "typeManual": "Manual",
+        "refundStatus": "Status",
+        "statusAll": "All",
+        "refundMethod": "Refund Method",
+        "methodAll": "All",
+        "apply": "Apply Filter",
+        "pickDate": "Select date"
+      },
+      "table": {
+        "orderNumber": "Order Number",
+        "employer": "Employer / Mobile",
+        "worker": "Worker Name",
+        "requestedAt": "Refund Request Date",
+        "type": "Order Type",
+        "typeEform": "E-form",
+        "typeManual": "Manual",
+        "refundReason": "Refund Reason",
+        "refundMethod": "Refund Method",
+        "methodBankTransfer": "Bank Transfer",
+        "methodWallet": "Wallet",
+        "methodCash": "Cash",
+        "amount": "Refund Amount",
+        "status": "Refund Status",
+        "statusPending": "Under Review",
+        "statusApproved": "Approved",
+        "statusRejected": "Rejected",
+        "statusCompleted": "Refunded",
+        "action": "Action",
+        "viewOrder": "View order"
+      },
+      "empty": {
+        "title": "No refund requests",
+        "description": "No refund requests have been registered yet — and that is a good sign!"
       }
     }
   },

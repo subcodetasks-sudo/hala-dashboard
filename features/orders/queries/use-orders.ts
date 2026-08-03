@@ -111,23 +111,35 @@ export async function updateOrderReviewDetail(
 
 export async function updateOrderEmployer(
   id: string,
-  values: EmployerFormValues
+  values: EmployerFormValues,
+  locale: "ar" | "en" = "ar"
 ): Promise<OrderReviewDetail> {
   return updateOrderReviewDetail(id, {
-    employerName: values.employerName,
+    employerNameAr: values.employerNameAr,
+    employerNameEn: values.employerNameEn,
+    employerName:
+      locale === "en"
+        ? values.employerNameEn || values.employerNameAr
+        : values.employerNameAr || values.employerNameEn,
     nationalId: values.nationalId,
     phoneLocal: values.phoneLocal,
     city: values.city,
-    address: values.address,
+    passportIssuePlace: values.passportIssuePlace || "—",
   });
 }
 
 export async function updateOrderWorker(
   id: string,
-  values: WorkerFormValues
+  values: WorkerFormValues,
+  locale: "ar" | "en" = "ar"
 ): Promise<OrderReviewDetail> {
   return updateOrderReviewDetail(id, {
-    workerName: values.workerName,
+    workerNameAr: values.workerNameAr,
+    workerNameEn: values.workerNameEn,
+    workerName:
+      locale === "en"
+        ? values.workerNameEn || values.workerNameAr
+        : values.workerNameAr || values.workerNameEn,
     workerPhoneLocal: values.workerPhoneLocal,
     workerBirthDate: values.birthDate,
     workerHomeAddress: values.homeAddress,
@@ -196,7 +208,7 @@ export function useUpdateOrderEmployer() {
 
   return useMutation({
     mutationFn: ({ id, values }: { id: string; values: EmployerFormValues }) =>
-      updateOrderEmployer(id, values),
+      updateOrderEmployer(id, values, locale.startsWith("en") ? "en" : "ar"),
     onSuccess: (data) => {
       queryClient.setQueryData([...orderKeys.detail(data.id), locale], data);
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
@@ -210,7 +222,7 @@ export function useUpdateOrderWorker() {
 
   return useMutation({
     mutationFn: ({ id, values }: { id: string; values: WorkerFormValues }) =>
-      updateOrderWorker(id, values),
+      updateOrderWorker(id, values, locale.startsWith("en") ? "en" : "ar"),
     onSuccess: (data) => {
       queryClient.setQueryData([...orderKeys.detail(data.id), locale], data);
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });

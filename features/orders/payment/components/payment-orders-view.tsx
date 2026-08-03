@@ -1,14 +1,16 @@
 "use client";
 
-import { Phone, Plus, SaudiRiyal } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { SaudiRiyal } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import ManualOrderButton from "@/components/manual-order-button";
+import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
+import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
 import PaymentDeliveryStatusBadge from "@/features/orders/payment/components/payment-delivery-status-badge";
 import PaymentOrderActions from "@/features/orders/payment/components/payment-order-actions";
 import PaymentOrdersFilters from "@/features/orders/payment/components/payment-orders-filters";
@@ -19,6 +21,7 @@ import {
 } from "@/features/orders/payment/queries/use-payment-orders";
 import type { PaymentOrderRow } from "@/features/orders/types";
 import {
+  formatIsoDateWithClockTime,
   parsePaymentOrdersFilters,
   serializePaymentOrdersFilters,
   useOrderFilters,
@@ -46,6 +49,7 @@ function formatIndicatorValue(value: number) {
 
 export default function PaymentOrdersView() {
   const t = useTranslations("Orders.Payment");
+  const locale = useLocale() === "en" ? "en" : "ar";
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
     useOrderFilters({
       defaults: DEFAULT_PAYMENT_ORDERS_FILTERS,
@@ -61,7 +65,10 @@ export default function PaymentOrdersView() {
       id: "orderNumber",
       header: t("table.orderNumber"),
       cell: (row) => (
-        <span className="font-semibold text-brand-black">{row.orderNumber}</span>
+        <CopyableOrderNumber
+          orderNumber={row.orderNumber}
+          className="font-semibold text-brand-black"
+        />
       ),
     },
     {
@@ -70,10 +77,7 @@ export default function PaymentOrdersView() {
       cell: (row) => (
         <div className="flex flex-col gap-1">
           <span className="font-semibold text-brand-black">{row.employerName}</span>
-          <span className="inline-flex items-center gap-1.5 text-xs text-brand-gris">
-            <Phone className="size-3.5 shrink-0" strokeWidth={1.75} />
-            <span dir="ltr">{row.employerPhone}</span>
-          </span>
+          <CopyablePhoneNumber phone={row.employerPhone} />
         </div>
       ),
     },
@@ -87,34 +91,53 @@ export default function PaymentOrdersView() {
     {
       id: "createdAt",
       header: t("table.createdAt"),
-      cell: (row) => (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-brand-black">{row.createdDate}</span>
-          <span className="text-xs text-brand-gris">{row.createdTime}</span>
-        </div>
-      ),
+      cell: (row) => {
+        const created = formatIsoDateWithClockTime(
+          row.createdAtIso,
+          row.createdTime,
+          locale,
+        );
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-brand-black">{created.dateLabel}</span>
+            <span className="text-xs text-brand-gris">{created.timeLabel}</span>
+          </div>
+        );
+      },
     },
     {
       id: "processedAt",
       header: t("table.processedAt"),
-      cell: (row) => (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-brand-black">{row.processedDate}</span>
-          <span className="text-xs text-brand-gris">{row.processedTime}</span>
-        </div>
-      ),
+      cell: (row) => {
+        const processed = formatIsoDateWithClockTime(
+          row.processedAtIso,
+          row.processedTime,
+          locale,
+        );
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-brand-black">{processed.dateLabel}</span>
+            <span className="text-xs text-brand-gris">{processed.timeLabel}</span>
+          </div>
+        );
+      },
     },
     {
       id: "contractUploadedAt",
       header: t("table.contractUploadedAt"),
-      cell: (row) => (
-        <div className="flex flex-col gap-0.5">
-          <span className="text-brand-black">{row.contractUploadedDate}</span>
-          <span className="text-xs text-brand-gris">
-            {row.contractUploadedTime}
-          </span>
-        </div>
-      ),
+      cell: (row) => {
+        const uploaded = formatIsoDateWithClockTime(
+          row.contractUploadedAtIso,
+          row.contractUploadedTime,
+          locale,
+        );
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-brand-black">{uploaded.dateLabel}</span>
+            <span className="text-xs text-brand-gris">{uploaded.timeLabel}</span>
+          </div>
+        );
+      },
     },
     {
       id: "type",
@@ -171,14 +194,7 @@ export default function PaymentOrdersView() {
           </h1>
           <p className="max-w-2xl text-sm text-brand-gris">{t("description")}</p>
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          className="h-11 gap-2 rounded-xl border-black/10 bg-brand-gris px-5 text-brand-white hover:bg-brand-gris/80 hover:text-brand-white"
-        >
-          <Plus className="size-4" strokeWidth={2} />
-          <span>{t("manualOrder")}</span>
-        </Button>
+        <ManualOrderButton />
       </div>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-2">

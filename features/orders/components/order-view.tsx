@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { notFound } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import CustomIcon from "@/components/custom-svg";
@@ -17,6 +17,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCan } from "@/features/auth/lib/use-can";
 import ChangeHistoryTable from "@/features/orders/components/change-history-table";
+import CancellationReasonCard from "@/features/orders/cancelled/components/cancellation-reason-card";
+import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
+import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
 import DocumentDataPanel from "@/features/orders/components/document-data-panel";
 import EmployerDataPanel from "@/features/orders/components/employer-data-panel";
 import HoldReasonCard from "@/features/orders/components/hold-reason-card";
@@ -31,9 +34,12 @@ import {
   useUpdateOrderEmployer,
   useUpdateOrderWorker,
 } from "@/features/orders/queries/use-orders";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 
 export type ReviewTabId = "employer" | "worker" | "documents";
+
+const TAB_QUERY_KEY = "tab";
 
 const REVIEW_TABS: { id: ReviewTabId; iconSrc: string }[] = [
   { id: "employer", iconSrc: "/svg/user-square.svg" },
@@ -52,6 +58,13 @@ const HOLD_REASON_TAB: Partial<Record<HoldReasonValue, ReviewTabId>> = {
   unclear_document: "documents",
 };
 
+function parseReviewTab(value: string | null): ReviewTabId {
+  if (value === "employer" || value === "worker" || value === "documents") {
+    return value;
+  }
+  return "employer";
+}
+
 type OrderViewProps = {
   orderId: string;
 };
@@ -59,12 +72,14 @@ type OrderViewProps = {
 export default function OrderView({ orderId }: OrderViewProps) {
   const t = useTranslations("Orders.New.Review");
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const permissions = useCan();
   const { data: order, isPending, isError } = useOrder(orderId);
   const updateEmployer = useUpdateOrderEmployer();
   const updateWorker = useUpdateOrderWorker();
 
-  const [activeTab, setActiveTab] = useState<ReviewTabId>("employer");
+  const activeTab = parseReviewTab(searchParams.get(TAB_QUERY_KEY));
   const [editingTab, setEditingTab] = useState<ReviewTabId | null>(null);
 
   useEffect(() => {
@@ -104,6 +119,7 @@ export default function OrderView({ orderId }: OrderViewProps) {
     order.status === "under_review" ||
     order.status === "held";
 
+  const isCancelled = order.status === "cancelled";
   const isEditing = canEditForms && editingTab !== null;
   const flaggedTab = order.hold?.reason
     ? HOLD_REASON_TAB[order.hold.reason]
@@ -111,7 +127,11 @@ export default function OrderView({ orderId }: OrderViewProps) {
 
   const handleTabChange = (value: string) => {
     setEditingTab(null);
-    setActiveTab(value as ReviewTabId);
+    const tab = parseReviewTab(value);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(TAB_QUERY_KEY, tab);
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
   };
 
   const handleEditingChange = (tab: ReviewTabId, editing: boolean) => {
@@ -130,6 +150,21 @@ export default function OrderView({ orderId }: OrderViewProps) {
     updateWorker.mutate({ id: order.id, values });
   };
 
+  const listBreadcrumb =
+    order.status === "held" || order.hold ? (
+      <Link href="/orders/pending">{t("breadcrumbs.pendingOrders")}</Link>
+    ) : order.status === "processed" ? (
+      <Link href="/orders/processed">{t("breadcrumbs.processedOrders")}</Link>
+    ) : order.status === "sent_for_authentication" ? (
+      <Link href="/orders/verification">
+        {t("breadcrumbs.verificationOrders")}
+      </Link>
+    ) : isCancelled ? (
+      <Link href="/orders/cancelled">{t("breadcrumbs.cancelledOrders")}</Link>
+    ) : (
+      <Link href="/orders/new">{t("breadcrumbs.newOrders")}</Link>
+    );
+
   return (
     <div className="flex min-w-0 flex-col gap-6 p-4 pb-8">
       <div className="flex flex-col gap-4">
@@ -142,17 +177,7 @@ export default function OrderView({ orderId }: OrderViewProps) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                {order.status === "held" || order.hold ? (
-                  <Link href="/orders/pending">{t("breadcrumbs.pendingOrders")}</Link>
-                ) : order.status === "processed" ? (
-                  <Link href="/orders/processed">{t("breadcrumbs.processedOrders")}</Link>
-                ) : order.status === "sent_for_authentication" ? (
-                  <Link href="/orders/verification">{t("breadcrumbs.verificationOrders")}</Link>
-                ) : (
-                  <Link href="/orders/new">{t("breadcrumbs.newOrders")}</Link>
-                )}
-              </BreadcrumbLink>
+              <BreadcrumbLink asChild>{listBreadcrumb}</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -168,23 +193,47 @@ export default function OrderView({ orderId }: OrderViewProps) {
         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-brand-black md:text-3xl">
-              {t("title")}
+              {isCancelled ? t("titleCancelled") : t("title")}
             </h1>
-            <p className="mt-1 text-sm text-brand-gris">{t("subtitle")}</p>
+            <p className="mt-1 text-sm text-brand-gris">
+              {isCancelled ? t("subtitleCancelled") : t("subtitle")}
+            </p>
           </div>
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <span className="text-sm font-semibold text-brand-black">
               {t("orderStatus")}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#FFF5EC] px-3.5 py-1.5 text-xs font-bold text-brand-black">
-              <span className="size-1.5 rounded-full bg-[#E08337]" />
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold",
+                isCancelled
+                  ? "bg-brand-accent/10 text-brand-accent"
+                  : "bg-[#FFF5EC] text-brand-black"
+              )}
+            >
+              <span
+                className={cn(
+                  "size-1.5 rounded-full",
+                  isCancelled ? "bg-brand-accent" : "bg-[#E08337]"
+                )}
+              />
               {order.statusLabel}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 rounded-2xl border border-black/10 px-4 py-3 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 rounded-2xl border border-black/10 px-4 py-3 sm:grid-cols-2 xl:grid-cols-6">
+        <SummaryItem
+          iconSrc="/svg/tag-2.svg"
+          label={t("summary.orderNumber")}
+          value={
+            <CopyableOrderNumber
+              orderNumber={order.orderNumber}
+              className="text-sm font-semibold text-brand-black"
+            />
+          }
+        />
         <SummaryItem
           iconSrc="/svg/person.svg"
           label={t("summary.employerName")}
@@ -193,8 +242,12 @@ export default function OrderView({ orderId }: OrderViewProps) {
         <SummaryItem
           iconSrc="/svg/phone.svg"
           label={t("summary.contactNumber")}
-          value={`+966 ${order.phoneLocal}`}
-          dir="ltr"
+          value={
+            <CopyablePhoneNumber
+              phone={`+966 ${order.phoneLocal}`}
+              className="text-sm font-semibold text-brand-black"
+            />
+          }
         />
         <SummaryItem
           iconSrc="/svg/location.svg"
@@ -216,6 +269,9 @@ export default function OrderView({ orderId }: OrderViewProps) {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
         <div className="min-w-0 flex-1 space-y-4">
           {order.hold ? <HoldReasonCard hold={order.hold} /> : null}
+          {order.cancellation ? (
+            <CancellationReasonCard cancellation={order.cancellation} />
+          ) : null}
 
           <Tabs
             value={activeTab}
@@ -237,7 +293,10 @@ export default function OrderView({ orderId }: OrderViewProps) {
               ))}
             </TabsList>
 
-            <TabsContent value="employer" className="mt-2 p-4 rounded-2xl border border-black/5">
+            <TabsContent
+              value="employer"
+              className="mt-2 rounded-2xl border border-black/5 p-6 sm:p-8"
+            >
               <EmployerDataPanel
                 order={order}
                 canEdit={canEditForms}
@@ -248,7 +307,10 @@ export default function OrderView({ orderId }: OrderViewProps) {
                 onSaved={handleEmployerSaved}
               />
             </TabsContent>
-            <TabsContent value="worker" className="mt-2">
+            <TabsContent
+              value="worker"
+              className="mt-2 rounded-2xl border border-black/5 p-6 sm:p-8"
+            >
               <WorkerDataPanel
                 order={order}
                 canEdit={canEditForms}
@@ -325,7 +387,7 @@ function SummaryItem({
 }: {
   iconSrc: string;
   label: string;
-  value: string;
+  value: React.ReactNode;
   dir?: "ltr" | "rtl";
 }) {
   return (
@@ -333,12 +395,12 @@ function SummaryItem({
       <CustomIcon src={iconSrc} size={16} className="mt-0.5 shrink-0" />
       <div className="min-w-0">
         <p className="text-xs text-brand-gris">{label}</p>
-        <p
+        <div
           className="truncate text-sm font-semibold text-brand-black"
           dir={dir}
         >
           {value}
-        </p>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Phone } from "lucide-react";
+import { Eye } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -12,6 +12,8 @@ import TablePagination from "@/components/table-pagination";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
+import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
 import PendingOrdersFilters from "@/features/orders/pending/components/pending-orders-filters";
 import SuspensionReasonBadge from "@/features/orders/pending/components/suspension-reason-badge";
 import { DEFAULT_PENDING_ORDERS_FILTERS } from "@/features/orders/pending/mock-data";
@@ -105,9 +107,10 @@ export default function PendingOrdersView() {
       id: "orderNumber",
       header: t("table.orderNumber"),
       cell: (row) => (
-        <span className="font-semibold text-brand-black">
-          {row.request_number ?? `#ORD-${row.id}`}
-        </span>
+        <CopyableOrderNumber
+          orderNumber={row.request_number ?? `#ORD-${row.id}`}
+          className="font-semibold text-brand-black"
+        />
       ),
     },
     {
@@ -118,10 +121,7 @@ export default function PendingOrdersView() {
           <span className="font-semibold text-brand-black">
             {getOrderEmployerName(row, locale)}
           </span>
-          <span className="inline-flex items-center gap-1.5 text-xs text-brand-gris">
-            <Phone className="size-3.5 shrink-0" strokeWidth={1.75} />
-            <span dir="ltr">{getOrderPhoneDisplay(row)}</span>
-          </span>
+          <CopyablePhoneNumber phone={getOrderPhoneDisplay(row)} />
         </div>
       ),
     },
@@ -138,7 +138,7 @@ export default function PendingOrdersView() {
       id: "createdAt",
       header: t("table.createdAt"),
       cell: (row) => {
-        const created = getOrderCreatedDisplay(row);
+        const created = getOrderCreatedDisplay(row, locale);
         return (
           <div className="flex flex-col gap-0.5">
             <span className="text-brand-black">{created.dateLabel}</span>
@@ -161,7 +161,7 @@ export default function PendingOrdersView() {
       id: "suspendedAt",
       header: t("table.suspendedAt"),
       cell: (row) => {
-        const heldAt = getOrderHeldAtDisplay(row);
+        const heldAt = getOrderHeldAtDisplay(row, locale);
         return (
           <div className="flex flex-col gap-0.5">
             <span className="text-brand-black">{heldAt.dateLabel}</span>

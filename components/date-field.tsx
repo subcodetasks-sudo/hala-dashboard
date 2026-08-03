@@ -115,7 +115,7 @@ export default function DateField({
             aria-readonly={readOnly || undefined}
             className={cn(
               isForm
-                ? "relative h-11 w-full justify-start rounded-xl border-black/10 bg-white pe-3 ps-9 text-sm font-normal text-brand-black hover:bg-white"
+                ? "relative h-11 w-full justify-start rounded-full border-black/10 bg-white pe-3 ps-9 text-sm font-normal text-brand-black hover:bg-white"
                 : "h-11 w-full justify-between rounded-full border-black/5 bg-[#F5F5F5] px-4 text-sm font-normal text-brand-black hover:bg-[#F5F5F5]/80",
               isForm && readOnly && "bg-brand-background/40",
               !isForm &&
