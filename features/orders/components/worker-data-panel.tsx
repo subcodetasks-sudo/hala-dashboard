@@ -199,6 +199,7 @@ export default function WorkerDataPanel({
           readOnly={!editing}
           error={errors.passportNumber}
           placeholder={t("passportNumberPlaceholder")}
+          className="font-clash"
           {...register("passportNumber")}
         />
 

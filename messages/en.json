@@ -29,6 +29,7 @@
       "apply": "Apply Filter",
       "statusAll": "All statuses",
       "statusNew": "New",
+      "statusUnderReview": "Under Review",
       "statusPending": "Pending",
       "statusProcessing": "Processing",
       "statusCompleted": "Completed"
@@ -47,6 +48,7 @@
       "sourceEform": "E-form",
       "sourceManual": "Manual",
       "statusNew": "New",
+      "statusUnderReview": "Under Review",
       "empty": "No orders found",
       "loading": "Loading orders..."
     }
@@ -254,13 +256,27 @@
         "orderStatus": "Order Status:",
         "statusNew": "New",
         "refreshData": "Refresh Data",
+        "statuses": {
+          "draft": "Draft",
+          "new": "New",
+          "underReview": "Under Review",
+          "processed": "Processed",
+          "held": "Held",
+          "sentForAuthentication": "Sent for Authentication",
+          "awaitingPayment": "Awaiting Payment",
+          "completed": "Completed",
+          "cancelled": "Cancelled"
+        },
         "breadcrumbs": {
           "home": "Home",
           "newOrders": "New Orders",
           "pendingOrders": "Pending Orders",
           "processedOrders": "Processed Orders",
           "verificationOrders": "Sent for Authentication Orders",
+          "paymentOrders": "Orders in Payment Stage",
+          "completedOrders": "Completed Orders",
           "cancelledOrders": "Cancelled Orders",
+          "refundOrders": "Refund Requests",
           "review": "Review Order {orderNumber}"
         },
         "summary": {
@@ -275,8 +291,10 @@
           "employer": "Employer Data",
           "worker": "Worker Data",
           "documents": "Documents",
+          "delivery": "Delivery Data",
           "workerPlaceholder": "Worker data will be available soon.",
-          "documentsPlaceholder": "Documents will be available soon."
+          "documentsPlaceholder": "Documents will be available soon.",
+          "deliveryPlaceholder": "Delivery data is under construction."
         },
         "hold": {
           "reasonLabel": "Suspension reason:",
@@ -598,6 +616,7 @@
         "viewDetails": "View Order Data",
         "viewDownloadContract": "View and Download Contract",
         "uploadFinalContract": "Upload Final Contract",
+        "confirmUploadFinalContract": "Confirm Final Contract Upload",
         "uploadFinalContractSuccess": "Final contract {orderNumber} uploaded successfully."
       },
       "empty": {
@@ -839,6 +858,58 @@
         "title": "No refund requests",
         "description": "No refund requests have been registered yet — and that is a good sign!"
       }
+    }
+  },
+  "Invoices": {
+    "title": "Invoices",
+    "description": "Manage and follow up on invoices issued after successful payment of contract renewal requests.",
+    "listTitle": "Invoices Record",
+    "periodWeek": "This week",
+    "indicators": {
+      "total": "Total Invoices",
+      "totalAmount": "Total Amount (SAR)",
+      "online": "Online Payment Invoices",
+      "manual": "Manual Payment Invoices"
+    },
+    "filters": {
+      "paidAt": "Payment Date",
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by order number or employer name...",
+      "orderType": "Order Type",
+      "typeAll": "All",
+      "typeEform": "E-form",
+      "typeManual": "Manual",
+      "paymentMethod": "Payment Status",
+      "paymentAll": "All",
+      "paymentOnline": "Online",
+      "paymentManual": "Manual",
+      "contract": "Contract",
+      "contractAll": "All",
+      "contractAvailable": "Available",
+      "contractUnavailable": "Temporarily Unavailable",
+      "apply": "Apply Filter",
+      "pickDate": "dd/mm/yyyy"
+    },
+    "table": {
+      "invoiceNumber": "Invoice Number",
+      "orderNumber": "Order Number",
+      "employer": "Employer / Mobile",
+      "worker": "Worker Name",
+      "paidAt": "Payment Date",
+      "amount": "Invoice Value",
+      "paymentMethod": "Payment Status",
+      "paymentOnline": "Online",
+      "paymentManual": "Manual",
+      "contract": "Linked Contract",
+      "contractAvailable": "Available",
+      "contractUnavailable": "Temporarily Unavailable",
+      "action": "Action",
+      "viewDetails": "View Order Data",
+      "viewDownloadContract": "View and Download Contract"
+    },
+    "empty": {
+      "title": "No invoices yet",
+      "description": "Contract renewal request invoices will appear here after payment is completed successfully."
     }
   },
   "Dashboard": {

@@ -1,5 +1,6 @@
 import {
   employeeHasRole,
+  employeeIsSuperAdmin,
   getAccessProfile,
   getRestrictedProfileConfig,
   isOperationsPathname,
@@ -14,7 +15,7 @@ import type { HomeIndicatorKey } from "@/features/home/types";
 import type { OrderStatus } from "@/features/orders/types";
 import type { Employee } from "@/features/profile/types";
 
-type Actor = Pick<Employee, "roles"> | null | undefined;
+type Actor = Pick<Employee, "id" | "roles"> | null | undefined;
 
 const ALL_HOME_INDICATOR_KEYS = [
   "processing",
@@ -46,11 +47,18 @@ export function can(actor: Actor) {
   const restrictedConfig = restricted
     ? getRestrictedProfileConfig(restricted)
     : null;
+  const superAdmin = employeeIsSuperAdmin(actor);
+  const employeeId = actor?.id;
 
   return {
     /** Admin / super-admin with unrestricted dashboard access. */
     isFullAccess(): boolean {
       return fullAccess;
+    },
+
+    /** Super-admin only (not regular admin). */
+    isSuperAdmin(): boolean {
+      return superAdmin;
     },
 
     /** Contract officer without a full-access role. */
@@ -129,7 +137,7 @@ export function can(actor: Actor) {
 
     filterOrderStatus(status: string | null | undefined): boolean {
       if (!status || status === "all") {
-        return !restricted;
+        return true;
       }
 
       if (fullAccess || !restricted) {
@@ -142,7 +150,7 @@ export function can(actor: Actor) {
     /** Status options shown in home (and similar) filter dropdowns. */
     orderStatuses<T extends { value: string }>(statuses: readonly T[]): T[] {
       if (fullAccess || !restricted) {
-        return statuses.filter((status) => status.value !== "under_review");
+        return [...statuses];
       }
 
       return statuses.filter((status) =>
@@ -152,19 +160,20 @@ export function can(actor: Actor) {
 
     /**
      * Resolve the status sent to the list API.
-     * Restricted roles always query an allowed status (first configured default).
+     * Restricted roles may use "all" (no status param) and are filtered
+     * client-side to their allowed statuses.
      */
     resolveOrderStatusFilter(
       status: string | null | undefined,
     ): OrderStatus | undefined {
+      if (!status || status === "all") {
+        return undefined;
+      }
+
       if (restricted && restrictedConfig) {
         return isRestrictedOrderStatus(restricted, status)
           ? (status as OrderStatus)
-          : restrictedConfig.orderStatuses[0];
-      }
-
-      if (!status || status === "all") {
-        return undefined;
+          : undefined;
       }
 
       return status as OrderStatus;
@@ -172,20 +181,23 @@ export function can(actor: Actor) {
 
     /**
      * Select value for the home status filter.
-     * Restricted roles never use "all".
      */
     orderStatusSelectValue(status: string | null | undefined): string {
+      if (!status || status === "all") {
+        return "all";
+      }
+
       if (restricted && restrictedConfig) {
         return isRestrictedOrderStatus(restricted, status)
           ? (status as string)
-          : restrictedConfig.orderStatuses[0];
+          : "all";
       }
 
-      return status ?? "all";
+      return status;
     },
 
     includeOrderStatusAllOption(): boolean {
-      return !restricted;
+      return true;
     },
 
     viewPlatformNav(href: string | undefined): boolean {
@@ -210,6 +222,59 @@ export function can(actor: Actor) {
       }
 
       return isRestrictedOrderDetailStatus(restricted, status);
+    },
+
+    /**
+     * Under-review list visibility: only the assignee (or super-admin) may see
+     * an under_review row. All other statuses are unchanged.
+     */
+    canSeeOrderListItem(
+      status: string | null | undefined,
+      assignedToId: number | null | undefined,
+    ): boolean {
+      if (status !== "under_review") {
+        return true;
+      }
+
+      if (superAdmin) {
+        return true;
+      }
+
+      return (
+        employeeId != null &&
+        assignedToId != null &&
+        employeeId === assignedToId
+      );
+    },
+
+    /**
+     * Form / action edit rights on the order detail page.
+     * Under-review is editable only by the assignee or super-admin.
+     */
+    canEditOrderDetail(
+      status: string | null | undefined,
+      assignedToId: number | null | undefined,
+    ): boolean {
+      const statusEditable =
+        status === "new" || status === "under_review" || status === "held";
+
+      if (!statusEditable) {
+        return false;
+      }
+
+      if (status === "under_review") {
+        if (superAdmin) {
+          return true;
+        }
+
+        return (
+          employeeId != null &&
+          assignedToId != null &&
+          employeeId === assignedToId
+        );
+      }
+
+      return true;
     },
 
     accessPath(pathnameWithoutLocale: string): boolean {

@@ -6,28 +6,27 @@ import { useLocale, useTranslations } from "next-intl";
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
-import ManualOrderButton from "@/components/manual-order-button";
 import DataTable, { type DataTableColumn } from "@/components/table";
-import { Badge } from "@/components/ui/badge";
 import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
 import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
-import RefundOrderActions from "@/features/orders/refunds/components/refund-order-actions";
-import RefundOrdersFilters from "@/features/orders/refunds/components/refund-orders-filters";
-import RefundStatusBadge from "@/features/orders/refunds/components/refund-status-badge";
-import { DEFAULT_REFUND_ORDERS_FILTERS } from "@/features/orders/refunds/mock-data";
+import InvoiceActions from "@/features/invoices/components/invoice-actions";
+import InvoiceContractStatusBadge from "@/features/invoices/components/invoice-contract-status-badge";
+import InvoicePaymentMethodBadge from "@/features/invoices/components/invoice-payment-method-badge";
+import InvoicesFilters from "@/features/invoices/components/invoices-filters";
+import { DEFAULT_INVOICES_FILTERS } from "@/features/invoices/mock-data";
 import {
-  useRefundIndicators,
-  useRefundOrders,
-} from "@/features/orders/refunds/queries/use-refund-orders";
-import type { RefundOrderRow } from "@/features/orders/types";
+  useInvoiceIndicators,
+  useInvoices,
+} from "@/features/invoices/queries/use-invoices";
+import type { InvoiceRow } from "@/features/invoices/types";
+import {
+  parseInvoicesFilters,
+  serializeInvoicesFilters,
+} from "@/features/invoices/utils/filter-query-params";
 import {
   formatIsoDateWithClockTime,
-  formatRelativeTimeLabel,
-  parseRefundOrdersFilters,
-  serializeRefundOrdersFilters,
   useOrderFilters,
 } from "@/features/orders/utils";
-import { cn } from "@/lib/utils";
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -38,39 +37,53 @@ const INDICATOR_CARDS = [
     bgClassName: "bg-brand-primary/10",
   },
   {
-    key: "pending" as const,
+    key: "totalAmount" as const,
     periodKey: "periodWeek" as const,
     iconSrc: "/svg/money-recive.svg",
     bgClassName: "bg-brand-light-yellow",
   },
   {
-    key: "refunded" as const,
+    key: "online" as const,
     periodKey: "periodWeek" as const,
     iconSrc: "/svg/money-send.svg",
     bgClassName: "bg-brand-success-light",
   },
   {
-    key: "totalAmount" as const,
+    key: "manual" as const,
     periodKey: "periodWeek" as const,
     iconSrc: "/svg/shield-tick.svg",
     bgClassName: "bg-brand-purple/5",
   },
 ] as const;
 
-export default function RefundOrdersView() {
-  const t = useTranslations("Orders.Refunds");
+/** Financial figures always use Western (English) digits. */
+function formatAmount(value: number): string {
+  return value.toLocaleString("en-US");
+}
+
+export default function InvoicesView() {
+  const t = useTranslations("Invoices");
   const locale = useLocale() === "en" ? "en" : "ar";
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
     useOrderFilters({
-      defaults: DEFAULT_REFUND_ORDERS_FILTERS,
-      serialize: serializeRefundOrdersFilters,
-      parse: parseRefundOrdersFilters,
+      defaults: DEFAULT_INVOICES_FILTERS,
+      serialize: serializeInvoicesFilters,
+      parse: parseInvoicesFilters,
     });
 
-  const { data: rows = [], isLoading } = useRefundOrders(appliedFilters);
-  const { data: indicators } = useRefundIndicators();
+  const { data: rows = [], isLoading } = useInvoices(appliedFilters);
+  const { data: indicators } = useInvoiceIndicators();
 
-  const columns: DataTableColumn<RefundOrderRow>[] = [
+  const columns: DataTableColumn<InvoiceRow>[] = [
+    {
+      id: "invoiceNumber",
+      header: t("table.invoiceNumber"),
+      cell: (row) => (
+        <span className="font-clash font-semibold text-brand-black" dir="ltr">
+          {row.invoiceNumber}
+        </span>
+      ),
+    },
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
@@ -103,40 +116,18 @@ export default function RefundOrdersView() {
       ),
     },
     {
-      id: "type",
-      header: t("table.type"),
-      cell: (row) => (
-        <Badge
-          className={
-            row.source === "eform"
-              ? "w-full rounded-lg border-transparent bg-brand-purple/15 px-3 py-4 font-bold text-brand-black"
-              : "w-full rounded-lg border-transparent bg-brand-success/15 px-3 py-4 font-bold text-brand-success"
-          }
-        >
-          {row.source === "eform" ? t("table.typeEform") : t("table.typeManual")}
-        </Badge>
-      ),
-    },
-    {
-      id: "requestedAt",
-      header: t("table.requestedAt"),
+      id: "paidAt",
+      header: t("table.paidAt"),
       cell: (row) => {
-        const requested = formatIsoDateWithClockTime(
-          row.requestedAtIso,
-          row.requestedTime,
-          locale,
-        );
-        const relative = formatRelativeTimeLabel(
-          row.requestedAtDateTime,
+        const paid = formatIsoDateWithClockTime(
+          row.paidAtIso,
+          row.paidTime,
           locale,
         );
         return (
           <div className="flex flex-col gap-0.5">
-            <span className="text-brand-black">{requested.dateLabel}</span>
-            <span className="text-xs text-brand-gris">
-              {requested.timeLabel}
-              {relative ? ` • ${relative}` : null}
-            </span>
+            <span className="text-brand-black">{paid.dateLabel}</span>
+            <span className="text-xs text-brand-gris">{paid.timeLabel}</span>
           </div>
         );
       },
@@ -145,48 +136,64 @@ export default function RefundOrdersView() {
       id: "amount",
       header: t("table.amount"),
       cell: (row) => (
-        <span
-          className={cn(
-            "font-clash inline-flex items-center gap-1 whitespace-nowrap font-semibold",
-            row.status === "pending" ? "text-brand-accent" : "text-brand-gris",
-          )}
-        >
-          <span>-{row.refundAmount}</span>
-          <SaudiRiyal className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
+        <span className="font-clash inline-flex items-center gap-1 whitespace-nowrap font-semibold text-brand-success">
+          <span dir="ltr">{formatAmount(row.amount)}</span>
+          <SaudiRiyal
+            className="size-4 shrink-0"
+            strokeWidth={1.75}
+            aria-hidden
+          />
         </span>
       ),
     },
     {
-      id: "status",
-      header: t("table.status"),
-      cell: (row) => <RefundStatusBadge status={row.status} />,
+      id: "paymentMethod",
+      header: t("table.paymentMethod"),
+      cell: (row) => (
+        <InvoicePaymentMethodBadge method={row.paymentMethod} />
+      ),
+    },
+    {
+      id: "contract",
+      header: t("table.contract"),
+      cell: (row) => (
+        <InvoiceContractStatusBadge status={row.contractStatus} />
+      ),
     },
     {
       id: "action",
       header: t("table.action"),
-      cell: (row) => <RefundOrderActions orderId={row.id} />,
+      cell: (row) => (
+        <InvoiceActions orderId={row.orderId} orderNumber={row.orderNumber} />
+      ),
     },
   ];
 
   return (
     <div className="flex min-w-0 flex-col gap-8 p-4 pb-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold text-brand-black md:text-3xl">
-            {t("title")}
-          </h1>
-          <p className="max-w-2xl text-sm text-brand-gris">{t("description")}</p>
-        </div>
-        <ManualOrderButton />
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-bold text-brand-black md:text-3xl">
+          {t("title")}
+        </h1>
+        <p className="max-w-2xl text-sm text-brand-gris">{t("description")}</p>
       </div>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {INDICATOR_CARDS.map((card) => {
           const raw = indicators?.[card.key] ?? 0;
           const value =
-            card.key === "totalAmount"
-              ? String(raw)
-              : String(raw).padStart(2, "0");
+            card.key === "totalAmount" ? (
+              <span className="inline-flex items-center gap-1.5" dir="ltr">
+                <SaudiRiyal
+                  className="size-7 shrink-0"
+                  strokeWidth={1.75}
+                  aria-hidden
+                />
+                <span>{formatAmount(raw)}</span>
+              </span>
+            ) : (
+              String(raw).padStart(2, "0")
+            );
           const change = indicators?.change ?? "-";
 
           return (
@@ -206,14 +213,14 @@ export default function RefundOrdersView() {
       <section className="flex flex-col gap-4">
         <h2 className="flex items-center gap-2 text-lg font-bold text-brand-primary">
           <CustomIcon
-            src="/svg/location.svg"
+            src="/svg/receipt-2.svg"
             size={20}
             className="text-brand-primary"
           />
           <span>{t("listTitle")}</span>
         </h2>
 
-        <RefundOrdersFilters
+        <InvoicesFilters
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={applyFilters}
@@ -227,7 +234,7 @@ export default function RefundOrdersView() {
           isLoading={isLoading}
           emptyContent={
             <EmptyTableState
-              iconSrc="/svg/refresh-2.svg"
+              iconSrc="/svg/receipt-2.svg"
               title={t("empty.title")}
               description={t("empty.description")}
             />

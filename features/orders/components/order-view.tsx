@@ -35,17 +35,24 @@ import {
   useUpdateOrderWorker,
 } from "@/features/orders/queries/use-orders";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { ORDER_STATUS_LABEL_KEYS } from "@/features/orders/utils";
 import { cn } from "@/lib/utils";
 
-export type ReviewTabId = "employer" | "worker" | "documents";
+export type ReviewTabId = "employer" | "worker" | "documents" | "delivery";
 
 const TAB_QUERY_KEY = "tab";
 
-const REVIEW_TABS: { id: ReviewTabId; iconSrc: string }[] = [
-  { id: "employer", iconSrc: "/svg/user-square.svg" },
-  { id: "worker", iconSrc: "/svg/user-tag.svg" },
-  { id: "documents", iconSrc: "/svg/receipt-2.svg" },
-];
+const REVIEW_TABS: { id: ReviewTabId; iconSrc: string; completedOnly?: boolean }[] =
+  [
+    { id: "employer", iconSrc: "/svg/user-square.svg" },
+    { id: "worker", iconSrc: "/svg/user-tag.svg" },
+    { id: "documents", iconSrc: "/svg/receipt-2.svg" },
+    {
+      id: "delivery",
+      iconSrc: "/svg/location.svg",
+      completedOnly: true,
+    },
+  ];
 
 const TAB_TRIGGER_CLASS =
   "h-11 min-w-[120px] flex-1 gap-2 rounded-xl border border-black/10 bg-[#F5F5F5] px-4 font-semibold text-brand-black shadow-none data-active:border-transparent data-active:bg-brand-dark-blue data-active:text-brand-white data-active:shadow-none data-active:hover:text-brand-white";
@@ -59,7 +66,12 @@ const HOLD_REASON_TAB: Partial<Record<HoldReasonValue, ReviewTabId>> = {
 };
 
 function parseReviewTab(value: string | null): ReviewTabId {
-  if (value === "employer" || value === "worker" || value === "documents") {
+  if (
+    value === "employer" ||
+    value === "worker" ||
+    value === "documents" ||
+    value === "delivery"
+  ) {
     return value;
   }
   return "employer";
@@ -71,15 +83,18 @@ type OrderViewProps = {
 
 export default function OrderView({ orderId }: OrderViewProps) {
   const t = useTranslations("Orders.New.Review");
+  const tStatus = useTranslations("Orders.New.Review.statuses");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const permissions = useCan();
+  // useOrder resolves real API details and known mock ids
+  // (payment / completed / refund) from `mock-order-details`.
   const { data: order, isPending, isError } = useOrder(orderId);
   const updateEmployer = useUpdateOrderEmployer();
   const updateWorker = useUpdateOrderWorker();
 
-  const activeTab = parseReviewTab(searchParams.get(TAB_QUERY_KEY));
+  const requestedTab = parseReviewTab(searchParams.get(TAB_QUERY_KEY));
   const [editingTab, setEditingTab] = useState<ReviewTabId | null>(null);
 
   useEffect(() => {
@@ -101,6 +116,19 @@ export default function OrderView({ orderId }: OrderViewProps) {
     router.replace("/");
   }, [canViewOrderDetail, order, permissions.isPending, router]);
 
+  // Delivery tab exists only on completed orders — fall back if the query is stale.
+  useEffect(() => {
+    if (!order) return;
+    if (requestedTab === "delivery" && order.status !== "completed") {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(TAB_QUERY_KEY, "employer");
+      const query = params.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
+    }
+  }, [order, pathname, requestedTab, router, searchParams]);
+
   if (isPending || permissions.isPending) {
     return <OrderViewSkeleton />;
   }
@@ -113,17 +141,25 @@ export default function OrderView({ orderId }: OrderViewProps) {
     return <OrderViewSkeleton />;
   }
 
-  // Editable only while reviewing new/held orders (under_review is the active new-review state).
-  const canEditForms =
-    order.status === "new" ||
-    order.status === "under_review" ||
-    order.status === "held";
+  // Editable only while reviewing new/held orders (under_review is assignee/super-admin only).
+  const canEditForms = permissions.canEditOrderDetail(
+    order.status,
+    order.assignedToId,
+  );
+
+  const isCompleted = order.status === "completed";
+  const visibleTabs = REVIEW_TABS.filter(
+    (tab) => !tab.completedOnly || isCompleted,
+  );
+  const activeTab =
+    requestedTab === "delivery" && !isCompleted ? "employer" : requestedTab;
 
   const isCancelled = order.status === "cancelled";
   const isEditing = canEditForms && editingTab !== null;
   const flaggedTab = order.hold?.reason
     ? HOLD_REASON_TAB[order.hold.reason]
     : undefined;
+  const statusLabel = tStatus(ORDER_STATUS_LABEL_KEYS[order.status]);
 
   const handleTabChange = (value: string) => {
     setEditingTab(null);
@@ -151,7 +187,13 @@ export default function OrderView({ orderId }: OrderViewProps) {
   };
 
   const listBreadcrumb =
-    order.status === "held" || order.hold ? (
+    order.linkedToRefund ? (
+      <Link href="/orders/refunds">{t("breadcrumbs.refundOrders")}</Link>
+    ) : order.status === "awaiting_payment" ? (
+      <Link href="/orders/payment">{t("breadcrumbs.paymentOrders")}</Link>
+    ) : order.status === "completed" ? (
+      <Link href="/orders/completed">{t("breadcrumbs.completedOrders")}</Link>
+    ) : order.status === "held" || order.hold ? (
       <Link href="/orders/pending">{t("breadcrumbs.pendingOrders")}</Link>
     ) : order.status === "processed" ? (
       <Link href="/orders/processed">{t("breadcrumbs.processedOrders")}</Link>
@@ -205,19 +247,25 @@ export default function OrderView({ orderId }: OrderViewProps) {
             </span>
             <span
               className={cn(
-                "inline-flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs font-bold",
+                "inline-flex items-center gap-1.5 rounded-xl p-4 text-xs font-bold",
                 isCancelled
                   ? "bg-brand-accent/10 text-brand-accent"
-                  : "bg-[#FFF5EC] text-brand-black"
+                  : isCompleted
+                    ? "bg-brand-success-light text-brand-success"
+                    : "bg-[#FFF5EC] text-brand-black"
               )}
             >
               <span
                 className={cn(
                   "size-1.5 rounded-full",
-                  isCancelled ? "bg-brand-accent" : "bg-[#E08337]"
+                  isCancelled
+                    ? "bg-brand-accent"
+                    : isCompleted
+                      ? "bg-brand-success"
+                      : "bg-[#E08337]"
                 )}
               />
-              {order.statusLabel}
+              {statusLabel}
             </span>
           </div>
         </div>
@@ -279,7 +327,7 @@ export default function OrderView({ orderId }: OrderViewProps) {
             className="gap-4"
           >
             <TabsList className="flex h-auto w-full flex-wrap gap-3 rounded-none bg-transparent p-0 group-data-horizontal/tabs:h-auto!">
-              {REVIEW_TABS.map(({ id, iconSrc }) => (
+              {visibleTabs.map(({ id, iconSrc }) => (
                 <TabsTrigger key={id} value={id} className={TAB_TRIGGER_CLASS}>
                   <CustomIcon src={iconSrc} size={16} />
                   {t(`tabs.${id}`)}
@@ -324,12 +372,33 @@ export default function OrderView({ orderId }: OrderViewProps) {
             <TabsContent value="documents" className="mt-2">
               <DocumentDataPanel order={order} />
             </TabsContent>
+            {isCompleted ? (
+              <TabsContent
+                value="delivery"
+                className="mt-2 rounded-2xl border border-black/5 p-6 sm:p-8"
+              >
+                <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+                  <CustomIcon
+                    src="/svg/location.svg"
+                    size={32}
+                    className="text-brand-gris"
+                  />
+                  <p className="text-sm font-medium text-brand-gris">
+                    {t("tabs.deliveryPlaceholder")}
+                  </p>
+                </div>
+              </TabsContent>
+            ) : null}
           </Tabs>
 
           <ChangeHistoryTable rows={order.changeHistory} />
         </div>
 
-        <ReviewOrderSidebar orderId={order.id} isEditing={isEditing} />
+        <ReviewOrderSidebar
+          orderId={order.id}
+          isEditing={isEditing}
+          canMutate={canEditForms}
+        />
       </div>
     </div>
   );

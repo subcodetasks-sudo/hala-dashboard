@@ -9,6 +9,8 @@ export const FULL_ACCESS_ROLE_NAMES = [
   "super-admin",
 ] as const satisfies readonly RoleName[];
 
+export const SUPER_ADMIN_ROLE_NAME = "super-admin" as const satisfies RoleName;
+
 export const CONTRACT_OFFICER_ROLE_NAME =
   "contract-officer" as const satisfies RoleName;
 
@@ -47,6 +49,7 @@ export const CONTRACT_OFFICER_ORDER_STATUSES = [
 /** Home status-filter values for review officers. */
 export const REVIEW_OFFICER_ORDER_STATUSES = [
   "new",
+  "under_review",
 ] as const satisfies readonly OrderStatus[];
 
 /** Home status-filter values for data-entry officers. */
@@ -170,6 +173,12 @@ export function employeeHasFullDashboardAccess(
   employee: Pick<Employee, "roles"> | null | undefined,
 ): boolean {
   return hasFullDashboardAccess(employee?.roles);
+}
+
+export function employeeIsSuperAdmin(
+  employee: Pick<Employee, "roles"> | null | undefined,
+): boolean {
+  return employeeHasRole(employee, SUPER_ADMIN_ROLE_NAME);
 }
 
 export function employeeHasRole(

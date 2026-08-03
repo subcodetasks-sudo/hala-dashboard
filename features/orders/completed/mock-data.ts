@@ -14,7 +14,7 @@ export const DEFAULT_COMPLETED_ORDERS_FILTERS: CompletedOrdersFilterValues = {
 
 export const COMPLETED_ORDERS: CompletedOrderRow[] = [
   {
-    id: "1",
+    id: "mock-cmp-900101",
     orderNumber: "#ORD-01",
     employerName: "Abdullah Al-Qahtani",
     employerPhone: "+966 514 111 001",
@@ -34,7 +34,7 @@ export const COMPLETED_ORDERS: CompletedOrderRow[] = [
     source: "eform",
   },
   {
-    id: "2",
+    id: "mock-cmp-900102",
     orderNumber: "#ORD-02",
     employerName: "Sara Al-Mutairi",
     employerPhone: "+966 550 222 033",
@@ -54,7 +54,7 @@ export const COMPLETED_ORDERS: CompletedOrderRow[] = [
     source: "manual",
   },
   {
-    id: "3",
+    id: "mock-cmp-900103",
     orderNumber: "#ORD-03",
     employerName: "Fahad Alotaibi",
     employerPhone: "+966 530 333 044",
@@ -74,7 +74,7 @@ export const COMPLETED_ORDERS: CompletedOrderRow[] = [
     source: "eform",
   },
   {
-    id: "4",
+    id: "mock-cmp-900104",
     orderNumber: "#ORD-04",
     employerName: "Maha Alharbi",
     employerPhone: "+966 520 444 055",
@@ -94,7 +94,7 @@ export const COMPLETED_ORDERS: CompletedOrderRow[] = [
     source: "manual",
   },
   {
-    id: "5",
+    id: "mock-cmp-900105",
     orderNumber: "#ORD-05",
     employerName: "Turki Al-Dosari",
     employerPhone: "+966 555 555 066",
@@ -114,7 +114,7 @@ export const COMPLETED_ORDERS: CompletedOrderRow[] = [
     source: "eform",
   },
   {
-    id: "6",
+    id: "mock-cmp-900106",
     orderNumber: "#ORD-06",
     employerName: "Nasser Al-Ghamdi",
     employerPhone: "+966 540 666 077",
@@ -134,7 +134,7 @@ export const COMPLETED_ORDERS: CompletedOrderRow[] = [
     source: "manual",
   },
   {
-    id: "7",
+    id: "mock-cmp-900107",
     orderNumber: "#ORD-07",
     employerName: "Reem Al-Shehri",
     employerPhone: "+966 512 777 088",
@@ -154,7 +154,7 @@ export const COMPLETED_ORDERS: CompletedOrderRow[] = [
     source: "eform",
   },
   {
-    id: "8",
+    id: "mock-cmp-900108",
     orderNumber: "#ORD-08",
     employerName: "Omar Al-Harbi",
     employerPhone: "+966 560 888 099",

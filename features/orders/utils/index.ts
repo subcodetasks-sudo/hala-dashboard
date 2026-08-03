@@ -56,4 +56,6 @@ export {
   toUiOrderSource,
 } from "./map-order-list-item";
 export { mapOrderDetailToReview } from "./map-order-detail";
+export { ORDER_STATUS_LABEL_KEYS } from "./order-status-label";
+export type { OrderStatusLabelKey } from "./order-status-label";
 export { useOrderFilters } from "./use-order-filters";

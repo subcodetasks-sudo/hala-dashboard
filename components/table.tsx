@@ -27,6 +27,8 @@ type DataTableProps<T> = {
   columns: DataTableColumn<T>[];
   data: T[];
   getRowId?: (row: T, index: number) => string;
+  /** Optional per-row class (e.g. highlight assigned / urgent rows). */
+  getRowClassName?: (row: T, index: number) => string | undefined;
   selectable?: boolean;
   className?: string;
   emptyMessage?: string;
@@ -42,6 +44,7 @@ export default function DataTable<T>({
   columns,
   data,
   getRowId,
+  getRowClassName,
   selectable = false,
   className,
   emptyMessage = "No data",
@@ -160,7 +163,10 @@ export default function DataTable<T>({
                 <TableRow
                   key={rowId}
                   data-state={isSelected ? "selected" : undefined}
-                  className="border-b border-black/5 hover:bg-brand-background/40 data-[state=selected]:bg-brand-background/50"
+                  className={cn(
+                    "border-b border-black/5 hover:bg-brand-background/40 data-[state=selected]:bg-brand-background/50",
+                    getRowClassName?.(row, index),
+                  )}
                 >
                   {selectable ? (
                     <TableCell className="ps-6">

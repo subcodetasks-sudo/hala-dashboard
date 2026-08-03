@@ -2,6 +2,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
 
 import { NEW_ORDERS, filterNewOrders } from "../mock-data";
+import {
+  getMockOrderDetail,
+  isMockOrderDetailId,
+} from "../mock-order-details";
 import type {
   NewOrderRow,
   OrderDetailResponse,
@@ -27,13 +31,36 @@ export async function fetchOrders(filters?: OrdersFilterValues): Promise<NewOrde
   return ordersStore;
 }
 
+function mapMockOrderDetail(
+  id: string,
+  locale: string,
+): OrderReviewDetail | null {
+  const mock = getMockOrderDetail(id);
+  if (!mock) return null;
+
+  const appLocale = locale.startsWith("en") ? "en" : "ar";
+  const detail = {
+    ...mapOrderDetailToReview(mock, appLocale),
+    // Keep the unique string mock id used in list links / the URL.
+    id,
+  };
+  orderDetailsStore[id] = detail;
+  return detail;
+}
+
 /**
  * Fetches a renewal request from `/admin/renewal-requests/:id` via the App Router proxy.
+ * Known mock ids (payment / completed / refund) resolve locally for now.
  */
 export async function fetchOrderById(
   id: string,
   locale: string,
 ): Promise<OrderReviewDetail | null> {
+  if (isMockOrderDetailId(id)) {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    return mapMockOrderDetail(id, locale);
+  }
+
   const response = await fetch(`/api/orders/renewal-requests/${encodeURIComponent(id)}`, {
     method: "GET",
     headers: {
@@ -48,7 +75,8 @@ export async function fetchOrderById(
     | null;
 
   if (response.status === 404) {
-    return null;
+    // Temporary fallback while payment / completed / refund detail APIs catch up.
+    return mapMockOrderDetail(id, locale);
   }
 
   if (!response.ok || !payload || !("success" in payload) || !payload.success) {

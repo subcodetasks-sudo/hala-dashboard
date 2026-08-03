@@ -74,7 +74,7 @@ export default function SaudiPhoneField({
         >
           {flag}
         </span>
-        <span className="text-sm font-semibold tabular-nums">{phoneCode}</span>
+        <span className="font-clash text-sm font-semibold tabular-nums">{phoneCode}</span>
       </InputGroupAddon>
       <InputGroupInput
         id={id}
@@ -87,7 +87,7 @@ export default function SaudiPhoneField({
         disabled={disabled}
         placeholder={placeholder}
         aria-invalid={ariaInvalid}
-        className="h-11 text-sm text-brand-black"
+        className="font-clash h-11 text-sm text-brand-black"
         onBlur={onBlur}
         onChange={(event) => {
           onChange(toSaudiPhoneLocal(event.target.value));

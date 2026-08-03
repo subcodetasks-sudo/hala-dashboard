@@ -822,11 +822,15 @@ export type OrderReviewDetail = {
   status: OrderStatus;
   statusLabel: string;
   assignee: string;
+  /** Employee id from `assigned_to` — used for under-review ownership checks. */
+  assignedToId: number | null;
   createdAtLabel: string;
   createdTimeLabel: string;
   relativeTimeLabel: string;
   hold: OrderHoldInfo | null;
   cancellation: OrderCancellationInfo | null;
+  /** True when the order has an active/linked refund request. */
+  linkedToRefund: boolean;
   changeHistory: ChangeHistoryRow[];
   documents: OrderDocument[];
 };

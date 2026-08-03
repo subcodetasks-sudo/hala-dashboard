@@ -152,6 +152,7 @@ export default function EmployerDataPanel({
           placeholder={t("nationalIdPlaceholder")}
           inputMode="numeric"
           maxLength={10}
+          className="font-clash"
           {...register("nationalId", {
             onChange: (e) => {
               e.target.value = e.target.value.replace(/\D/g, "");

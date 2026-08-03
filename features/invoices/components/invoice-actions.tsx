@@ -3,7 +3,6 @@
 import { ChevronLeft, Eye, MoreVertical } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
-import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
 import { Button } from "@/components/ui/button";
@@ -14,15 +13,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ViewDownloadContractDialog from "@/features/orders/components/view-download-contract-dialog";
-import type { VerificationOrderStatus } from "@/features/orders/types";
-import { useMarkFinalContractUploaded } from "@/features/orders/verification/queries/use-verification-orders";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-type VerificationOrderActionsProps = {
+type InvoiceActionsProps = {
   orderId: string;
   orderNumber: string;
-  status: VerificationOrderStatus;
 };
 
 const ITEM_CLASS =
@@ -50,24 +46,12 @@ function ActionItemContent({
   );
 }
 
-export default function VerificationOrderActions({
+export default function InvoiceActions({
   orderId,
   orderNumber,
-  status,
-}: VerificationOrderActionsProps) {
-  const t = useTranslations("Orders.Verification.table");
+}: InvoiceActionsProps) {
+  const t = useTranslations("Invoices.table");
   const [isContractDialogOpen, setContractDialogOpen] = useState(false);
-  const markUploaded = useMarkFinalContractUploaded();
-
-  const handleUploadFinalContract = () => {
-    if (status === "finalContractUploaded" || markUploaded.isPending) return;
-
-    markUploaded.mutate(orderId, {
-      onSuccess: () => {
-        toast.success(t("uploadFinalContractSuccess", { orderNumber }));
-      },
-    });
-  };
 
   return (
     <>
@@ -75,7 +59,7 @@ export default function VerificationOrderActions({
         <DropdownMenuTrigger asChild>
           <Button
             type="button"
-            aria-label={t("actions")}
+            aria-label={t("action")}
             className="size-9 rounded-xl border-none bg-brand-primary p-0 text-brand-white hover:bg-brand-primary/90 data-[state=open]:bg-brand-accent data-[state=open]:hover:bg-brand-accent"
           >
             <MoreVertical className="size-4" strokeWidth={1.75} />
@@ -85,8 +69,8 @@ export default function VerificationOrderActions({
           align="end"
           sideOffset={8}
           className={cn(
-            "w-auto min-w-72 rounded-3xl border-none bg-white p-3",
-            "shadow-[0_8px_28px_rgba(0,49,66,0.12)] ring-0"
+            "w-auto min-w-72 rounded-4xl border-none bg-white p-3",
+            "shadow-[0_8px_28px_rgba(0,49,66,0.12)] ring-0",
           )}
         >
           <div className="flex flex-col gap-2">
@@ -114,25 +98,6 @@ export default function VerificationOrderActions({
                 label={t("viewDownloadContract")}
               />
             </DropdownMenuItem>
-
-            <DropdownMenuItem
-              className={ITEM_CLASS}
-              disabled={
-                status === "finalContractUploaded" || markUploaded.isPending
-              }
-              onSelect={handleUploadFinalContract}
-            >
-              <ActionItemContent
-                icon={
-                  <CustomIcon
-                    src="/svg/maximize.svg"
-                    size={20}
-                    className="text-brand-dark-blue"
-                  />
-                }
-                label={t("uploadFinalContract")}
-              />
-            </DropdownMenuItem>
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -141,11 +106,7 @@ export default function VerificationOrderActions({
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
         orderNumber={orderNumber}
-        confirmLabel={t("confirmUploadFinalContract")}
-        confirmDisabled={
-          status === "finalContractUploaded" || markUploaded.isPending
-        }
-        onConfirmSend={handleUploadFinalContract}
+        showConfirmAction={false}
       />
     </>
   );

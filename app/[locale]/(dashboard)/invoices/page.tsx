@@ -1,5 +1,5 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import InvoicesView from "@/features/invoices/components/invoices-view";
 
 export default function InvoicesPage() {
-  return <DashboardPagePlaceholder titleKey="invoices" />;
+  return <InvoicesView />;
 }

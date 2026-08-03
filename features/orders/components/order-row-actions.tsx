@@ -213,6 +213,9 @@ function VerificationInlineActions({
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
         orderNumber={orderNumber}
+        confirmLabel={t("confirmUploadFinalContract")}
+        confirmDisabled={markUploaded.isPending}
+        onConfirmSend={handleUploadFinalContract}
       />
     </>
   );
