@@ -1,5 +1,5 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import ContentManagementView from "@/features/content-management/components/content-management-view";
 
 export default function ContentManagementPage() {
-  return <DashboardPagePlaceholder titleKey="contentManagement" />;
+  return <ContentManagementView />;
 }

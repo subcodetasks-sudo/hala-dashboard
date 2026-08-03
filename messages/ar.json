@@ -897,5 +897,222 @@
       "goToPage": "الانتقال إلى الصفحة {page}",
       "summary": "صفحة {page} من {lastPage} · {total} نتيجة"
     }
+  },
+  "ContentManagement": {
+    "title": "إدارة المحتوى",
+    "description": "تحكم في محتوى الموقع والصفحات التعريفية والأسئلة الشائعة والمقالات من مكان واحد.",
+    "addContent": "إضافة محتوى جديد",
+    "period": "هذا الأسبوع",
+    "indicators": {
+      "total": "إجمالي عناصر المحتوى",
+      "published": "المحتوى المنشور",
+      "drafts": "المسودات"
+    },
+    "tabs": {
+      "faqs": "الأسئلة الشائعة",
+      "blog": "المدونة",
+      "banners": "البانرات والتنبيهات",
+      "legal": "الصفحات القانونية"
+    },
+    "listTitle": {
+      "faqs": "قائمة صفحات الأسئلة الشائعة",
+      "blog": "قائمة مقالات المدونة",
+      "banners": "قائمة البانرات والتنبيهات",
+      "legal": "قائمة الصفحات القانونية"
+    },
+    "filters": {
+      "searchLabel": "البحث",
+      "searchPlaceholder": "ابحث بعنوان المحتوى أو نوع الصفحة...",
+      "status": "الحالة",
+      "statusAll": "الكل",
+      "statusPublished": "منشور",
+      "statusDraft": "مسودة",
+      "apply": "تطبيق الفلترة"
+    },
+    "table": {
+      "title": "عنوان المحتوى",
+      "type": "النوع",
+      "lastUpdate": "آخر تحديث",
+      "appearance": "مكان الظهور",
+      "by": "بواسطة",
+      "status": "الحالة",
+      "action": "إجراء",
+      "statusPublished": "منشور",
+      "statusDraft": "مسودة",
+      "view": "عرض {title}",
+      "edit": "تعديل {title}",
+      "block": "حظر {title}"
+    },
+    "appearance": {
+      "homePage": "الصفحة الرئيسية",
+      "supportPage": "صفحة الدعم",
+      "blogPage": "صفحة المدونة",
+      "homeBanner": "بانر الرئيسية",
+      "siteTop": "أعلى الموقع",
+      "legalPage": "الصفحات القانونية"
+    },
+    "author": {
+      "systemAdmin": "مدير النظام",
+      "superAdmin": "المدير العام"
+    },
+    "empty": {
+      "title": "لا يوجد محتوى",
+      "description": "لا يوجد محتوى مطابق للفلاتر الحالية، جرب تغيير معايير البحث أو إعادة التعيين."
+    },
+    "route": {
+      "unauthorized": "غير مصرح",
+      "unableToFetchFaqs": "تعذر تحميل الأسئلة الشائعة. حاول مرة أخرى."
+    },
+    "addFaqDialog": {
+      "title": "إضافة سؤال شائع",
+      "close": "إغلاق",
+      "questionLabel": "السؤال",
+      "questionPlaceholder": "اكتب السؤال كما سيظهر للعميل..",
+      "answerLabel": "الإجابة",
+      "answerPlaceholder": "اكتب الإجابة هنا...",
+      "appearanceLabel": "التصنيف",
+      "displayOrderLabel": "ترتيب الظهور",
+      "displayOrderPlaceholder": "مثال: 01",
+      "statusLabel": "الحالة",
+      "appearance": {
+        "homePage": "الصفحة الرئيسية",
+        "supportPage": "صفحة الدعم"
+      },
+      "status": {
+        "published": "منشور",
+        "draft": "مسودة"
+      },
+      "publish": "نشر",
+      "saveDraft": "حفظ كمسودة",
+      "cancel": "تراجع وإلغاء",
+      "toastPublished": "تم نشر السؤال بنجاح",
+      "toastDraft": "تم حفظ السؤال كمسودة",
+      "errorToast": "تعذر حفظ السؤال. حاول مرة أخرى.",
+      "validation": {
+        "questionRequired": "السؤال مطلوب",
+        "answerRequired": "الإجابة مطلوبة",
+        "appearanceRequired": "التصنيف مطلوب",
+        "displayOrderRequired": "ترتيب الظهور مطلوب",
+        "statusRequired": "الحالة مطلوبة"
+      }
+    },
+    "unpublishDialog": {
+      "title": "إلغاء نشر المحتوى",
+      "close": "إغلاق",
+      "heading": "إلغاء نشر المحتوى !",
+      "description": "هل أنت متأكد من إلغاء هذا السؤال؟ لن يظهر هذا المحتوى للعملاء بعد إلغاء النشر..",
+      "contentLabel": "المحتوى",
+      "confirm": "تأكيد إلغاء النشر",
+      "cancel": "تراجع وإلغاء",
+      "toastSuccess": "تم إلغاء نشر المحتوى بنجاح",
+      "errorToast": "تعذر إلغاء نشر المحتوى. حاول مرة أخرى."
+    },
+    "addBlogDialog": {
+      "title": "إضافة مقال مدونة",
+      "close": "إغلاق",
+      "titleLabel": "عنوان المقال",
+      "titlePlaceholder": "اكتب عنوان المقال...",
+      "summaryLabel": "وصف مختصر",
+      "summaryPlaceholder": "ملخص المقال يظهر في صفحة المدونة...",
+      "keywordsLabel": "الكلمات المفتاحية",
+      "keywordsPlaceholder": "تجديد، عمالة منزلية، عقد (مفصولة بفاصلة)",
+      "categoryLabel": "التصنيف",
+      "statusLabel": "الحالة",
+      "authorLabel": "الكاتب",
+      "readingTimeLabel": "مدة القراءة (دقائق)",
+      "contentLabel": "محتوى المقال",
+      "contentPlaceholder": "اكتب محتوى المقال هنا...",
+      "defaultAuthor": "مدير النظام",
+      "category": {
+        "blog": "المدونة"
+      },
+      "status": {
+        "published": "منشور",
+        "draft": "مسودة"
+      },
+      "publish": "نشر",
+      "saveDraft": "حفظ كمسودة",
+      "cancel": "تراجع وإلغاء",
+      "toastPublished": "تم نشر المقال بنجاح",
+      "toastDraft": "تم حفظ المقال كمسودة",
+      "errorToast": "تعذر حفظ المقال. حاول مرة أخرى.",
+      "validation": {
+        "titleRequired": "عنوان المقال مطلوب",
+        "summaryRequired": "الوصف المختصر مطلوب",
+        "keywordsRequired": "الكلمات المفتاحية مطلوبة",
+        "categoryRequired": "التصنيف مطلوب",
+        "statusRequired": "الحالة مطلوبة",
+        "authorRequired": "اسم الكاتب مطلوب",
+        "readingTimeRequired": "مدة القراءة مطلوبة",
+        "contentRequired": "محتوى المقال مطلوب"
+      }
+    },
+    "addLegalDialog": {
+      "title": "إضافة صفحة قانونية",
+      "close": "إغلاق",
+      "pageNameLabel": "اسم الصفحة",
+      "pageNamePlaceholder": "سياسة الخصوصية",
+      "statusLabel": "الحالة",
+      "contentLabel": "محتوى المقال",
+      "contentPlaceholder": "اكتب محتوى المقال هنا...",
+      "status": {
+        "published": "منشور",
+        "draft": "مسودة"
+      },
+      "publish": "نشر",
+      "saveDraft": "حفظ كمسودة",
+      "cancel": "تراجع وإلغاء",
+      "toastPublished": "تم نشر الصفحة القانونية بنجاح",
+      "toastDraft": "تم حفظ الصفحة القانونية كمسودة",
+      "errorToast": "تعذر حفظ الصفحة القانونية. حاول مرة أخرى.",
+      "validation": {
+        "pageNameRequired": "اسم الصفحة مطلوب",
+        "statusRequired": "الحالة مطلوبة",
+        "contentRequired": "محتوى المقال مطلوب"
+      }
+    },
+    "addBannerDialog": {
+      "title": "إضافة بانر / تنبيه",
+      "close": "إغلاق",
+      "titleLabel": "عنوان التنبيه",
+      "titlePlaceholder": "مثال: خدمة التوصيل غير متاحة مؤقتاً...",
+      "alertTextLabel": "نص التنبيه",
+      "alertTextPlaceholder": "اكتب نص التنبيه هنا...",
+      "appearanceLabel": "مكان الظهور",
+      "alertTypeLabel": "نوع التنبيه",
+      "startDateLabel": "تاريخ بداية الظهور",
+      "endDateLabel": "تاريخ نهاية الظهور",
+      "datePlaceholder": "jj/mm/aaaa",
+      "statusLabel": "الحالة",
+      "appearance": {
+        "siteTop": "أعلى الموقع",
+        "homeBanner": "بانر الرئيسية"
+      },
+      "alertType": {
+        "warning": "تحذير",
+        "info": "معلومة",
+        "success": "نجاح"
+      },
+      "status": {
+        "published": "منشور",
+        "draft": "مسودة"
+      },
+      "publish": "نشر",
+      "saveDraft": "حفظ كمسودة",
+      "cancel": "تراجع وإلغاء",
+      "toastPublished": "تم نشر البانر بنجاح",
+      "toastDraft": "تم حفظ البانر كمسودة",
+      "errorToast": "تعذر حفظ البانر. حاول مرة أخرى.",
+      "validation": {
+        "titleRequired": "عنوان التنبيه مطلوب",
+        "alertTextRequired": "نص التنبيه مطلوب",
+        "appearanceRequired": "مكان الظهور مطلوب",
+        "alertTypeRequired": "نوع التنبيه مطلوب",
+        "startDateRequired": "تاريخ بداية الظهور مطلوب",
+        "endDateRequired": "تاريخ نهاية الظهور مطلوب",
+        "endDateAfterStart": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية أو مساوياً له",
+        "statusRequired": "الحالة مطلوبة"
+      }
+    }
   }
 }
