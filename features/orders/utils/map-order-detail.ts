@@ -198,11 +198,13 @@ export function mapOrderDetailToReview(
     status: detail.status,
     statusLabel: detail.status_label,
     assignee,
+    assignedToId: detail.assigned_to?.id ?? null,
     createdAtLabel: created.dateLabel,
     createdTimeLabel: created.timeLabel,
     relativeTimeLabel: formatRelativeTimeShort(detail.created_at, locale),
     hold: mapHoldInfo(detail, locale),
     cancellation: mapCancellationInfo(detail, locale),
+    linkedToRefund: detail.linked_to_refund,
     changeHistory: detail.activities.map((activity) => ({
       id: String(activity.id),
       employee: pickRefName(locale, activity.admin ?? activity.performed_by),

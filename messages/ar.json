@@ -29,6 +29,7 @@
       "apply": "تطبيق الفلترة",
       "statusAll": "جميع الحالات",
       "statusNew": "جديد",
+      "statusUnderReview": "قيد المراجعة",
       "statusPending": "معلق",
       "statusProcessing": "قيد المعالجة",
       "statusCompleted": "مكتمل"
@@ -47,6 +48,7 @@
       "sourceEform": "نموذج إلكتروني",
       "sourceManual": "يدوي",
       "statusNew": "جديد",
+      "statusUnderReview": "قيد المراجعة",
       "empty": "لا توجد طلبات",
       "loading": "جاري تحميل الطلبات..."
     }
@@ -254,13 +256,27 @@
         "orderStatus": "حالة الطلب :",
         "statusNew": "جديد",
         "refreshData": "تحديث البيانات",
+        "statuses": {
+          "draft": "مسودة",
+          "new": "جديد",
+          "underReview": "قيد المراجعة",
+          "processed": "تمت المعالجة",
+          "held": "معلق",
+          "sentForAuthentication": "مرسل للمصادقة",
+          "awaitingPayment": "بانتظار الدفع",
+          "completed": "مكتمل",
+          "cancelled": "ملغى"
+        },
         "breadcrumbs": {
           "home": "الرئيسية",
           "newOrders": "الطلبات الجديدة",
           "pendingOrders": "الطلبات المعلقة",
           "processedOrders": "الطلبات المعالجة",
           "verificationOrders": "الطلبات المرسلة للمصادقة",
+          "paymentOrders": "الطلبات في مرحلة الدفع",
+          "completedOrders": "الطلبات المكتملة",
           "cancelledOrders": "الطلبات الملغاة",
+          "refundOrders": "طلبات الاسترداد",
           "review": "مراجعة الطلب {orderNumber}"
         },
         "summary": {
@@ -275,8 +291,10 @@
           "employer": "بيانات صاحب العمل",
           "worker": "بيانات العامل",
           "documents": "المستندات",
+          "delivery": "بيانات الاستلام",
           "workerPlaceholder": "بيانات العامل ستتوفر قريبًا.",
-          "documentsPlaceholder": "المستندات ستتوفر قريبًا."
+          "documentsPlaceholder": "المستندات ستتوفر قريبًا.",
+          "deliveryPlaceholder": "بيانات الاستلام قيد التطوير."
         },
         "hold": {
           "reasonLabel": "سبب التعليق:",
@@ -598,6 +616,7 @@
         "viewDetails": "عرض بيانات الطلب",
         "viewDownloadContract": "عرض و تحميل العقد",
         "uploadFinalContract": "رفع العقد النهائي",
+        "confirmUploadFinalContract": "تأكيد رفع العقد النهائي",
         "uploadFinalContractSuccess": "تم رفع عقد {orderNumber} النهائي بنجاح."
       },
       "empty": {
@@ -839,6 +858,58 @@
         "title": "لا توجد طلبات استرداد",
         "description": "لم يتم تسجيل أي طلبات استرداد حتى الآن - وهذا مؤشر جيد!"
       }
+    }
+  },
+  "Invoices": {
+    "title": "الفواتير",
+    "description": "إدارة ومتابعة الفواتير الصادرة بعد إتمام سداد طلبات تجديد العقود بنجاح.",
+    "listTitle": "سجل الفواتير",
+    "periodWeek": "هذا الأسبوع",
+    "indicators": {
+      "total": "إجمالي الفواتير",
+      "totalAmount": "إجمالي المبالغ (ر.س)",
+      "online": "فواتير الدفع الأونلاين",
+      "manual": "فواتير الدفع اليدوي"
+    },
+    "filters": {
+      "paidAt": "تاريخ الدفع",
+      "searchLabel": "البحث",
+      "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
+      "orderType": "نوع الطلب",
+      "typeAll": "الكل",
+      "typeEform": "E-form",
+      "typeManual": "يدوي",
+      "paymentMethod": "حالة الدفع",
+      "paymentAll": "الكل",
+      "paymentOnline": "أونلاين",
+      "paymentManual": "يدوي",
+      "contract": "العقد",
+      "contractAll": "الكل",
+      "contractAvailable": "متاح",
+      "contractUnavailable": "غير متاح مؤقتاً",
+      "apply": "تطبيق الفلترة",
+      "pickDate": "dd/mm/yyyy"
+    },
+    "table": {
+      "invoiceNumber": "رقم الفاتورة",
+      "orderNumber": "رقم الطلب",
+      "employer": "صاحب العمل / الجوال",
+      "worker": "اسم العامل",
+      "paidAt": "تاريخ الدفع",
+      "amount": "قيمة الفاتورة",
+      "paymentMethod": "حالة الدفع",
+      "paymentOnline": "أونلاين",
+      "paymentManual": "يدوي",
+      "contract": "العقد المرتبط",
+      "contractAvailable": "متاح",
+      "contractUnavailable": "غير متاح مؤقتاً",
+      "action": "إجراء",
+      "viewDetails": "عرض بيانات الطلب",
+      "viewDownloadContract": "عرض و تحميل العقد"
+    },
+    "empty": {
+      "title": "لا توجد فواتير حتى الآن",
+      "description": "ستظهر فواتير طلبات تجديد العقود هنا بعد إتمام عملية السداد بنجاح"
     }
   },
   "Dashboard": {

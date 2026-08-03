@@ -8,6 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
+  --font-clash: var(--font-clash, 'Clash Display', sans-serif);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   /* Literal rgb values so slash-opacity utilities (e.g. bg-brand-primary/60) resolve correctly */
@@ -64,6 +65,7 @@
 }
 
 :root {
+  --font-clash: 'Clash Display', sans-serif;
   --brand-primary: rgb(68 150 171);
   --brand-accent: rgb(219 86 92);
   --brand-light-yellow: rgb(255 251 235);

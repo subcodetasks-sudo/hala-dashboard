@@ -25,19 +25,23 @@ import {
   useReviewChecklist,
 } from "@/features/orders/new/queries/use-review-checklist";
 import { useOrder } from "@/features/orders/queries/use-orders";
-import { copyTextWithFeedback } from "@/features/orders/utils";
+import { copyTextWithFeedback, ORDER_STATUS_LABEL_KEYS } from "@/features/orders/utils";
 import { cn } from "@/lib/utils";
 
 type ReviewOrderSidebarProps = {
   orderId: string;
   isEditing?: boolean;
+  /** When false, checklist + review actions are read-only (e.g. another employee's under_review). */
+  canMutate?: boolean;
 };
 
 export default function ReviewOrderSidebar({
   orderId,
   isEditing = false,
+  canMutate = true,
 }: ReviewOrderSidebarProps) {
   const t = useTranslations("Orders.New.Review.sidebar");
+  const tStatus = useTranslations("Orders.New.Review.statuses");
   const locale = useLocale();
   const { data: order } = useOrder(orderId);
   const { checklist, toggleChecklistItem, canCompleteReview } =
@@ -58,15 +62,18 @@ export default function ReviewOrderSidebar({
   // Held / under-review orders keep the checklist and process actions (same as new).
   const isHeld = order.status === "held";
   const isCancelled = order.status === "cancelled";
+  const isCompleted = order.status === "completed";
   const isNewOrUnderReview =
     order.status === "new" || order.status === "under_review";
   const isProcessed = order.status === "processed";
   const isSentForAuth = order.status === "sent_for_authentication";
-  const canReview = isNewOrUnderReview || isHeld;
+  const isReviewableStatus = isNewOrUnderReview || isHeld;
+  const canReview = canMutate && isReviewableStatus;
   const showChecklist = !isCancelled;
   const showReviewActions = canReview && !isEditing;
-  const showProcessedActions = isProcessed && !isEditing;
-  const showSentForAuthActions = isSentForAuth && !isEditing;
+  const showProcessedActions = canMutate && isProcessed && !isEditing;
+  const showSentForAuthActions = canMutate && isSentForAuth && !isEditing;
+  const statusLabel = tStatus(ORDER_STATUS_LABEL_KEYS[order.status]);
 
   const handleUploadFinalContract = () => {
     if (markUploaded.isPending) return;
@@ -104,7 +111,7 @@ export default function ReviewOrderSidebar({
         <dl className="mt-1 divide-y divide-black/5">
           <InfoRow iconSrc="/svg/tag-2.svg" label={t("orderNumber")}>
             <span className="inline-flex items-center gap-1.5 font-semibold text-brand-black">
-              <span dir="ltr">{order.orderNumber}</span>
+              <span dir="ltr" className="font-clash">{order.orderNumber}</span>
               <TooltipProvider>
                 <Tooltip
                   open={tooltipOpen}
@@ -175,17 +182,23 @@ export default function ReviewOrderSidebar({
                 "gap-1.5 rounded-lg border-transparent p-4 text-xs font-semibold",
                 isCancelled
                   ? "bg-brand-accent/10 text-brand-accent"
-                  : "bg-[#E8913A]/15 text-[#E8913A]"
+                  : isCompleted
+                    ? "bg-brand-success-light text-brand-success"
+                    : "bg-[#E8913A]/15 text-[#E8913A]"
               )}
             >
               <span
                 className={cn(
                   "size-1.5 rounded-full",
-                  isCancelled ? "bg-brand-accent" : "bg-[#E8913A]"
+                  isCancelled
+                    ? "bg-brand-accent"
+                    : isCompleted
+                      ? "bg-brand-success"
+                      : "bg-[#E8913A]"
                 )}
                 aria-hidden
               />
-              {order.statusLabel}
+              {statusLabel}
             </Badge>
           </InfoRow>
         </dl>
@@ -197,8 +210,9 @@ export default function ReviewOrderSidebar({
 
           <ul className="mt-1 divide-y divide-black/5">
             {NEW_ORDER_CHECKLIST_IDS.map((key) => {
-              // Interactive only for new / under_review / held; later stages are complete.
-              const checked = canReview ? checklist[key] : true;
+              // Interactive only when the viewer may mutate this reviewable order.
+              // Later stages are treated as complete; read-only viewers keep real checklist state.
+              const checked = isReviewableStatus ? checklist[key] : true;
               return (
                 <li key={key}>
                   <button

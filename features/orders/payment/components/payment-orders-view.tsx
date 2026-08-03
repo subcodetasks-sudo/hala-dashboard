@@ -160,7 +160,7 @@ export default function PaymentOrdersView() {
       id: "dueFees",
       header: t("table.dueFees"),
       cell: (row) => (
-        <span className="inline-flex items-center gap-1 whitespace-nowrap font-semibold text-brand-success">
+        <span className="font-clash inline-flex items-center gap-1 whitespace-nowrap font-semibold text-brand-success">
           <span>+{row.dueFees}</span>
           <SaudiRiyal className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
         </span>

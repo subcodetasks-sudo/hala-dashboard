@@ -1,11 +1,12 @@
 import { ArrowUpRight } from "lucide-react";
+import type { ReactNode } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import { cn } from "@/lib/utils";
 
 type InfoCardProps = {
   title: string;
-  value: string | number;
+  value: ReactNode;
   iconSrc: string;
   change: string;
   period: string;
@@ -47,7 +48,7 @@ export default function InfoCard({
 
       <p
         className={cn(
-          "text-3xl font-bold tracking-tight",
+          "font-clash text-3xl font-semibold tracking-tight",
           valueClassName
         )}
       >
@@ -55,7 +56,7 @@ export default function InfoCard({
       </p>
 
       <div className="flex items-center justify-between gap-2 text-xs">
-        <span className="inline-flex items-center gap-0.5 font-semibold text-brand-success">
+        <span className="font-clash inline-flex items-center gap-0.5 font-semibold text-brand-success">
           {change}
           <ArrowUpRight className="size-3.5" strokeWidth={2.5} />
         </span>

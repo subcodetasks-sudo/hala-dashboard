@@ -42,7 +42,7 @@ export function CopyablePhoneNumber({
       )}
     >
       <Phone className="size-3.5 shrink-0" strokeWidth={1.75} />
-      <span dir="ltr">{phone}</span>
+      <span dir="ltr" className="font-clash">{phone}</span>
       {phone && phone !== "—" && (
         <TooltipProvider>
           <Tooltip

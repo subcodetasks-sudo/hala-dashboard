@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import ConfirmFilterButton from "@/components/confirm-filter-button";
 import CustomIcon from "@/components/custom-svg";
@@ -35,6 +35,19 @@ import {
   toUiOrderSource,
   useOrderFilters,
 } from "@/features/orders/utils";
+import { useProfile } from "@/features/profile/queries/use-profile";
+
+/** Under-review order still assigned to the signed-in employee. */
+function isMyUnderReviewAssignment(
+  order: OrderListItem,
+  employeeId: number | undefined,
+): boolean {
+  return (
+    employeeId != null &&
+    order.assigned_to?.id === employeeId &&
+    order.status === "under_review"
+  );
+}
 
 function statusBadgeClass(status: OrderStatus) {
   switch (status) {
@@ -59,6 +72,8 @@ export default function LatestOrdersSection() {
   const t = useTranslations("HomePage");
   const locale = useLocale() === "en" ? "en" : "ar";
   const permissions = useCan();
+  const { data: profile } = useProfile();
+  const employeeId = profile?.id;
 
   const {
     data: statusOptions = [],
@@ -99,7 +114,37 @@ export default function LatestOrdersSection() {
     enabled: true,
   });
 
-  const rows = data?.items ?? [];
+  const isSuperAdmin = permissions.isSuperAdmin();
+  const filterOrderStatus = permissions.filterOrderStatus;
+
+  // Hide others' under-review rows (super-admin sees all); pin own under-review to top.
+  // Restricted roles also drop statuses outside their allowed set (needed when "all" is selected).
+  const rows = useMemo(() => {
+    const visible = (data?.items ?? []).filter((order) => {
+      if (!filterOrderStatus(order.status)) {
+        return false;
+      }
+      if (order.status !== "under_review") {
+        return true;
+      }
+      if (isSuperAdmin) {
+        return true;
+      }
+      return (
+        employeeId != null && order.assigned_to?.id === employeeId
+      );
+    });
+
+    if (employeeId == null) {
+      return visible;
+    }
+
+    return [...visible].sort((a, b) => {
+      const aMine = isMyUnderReviewAssignment(a, employeeId) ? 0 : 1;
+      const bMine = isMyUnderReviewAssignment(b, employeeId) ? 0 : 1;
+      return aMine - bMine;
+    });
+  }, [data?.items, employeeId, filterOrderStatus, isSuperAdmin]);
 
   const columns: DataTableColumn<OrderListItem>[] = [
     {
@@ -180,7 +225,10 @@ export default function LatestOrdersSection() {
       header: t("table.status"),
       cell: (row) => (
         <Badge className={statusBadgeClass(row.status)}>
-          {row.status_label || t("table.statusNew")}
+          {row.status_label ||
+            (row.status === "under_review"
+              ? t("table.statusUnderReview")
+              : t("table.statusNew"))}
         </Badge>
       ),
     },
@@ -264,6 +312,11 @@ export default function LatestOrdersSection() {
         columns={columns}
         data={rows}
         getRowId={(row) => String(row.id)}
+        getRowClassName={(row) =>
+          isMyUnderReviewAssignment(row, employeeId)
+            ? "bg-brand-light-yellow hover:bg-brand-light-yellow data-[state=selected]:bg-brand-light-yellow border-s-4 border-s-brand-warning"
+            : undefined
+        }
         selectable
         isLoading={isLoading}
         emptyMessage={

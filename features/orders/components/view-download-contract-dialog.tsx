@@ -4,7 +4,6 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Download,
-  Printer,
   X,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -26,6 +25,12 @@ type ViewDownloadContractDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   orderNumber?: string;
+  /** Primary blue action. When false, only print & download are shown. Default true. */
+  showConfirmAction?: boolean;
+  /** Override label for the primary blue button. */
+  confirmLabel?: string;
+  /** When false, the primary button is visible but not clickable. */
+  confirmDisabled?: boolean;
   onConfirmSend?: () => void;
 };
 
@@ -33,12 +38,17 @@ export default function ViewDownloadContractDialog({
   open,
   onOpenChange,
   orderNumber,
+  showConfirmAction = true,
+  confirmLabel,
+  confirmDisabled = false,
   onConfirmSend,
 }: ViewDownloadContractDialogProps) {
   const t = useTranslations("Orders.Processed.viewDownloadContractDialog");
   const tAuth = useTranslations("Orders.Processed.sendForAuthDialog");
 
   const handleConfirmSend = () => {
+    if (confirmDisabled) return;
+
     if (onConfirmSend) {
       onConfirmSend();
     } else {
@@ -77,31 +87,36 @@ export default function ViewDownloadContractDialog({
         </div>
 
         <div className="flex flex-col gap-3 px-5 pb-5 sm:flex-row sm:items-center">
-          <Button
-            type="button"
-            onClick={handleConfirmSend}
-            className="group relative h-12 items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-primary px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-primary/90 hover:shadow-md hover:shadow-brand-primary/20 active:scale-[0.98] sm:flex-[1.6]"
-          >
-            <span
-              className="confirm-chevron-start inline-flex items-center"
-              aria-hidden
+          {showConfirmAction ? (
+            <Button
+              type="button"
+              onClick={handleConfirmSend}
+              disabled={confirmDisabled}
+              className="group relative h-12 items-center justify-center gap-2 overflow-hidden rounded-2xl border-none bg-brand-primary px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-primary/90 hover:shadow-md hover:shadow-brand-primary/20 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 sm:flex-[1.6]"
             >
-              <ChevronsLeft
-                className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
-            <span className="tracking-wide">{t("confirmSend")}</span>
-            <span
-              className="confirm-chevron-end inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsRight
-                className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
-          </Button>
+              <span
+                className="confirm-chevron-start inline-flex items-center"
+                aria-hidden
+              >
+                <ChevronsLeft
+                  className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
+                  strokeWidth={2.25}
+                />
+              </span>
+              <span className="tracking-wide">
+                {confirmLabel ?? t("confirmSend")}
+              </span>
+              <span
+                className="confirm-chevron-end inline-flex items-center"
+                aria-hidden
+              >
+                <ChevronsRight
+                  className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
+                  strokeWidth={2.25}
+                />
+              </span>
+            </Button>
+          ) : null}
 
           <Button
             type="button"
