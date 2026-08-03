@@ -897,5 +897,222 @@
       "goToPage": "Go to page {page}",
       "summary": "Page {page} of {lastPage} · {total} results"
     }
+  },
+  "ContentManagement": {
+    "title": "Content Management",
+    "description": "Control site content, introductory pages, FAQs, and articles from one place.",
+    "addContent": "Add New Content",
+    "period": "This week",
+    "indicators": {
+      "total": "Total Content Items",
+      "published": "Published Content",
+      "drafts": "Drafts"
+    },
+    "tabs": {
+      "faqs": "FAQs",
+      "blog": "Blog",
+      "banners": "Banners & Alerts",
+      "legal": "Legal Pages"
+    },
+    "listTitle": {
+      "faqs": "FAQ Pages List",
+      "blog": "Blog Articles List",
+      "banners": "Banners & Alerts List",
+      "legal": "Legal Pages List"
+    },
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by content title or page type...",
+      "status": "Status",
+      "statusAll": "All",
+      "statusPublished": "Published",
+      "statusDraft": "Draft",
+      "apply": "Apply Filter"
+    },
+    "table": {
+      "title": "Content Title",
+      "type": "Type",
+      "lastUpdate": "Last Update",
+      "appearance": "Appearance",
+      "by": "By",
+      "status": "Status",
+      "action": "Action",
+      "statusPublished": "Published",
+      "statusDraft": "Draft",
+      "view": "View {title}",
+      "edit": "Edit {title}",
+      "block": "Block {title}"
+    },
+    "appearance": {
+      "homePage": "Home Page",
+      "supportPage": "Support Page",
+      "blogPage": "Blog Page",
+      "homeBanner": "Home Banner",
+      "siteTop": "Top of Site",
+      "legalPage": "Legal Pages"
+    },
+    "author": {
+      "systemAdmin": "System Admin",
+      "superAdmin": "Super Admin"
+    },
+    "empty": {
+      "title": "No content found",
+      "description": "There is no content matching the current filters. Try changing the search criteria or resetting."
+    },
+    "route": {
+      "unauthorized": "Unauthorized",
+      "unableToFetchFaqs": "Unable to load FAQs. Please try again."
+    },
+    "addFaqDialog": {
+      "title": "Add FAQ",
+      "close": "Close",
+      "questionLabel": "Question",
+      "questionPlaceholder": "Write the question as it will appear to the customer..",
+      "answerLabel": "Answer",
+      "answerPlaceholder": "Write the answer here...",
+      "appearanceLabel": "Category",
+      "displayOrderLabel": "Display Order",
+      "displayOrderPlaceholder": "Example: 01",
+      "statusLabel": "Status",
+      "appearance": {
+        "homePage": "Home Page",
+        "supportPage": "Support Page"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "publish": "Publish",
+      "saveDraft": "Save as Draft",
+      "cancel": "Back and Cancel",
+      "toastPublished": "FAQ published successfully",
+      "toastDraft": "FAQ saved as draft",
+      "errorToast": "Unable to save the FAQ. Please try again.",
+      "validation": {
+        "questionRequired": "Question is required",
+        "answerRequired": "Answer is required",
+        "appearanceRequired": "Category is required",
+        "displayOrderRequired": "Display order is required",
+        "statusRequired": "Status is required"
+      }
+    },
+    "unpublishDialog": {
+      "title": "Unpublish Content",
+      "close": "Close",
+      "heading": "Unpublish Content!",
+      "description": "Are you sure you want to unpublish this question? This content will not appear to customers after unpublishing.",
+      "contentLabel": "Content",
+      "confirm": "Confirm Unpublish",
+      "cancel": "Back and Cancel",
+      "toastSuccess": "Content unpublished successfully",
+      "errorToast": "Unable to unpublish content. Please try again."
+    },
+    "addBlogDialog": {
+      "title": "Add Blog Article",
+      "close": "Close",
+      "titleLabel": "Article Title",
+      "titlePlaceholder": "Write the article title...",
+      "summaryLabel": "Short Description",
+      "summaryPlaceholder": "Article summary appears on the blog page...",
+      "keywordsLabel": "Keywords",
+      "keywordsPlaceholder": "renewal, domestic labor, contract (comma separated)",
+      "categoryLabel": "Category",
+      "statusLabel": "Status",
+      "authorLabel": "Author",
+      "readingTimeLabel": "Reading Time (minutes)",
+      "contentLabel": "Article Content",
+      "contentPlaceholder": "Write the article content here...",
+      "defaultAuthor": "System Admin",
+      "category": {
+        "blog": "Blog"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "publish": "Publish",
+      "saveDraft": "Save as Draft",
+      "cancel": "Back and Cancel",
+      "toastPublished": "Article published successfully",
+      "toastDraft": "Article saved as draft",
+      "errorToast": "Unable to save the article. Please try again.",
+      "validation": {
+        "titleRequired": "Article title is required",
+        "summaryRequired": "Short description is required",
+        "keywordsRequired": "Keywords are required",
+        "categoryRequired": "Category is required",
+        "statusRequired": "Status is required",
+        "authorRequired": "Author is required",
+        "readingTimeRequired": "Reading time is required",
+        "contentRequired": "Article content is required"
+      }
+    },
+    "addLegalDialog": {
+      "title": "Add Legal Page",
+      "close": "Close",
+      "pageNameLabel": "Page Name",
+      "pageNamePlaceholder": "Privacy Policy",
+      "statusLabel": "Status",
+      "contentLabel": "Article Content",
+      "contentPlaceholder": "Write the article content here...",
+      "status": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "publish": "Publish",
+      "saveDraft": "Save as Draft",
+      "cancel": "Back and Cancel",
+      "toastPublished": "Legal page published successfully",
+      "toastDraft": "Legal page saved as draft",
+      "errorToast": "Unable to save the legal page. Please try again.",
+      "validation": {
+        "pageNameRequired": "Page name is required",
+        "statusRequired": "Status is required",
+        "contentRequired": "Article content is required"
+      }
+    },
+    "addBannerDialog": {
+      "title": "Add Banner / Alert",
+      "close": "Close",
+      "titleLabel": "Alert Title",
+      "titlePlaceholder": "Example: Delivery service is temporarily unavailable...",
+      "alertTextLabel": "Alert Text",
+      "alertTextPlaceholder": "Write the alert text here...",
+      "appearanceLabel": "Appearance Location",
+      "alertTypeLabel": "Alert Type",
+      "startDateLabel": "Start Date",
+      "endDateLabel": "End Date",
+      "datePlaceholder": "dd/mm/yyyy",
+      "statusLabel": "Status",
+      "appearance": {
+        "siteTop": "Top of Site",
+        "homeBanner": "Home Banner"
+      },
+      "alertType": {
+        "warning": "Warning",
+        "info": "Info",
+        "success": "Success"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "publish": "Publish",
+      "saveDraft": "Save as Draft",
+      "cancel": "Back and Cancel",
+      "toastPublished": "Banner published successfully",
+      "toastDraft": "Banner saved as draft",
+      "errorToast": "Unable to save the banner. Please try again.",
+      "validation": {
+        "titleRequired": "Alert title is required",
+        "alertTextRequired": "Alert text is required",
+        "appearanceRequired": "Appearance location is required",
+        "alertTypeRequired": "Alert type is required",
+        "startDateRequired": "Start date is required",
+        "endDateRequired": "End date is required",
+        "endDateAfterStart": "End date must be on or after the start date",
+        "statusRequired": "Status is required"
+      }
+    }
   }
 }
