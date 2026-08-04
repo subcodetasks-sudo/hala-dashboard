@@ -41,7 +41,7 @@ export default function CancelStatusesView() {
     CANCEL_STATUSES_PER_PAGE,
   );
 
-  const rows = data?.items ?? [];
+  const rows = data?.items.filter((item) => item.id !== 1) ?? [];
 
   const handleApplyFilters = () => {
     setPage(1);
