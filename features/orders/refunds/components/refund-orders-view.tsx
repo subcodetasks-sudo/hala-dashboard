@@ -25,8 +25,8 @@ import {
   formatRelativeTimeLabel,
   parseRefundOrdersFilters,
   serializeRefundOrdersFilters,
-  useOrderFilters,
 } from "@/features/orders/utils";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 import { cn } from "@/lib/utils";
 
 /** RTL: first item renders on the right (matches design order). */
@@ -61,7 +61,7 @@ export default function RefundOrdersView() {
   const t = useTranslations("Orders.Refunds");
   const locale = useLocale() === "en" ? "en" : "ar";
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_REFUND_ORDERS_FILTERS,
       serialize: serializeRefundOrdersFilters,
       parse: parseRefundOrdersFilters,

@@ -31,8 +31,8 @@ import {
   serializeCancelledOrdersFilters,
   toIsoDate,
   toUiOrderSource,
-  useOrderFilters,
 } from "@/features/orders/utils";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 import { Link } from "@/i18n/navigation";
 
 /** RTL: first item renders on the right (matches design order). */
@@ -78,7 +78,7 @@ export default function CancelledOrdersView() {
     isLoading: isStatsLoading,
   } = useRenewalRequestCancelledStats();
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_CANCELLED_ORDERS_FILTERS,
       serialize: serializeCancelledOrdersFilters,
       parse: parseCancelledOrdersFilters,

@@ -349,6 +349,9 @@ export type ProcessRenewalRequestResponse = OrderDetailResponse;
 /** `POST /admin/renewal-requests/:id/send-for-authentication` */
 export type SendForAuthenticationResponse = OrderDetailResponse;
 
+/** `POST /admin/renewal-requests/:id/final-contract` (multipart) */
+export type UploadFinalContractResponse = OrderDetailResponse;
+
 /** `POST /admin/renewal-requests/:id/hold` */
 export type HoldRenewalRequestBody = {
   hold_reason: HoldReasonValue;

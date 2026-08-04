@@ -12,7 +12,7 @@ import type {
 import {
   extractCollection,
   readStringField,
-} from "@/features/orders/utils/api-payload";
+} from "@/lib/api-payload";
 
 function toStatusOption(entry: unknown): OrderStatusOption | null {
   if (typeof entry === "string") {

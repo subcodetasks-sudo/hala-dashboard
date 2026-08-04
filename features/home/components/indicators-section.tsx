@@ -19,7 +19,7 @@ import {
 import {
   formatChangePercent,
   formatStatsCount,
-} from "@/features/orders/utils";
+} from "@/lib/format-stats";
 
 function IndicatorCardSkeleton() {
   return (

@@ -1,21 +1,38 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 import { usePathname, useRouter } from "@/i18n/navigation";
 
-type UseOrderFiltersOptions<T> = {
+type UseUrlFiltersOptions<T> = {
   defaults: T;
   serialize: (filters: T) => URLSearchParams;
   parse: (params: URLSearchParams, defaults: T) => T;
 };
 
-export function useOrderFilters<T>({
+type UseUrlFiltersResult<T> = {
+  draftFilters: T;
+  setDraftFilters: Dispatch<SetStateAction<T>>;
+  appliedFilters: T;
+  applyFilters: () => void;
+};
+
+/**
+ * Syncs draft/applied filter state with the URL query string.
+ * Generic across list pages (orders, employees, invoices, etc.).
+ */
+export function useUrlFilters<T>({
   defaults,
   serialize,
   parse,
-}: UseOrderFiltersOptions<T>) {
+}: UseUrlFiltersOptions<T>): UseUrlFiltersResult<T> {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -27,22 +44,22 @@ export function useOrderFilters<T>({
   defaultsRef.current = defaults;
 
   const [draftFilters, setDraftFilters] = useState<T>(() =>
-    parse(new URLSearchParams(queryString), defaults)
+    parse(new URLSearchParams(queryString), defaults),
   );
   const [appliedFilters, setAppliedFilters] = useState<T>(() =>
-    parse(new URLSearchParams(queryString), defaults)
+    parse(new URLSearchParams(queryString), defaults),
   );
 
   useEffect(() => {
     const next = parseRef.current(
       new URLSearchParams(queryString),
-      defaultsRef.current
+      defaultsRef.current,
     );
     setDraftFilters(next);
     setAppliedFilters(next);
   }, [queryString]);
 
-  function applyFilters() {
+  function applyFilters(): void {
     setAppliedFilters(draftFilters);
     const params = serialize(draftFilters);
     const nextQuery = params.toString();

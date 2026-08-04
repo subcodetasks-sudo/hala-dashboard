@@ -3,7 +3,8 @@ import type {
   EmployeeJobRole,
   EmployeesFilterValues,
 } from "@/features/employees/types";
-import { parseIsoDateParam, toIsoDate } from "@/features/orders/utils";
+import { parseIsoDateParam, toIsoDate } from "@/lib/iso-date";
+import { parseEnumParam } from "@/lib/parse-enum-param";
 
 const EMPLOYEE_FILTER_PARAM_KEYS = {
   createdAt: "createdAt",
@@ -24,17 +25,6 @@ const STATUS_FILTERS = [
   "active",
   "suspended",
 ] as const satisfies readonly ("all" | EmployeeAccountStatus)[];
-
-function parseEnumParam<T extends string>(
-  value: string | null,
-  allowed: readonly T[],
-  fallback: T,
-): T {
-  if (value && (allowed as readonly string[]).includes(value)) {
-    return value as T;
-  }
-  return fallback;
-}
 
 export function serializeEmployeesFilters(
   filters: EmployeesFilterValues,

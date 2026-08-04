@@ -27,10 +27,11 @@ function EmployeesSectionSkeleton() {
 
 export default function EmployeesSection() {
   const t = useTranslations("HomePage");
-  const { data: admins = [], isLoading, isError } = useAdmins({
+  const { data, isLoading, isError } = useAdmins({
     perPage: 100,
     sort: "-created_at",
   });
+  const admins = data?.items ?? [];
   const { data: roles = [], isLoading: areRolesLoading } = useRoles();
   const isEmployeesLoading = isLoading || areRolesLoading;
 

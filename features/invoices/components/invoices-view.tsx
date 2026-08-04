@@ -24,10 +24,8 @@ import {
   parseInvoicesFilters,
   serializeInvoicesFilters,
 } from "@/features/invoices/utils/filter-query-params";
-import {
-  formatIsoDateWithClockTime,
-  useOrderFilters,
-} from "@/features/orders/utils";
+import { useUrlFilters } from "@/hooks/use-url-filters";
+import { formatIsoDateWithClockTime } from "@/lib/format-datetime";
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -66,7 +64,7 @@ export default function InvoicesView() {
   const t = useTranslations("Invoices");
   const locale = useLocale() === "en" ? "en" : "ar";
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_INVOICES_FILTERS,
       serialize: serializeInvoicesFilters,
       parse: parseInvoicesFilters,

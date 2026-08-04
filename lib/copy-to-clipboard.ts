@@ -6,7 +6,7 @@ type CopyFeedbackSetters = {
 export async function copyTextWithFeedback(
   text: string,
   { setCopied, setTooltipOpen }: CopyFeedbackSetters,
-  resetMs = 1500
+  resetMs = 1500,
 ): Promise<void> {
   try {
     await navigator.clipboard.writeText(text);

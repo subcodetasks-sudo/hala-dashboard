@@ -31,8 +31,8 @@ import {
   serializeProcessedOrdersFilters,
   toIsoDate,
   toUiOrderSource,
-  useOrderFilters,
 } from "@/features/orders/utils";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -74,7 +74,7 @@ export default function ProcessedOrdersView() {
     isLoading: isStatsLoading,
   } = useRenewalRequestProcessedStats();
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_PROCESSED_ORDERS_FILTERS,
       serialize: serializeProcessedOrdersFilters,
       parse: parseProcessedOrdersFilters,

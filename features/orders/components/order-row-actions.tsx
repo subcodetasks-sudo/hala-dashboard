@@ -3,7 +3,6 @@
 import { Eye } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
-import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,7 @@ import {
   getOrderEmployerName,
   getOrderWorkerName,
 } from "@/features/orders/utils";
-import { useMarkFinalContractUploaded } from "@/features/orders/verification/queries/use-verification-orders";
+import UploadFinalContractDialog from "@/features/orders/verification/components/upload-final-contract-dialog";
 import { Link } from "@/i18n/navigation";
 
 type OrderRowActionsProps = {
@@ -168,17 +167,7 @@ function VerificationInlineActions({
 }) {
   const t = useTranslations("Orders.Verification.table");
   const [isContractDialogOpen, setContractDialogOpen] = useState(false);
-  const markUploaded = useMarkFinalContractUploaded();
-
-  const handleUploadFinalContract = () => {
-    if (markUploaded.isPending) return;
-
-    markUploaded.mutate(orderId, {
-      onSuccess: () => {
-        toast.success(t("uploadFinalContractSuccess", { orderNumber }));
-      },
-    });
-  };
+  const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   return (
     <>
@@ -198,8 +187,7 @@ function VerificationInlineActions({
         </IconActionButton>
         <IconActionButton
           label={t("uploadFinalContract")}
-          disabled={markUploaded.isPending}
-          onClick={handleUploadFinalContract}
+          onClick={() => setUploadDialogOpen(true)}
         >
           <CustomIcon
             src="/svg/maximize.svg"
@@ -214,8 +202,17 @@ function VerificationInlineActions({
         onOpenChange={setContractDialogOpen}
         orderNumber={orderNumber}
         confirmLabel={t("confirmUploadFinalContract")}
-        confirmDisabled={markUploaded.isPending}
-        onConfirmSend={handleUploadFinalContract}
+        onConfirmSend={() => {
+          setContractDialogOpen(false);
+          setUploadDialogOpen(true);
+        }}
+      />
+
+      <UploadFinalContractDialog
+        open={isUploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+        orderId={orderId}
+        orderNumber={orderNumber}
       />
     </>
   );

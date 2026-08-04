@@ -16,6 +16,10 @@ import type {
   VerificationOrderStatus,
   VerificationOrdersFilterValues,
 } from "@/features/orders/types";
+import { parseIsoDateParam, toIsoDate } from "@/lib/iso-date";
+import { parseEnumParam } from "@/lib/parse-enum-param";
+
+export { parseIsoDateParam, toIsoDate } from "@/lib/iso-date";
 
 /** Shared query param keys used across one or more order filter bars. */
 export const ORDER_FILTER_PARAM_KEYS = {
@@ -42,31 +46,18 @@ export const ORDER_FILTER_PARAM_KEYS = {
 export type OrderFilterParamKey =
   (typeof ORDER_FILTER_PARAM_KEYS)[keyof typeof ORDER_FILTER_PARAM_KEYS];
 
-export function toIsoDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-export function parseIsoDateParam(value: string | null): Date | undefined {
-  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
-  const date = new Date(`${value}T00:00:00`);
-  return Number.isNaN(date.getTime()) ? undefined : date;
-}
-
 export function setDateParam(
   params: URLSearchParams,
   key: OrderFilterParamKey,
-  value: Date | undefined
-) {
+  value: Date | undefined,
+): void {
   if (value) params.set(key, toIsoDate(value));
 }
 
 export function setSearchParam(
   params: URLSearchParams,
-  value: string | undefined
-) {
+  value: string | undefined,
+): void {
   const trimmed = value?.trim();
   if (trimmed) params.set(ORDER_FILTER_PARAM_KEYS.search, trimmed);
 }
@@ -75,20 +66,9 @@ export function setEnumParam<T extends string>(
   params: URLSearchParams,
   key: OrderFilterParamKey,
   value: T | undefined,
-  defaultValue: T
-) {
+  defaultValue: T,
+): void {
   if (value && value !== defaultValue) params.set(key, value);
-}
-
-function parseEnumParam<T extends string>(
-  value: string | null,
-  allowed: readonly T[],
-  fallback: T
-): T {
-  if (value && (allowed as readonly string[]).includes(value)) {
-    return value as T;
-  }
-  return fallback;
 }
 
 const ORDER_SOURCES = ["eform", "manual"] as const satisfies readonly OrderSource[];

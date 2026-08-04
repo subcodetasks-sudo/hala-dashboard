@@ -113,7 +113,16 @@
     "route": {
       "unauthorized": "غير مصرح",
       "unableToFetch": "تعذر تحميل الموظفين. يرجى المحاولة مرة أخرى.",
-      "unableToFetchRoles": "تعذر تحميل أدوار الموظفين. يرجى المحاولة مرة أخرى."
+      "unableToFetchRoles": "تعذر تحميل أدوار الموظفين. يرجى المحاولة مرة أخرى.",
+      "invalidForm": "بيانات النموذج غير صالحة",
+      "required": "الاسم والبريد والرقم الوظيفي والجوال وكلمة المرور وتأكيدها والدور مطلوبة",
+      "requiredUpdate": "الاسم والبريد ورقم الهوية والجوال والحالة والدور مطلوبة",
+      "unableToCreate": "تعذر إضافة الموظف. يرجى المحاولة مرة أخرى.",
+      "unableToUpdate": "تعذر تحديث بيانات الموظف. يرجى المحاولة مرة أخرى.",
+      "unableToDeactivate": "تعذر إيقاف الحساب. يرجى المحاولة مرة أخرى.",
+      "unableToActivate": "تعذر تفعيل الحساب. يرجى المحاولة مرة أخرى.",
+      "deactivateSuccess": "تم إيقاف حساب الموظف بنجاح.",
+      "activateSuccess": "تم تفعيل حساب الموظف بنجاح."
     },
     "title": "الموظفين",
     "description": "إدارة حسابات الموظفين، وتعيين الأدوار الوظيفية، والتحكم في صلاحيات الوصول للنظام.",
@@ -156,7 +165,8 @@
       "action": "إجراء",
       "viewDetails": "عرض التفاصيل",
       "edit": "تعديل الموظف",
-      "suspend": "إيقاف حساب الموظف"
+      "suspend": "إيقاف حساب الموظف",
+      "activate": "تفعيل حساب الموظف"
     },
     "empty": {
       "title": "لا يوجد موظفون حتى الآن",
@@ -168,6 +178,7 @@
       "close": "إغلاق",
       "edit": "تعديل البيانات",
       "suspend": "إيقاف الحساب",
+      "activate": "تفعيل الحساب",
       "info": {
         "title": "معلومات الموظف",
         "employeeNumber": "الرقم الوظيفي",
@@ -194,6 +205,55 @@
           "followUpContracts": "متابعة العقود والتحقق",
           "sendForVerification": "إرسال العقود للتحقق"
         }
+      }
+    },
+    "FormDialog": {
+      "titleEdit": "تعديل بيانات الموظف",
+      "titleCreate": "إضافة موظف جديد",
+      "close": "إغلاق",
+      "photoLabel": "صورة الموظف",
+      "photoHint": "أضف صورة واحدة فقط",
+      "photoChange": "تغيير صورة الموظف",
+      "photoInvalidType": "يرجى اختيار صورة بصيغة PNG أو JPEG.",
+      "idNumber": "رقم الهوية",
+      "idNumberPlaceholder": "أدخل رقم الهوية هنا...",
+      "nationalId": "رقم الهوية الوطنية",
+      "nationalIdPlaceholder": "أدخل رقم الهوية الوطنية هنا...",
+      "name": "اسم الموظف",
+      "phone": "رقم الجوال",
+      "phonePlaceholder": "05XXXXXXXX",
+      "email": "البريد الإلكتروني",
+      "role": "الدور الوظيفي",
+      "rolePlaceholder": "اختر الدور الوظيفي",
+      "rolesLoading": "جاري تحميل الأدوار...",
+      "passwordSection": "كلمة المرور",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "saveEdit": "حفظ التعديلات",
+      "saveCreate": "إضافة الموظف",
+      "cancel": "تراجع وإلغاء",
+      "successToastEdit": "تم تحديث بيانات الموظف بنجاح.",
+      "successToastCreate": "تم إضافة الموظف بنجاح.",
+      "errorToastEdit": "تعذر تحديث بيانات الموظف. يرجى المحاولة مرة أخرى.",
+      "errorToastCreate": "تعذر إضافة الموظف. يرجى المحاولة مرة أخرى.",
+      "validation": {
+        "idNumberRequired": "رقم الهوية مطلوب",
+        "idNumberFormat": "رقم الهوية يجب أن يكون 10 أرقام ويبدأ بـ 1 أو 2",
+        "nationalIdRequired": "رقم الهوية الوطنية مطلوب",
+        "nationalIdFormat": "يجب أن يتكون رقم الهوية الوطنية من 10 أرقام ويبدأ بـ 1 أو 2",
+        "nameRequired": "اسم الموظف مطلوب",
+        "phoneRequired": "رقم الجوال مطلوب",
+        "phoneFormat": "أدخل رقم جوال سعودي صحيح (10 أرقام يبدأ بـ 05)",
+        "emailRequired": "البريد الإلكتروني مطلوب",
+        "emailInvalid": "أدخل بريداً إلكترونياً صالحاً",
+        "roleRequired": "الدور الوظيفي مطلوب",
+        "passwordRequired": "كلمة المرور مطلوبة",
+        "passwordMin": "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+        "passwordUppercase": "كلمة المرور يجب أن تحتوي على حرف كبير واحد على الأقل",
+        "passwordLowercase": "كلمة المرور يجب أن تحتوي على حرف صغير واحد على الأقل",
+        "passwordSymbol": "كلمة المرور يجب أن تحتوي على رمز واحد على الأقل",
+        "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+        "passwordsMismatch": "كلمتا المرور غير متطابقتين"
       }
     }
   },
@@ -703,7 +763,30 @@
         "viewDownloadContract": "عرض و تحميل العقد",
         "uploadFinalContract": "رفع العقد النهائي",
         "confirmUploadFinalContract": "تأكيد رفع العقد النهائي",
-        "uploadFinalContractSuccess": "تم رفع عقد {orderNumber} النهائي بنجاح."
+        "uploadFinalContractSuccess": "تم رفع عقد {orderNumber} النهائي بنجاح.",
+        "uploadFinalContractError": "تعذر رفع العقد النهائي. يرجى المحاولة مرة أخرى."
+      },
+      "uploadFinalContractDialog": {
+        "title": "رفع العقد النهائي",
+        "close": "إغلاق",
+        "heading": "ارفع العقد النهائي بعد المصادقة",
+        "description": "أرفق ملف العقد النهائي (PDF أو PNG) لاستكمال المصادقة ونقل الطلب إلى مرحلة الدفع.",
+        "dropzoneLabel": "اسحب ملف العقد هنا أو اختره من جهازك",
+        "fileConstraints": "PDF أو PNG · بحد أقصى 10 ميجابايت",
+        "invalidType": "يُسمح فقط بملفات PDF أو PNG.",
+        "invalidSize": "يجب ألا يتجاوز حجم الملف 10 ميجابايت.",
+        "removeFile": "إزالة الملف",
+        "confirm": "تأكيد رفع العقد النهائي",
+        "cancel": "رجوع وإلغاء",
+        "toastSuccess": "تم رفع عقد {orderNumber} النهائي بنجاح.",
+        "errorToast": "تعذر رفع العقد النهائي. يرجى المحاولة مرة أخرى.",
+        "route": {
+          "unauthorized": "غير مصرح",
+          "invalidId": "معرّف طلب التجديد مطلوب",
+          "invalidForm": "بيانات نموذج الرفع غير صالحة",
+          "fileRequired": "ملف العقد النهائي مطلوب",
+          "unableToComplete": "تعذر رفع العقد النهائي. يرجى المحاولة مرة أخرى."
+        }
       },
       "empty": {
         "title": "لا توجد طلبات مرسلة للمصادقة",

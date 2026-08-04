@@ -9,7 +9,7 @@ import {
   formatApiDateTime,
   formatDateOnly,
   type AppLocale,
-} from "@/features/orders/utils/format-datetime";
+} from "@/lib/format-datetime";
 
 function pickLocalizedName(
   locale: AppLocale,

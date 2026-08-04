@@ -14,6 +14,7 @@ export * from "./use-process-renewal-request";
 export * from "./use-send-for-authentication";
 export * from "./use-hold-renewal-request";
 export * from "./use-upload-renewal-document";
+export * from "./use-upload-final-contract";
 export * from "../pending/queries/use-hold-reasons";
 export * from "../cancelled/queries/use-cancellation-reasons";
 export * from "../cancelled/queries/use-cancellation-sources";

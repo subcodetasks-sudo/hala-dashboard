@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
 
 import { employeeKeys } from "@/features/employees/query-keys";
@@ -9,7 +9,18 @@ import type {
   AdminsListResponse,
   Employee,
 } from "@/features/employees/types";
-import { extractCollection } from "@/features/orders/utils/api-payload";
+import {
+  extractCollection,
+  extractPaginationMeta,
+} from "@/lib/api-payload";
+
+export type AdminsPage = {
+  items: Employee[];
+  currentPage: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
+};
 
 function buildSearchParams(filters: AdminsListFilters): URLSearchParams {
   const params = new URLSearchParams();
@@ -50,66 +61,87 @@ function buildSearchParams(filters: AdminsListFilters): URLSearchParams {
   return params;
 }
 
+async function fetchAdminsPage(
+  locale: string,
+  filters: AdminsListFilters,
+): Promise<AdminsPage> {
+  const params = buildSearchParams(filters);
+  const query = params.toString();
+  const url = query ? `/api/admins?${query}` : "/api/admins";
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Accept-Language": locale,
+    },
+  });
+
+  const payload = (await response.json().catch(() => null)) as
+    | (AdminsListResponse & { meta?: unknown })
+    | { success?: false; message?: string }
+    | null;
+
+  if (!response.ok || !payload || !("success" in payload) || !payload.success) {
+    throw new Error(
+      payload && "message" in payload && typeof payload.message === "string"
+        ? payload.message
+        : "Failed to load employees",
+    );
+  }
+
+  const items = extractCollection(payload.data) as Employee[];
+  const pagination = extractPaginationMeta(payload.data, {
+    fallbackPage: filters.page ?? 1,
+    fallbackPerPage: filters.perPage ?? 15,
+    itemCount: items.length,
+    topLevelMeta: "meta" in payload ? payload.meta : undefined,
+  });
+
+  return {
+    items,
+    currentPage: pagination.currentPage,
+    lastPage: pagination.lastPage,
+    perPage: pagination.perPage,
+    total: pagination.total,
+  };
+}
+
+/**
+ * Fetches every page when `page` is omitted (home dashboard cards).
+ * When `page` is set, returns that single page only.
+ */
 async function fetchAdmins(
   locale: string,
   filters: AdminsListFilters,
-): Promise<Employee[]> {
-  const fetchPage = async (pageFilters: AdminsListFilters) => {
-    const params = buildSearchParams(pageFilters);
-    const query = params.toString();
-    const url = query ? `/api/admins?${query}` : "/api/admins";
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Accept-Language": locale,
-      },
-    });
-
-    const payload = (await response.json().catch(() => null)) as
-      | AdminsListResponse
-      | { success?: false; message?: string }
-      | null;
-
-    if (
-      !response.ok ||
-      !payload ||
-      !("success" in payload) ||
-      !payload.success
-    ) {
-      throw new Error(
-        payload && "message" in payload && typeof payload.message === "string"
-          ? payload.message
-          : "Failed to load employees",
-      );
-    }
-
-    return {
-      employees: extractCollection(payload.data) as Employee[],
-      lastPage:
-        typeof payload.data.last_page === "number"
-          ? payload.data.last_page
-          : 1,
-    };
-  };
-
-  const firstPage = await fetchPage({ ...filters, page: filters.page ?? 1 });
+): Promise<AdminsPage> {
+  const firstPage = await fetchAdminsPage(
+    locale,
+    { ...filters, page: filters.page ?? 1 },
+  );
 
   if (filters.page != null || firstPage.lastPage <= 1) {
-    return firstPage.employees;
+    return firstPage;
   }
 
   const remainingPages = await Promise.all(
     Array.from({ length: firstPage.lastPage - 1 }, (_, index) =>
-      fetchPage({ ...filters, page: index + 2 }),
+      fetchAdminsPage(locale, { ...filters, page: index + 2 }),
     ),
   );
 
-  return [
-    ...firstPage.employees,
-    ...remainingPages.flatMap((page) => page.employees),
+  const items = [
+    ...firstPage.items,
+    ...remainingPages.flatMap((page) => page.items),
   ];
+
+  return {
+    items,
+    currentPage: 1,
+    lastPage: 1,
+    perPage: items.length,
+    total: firstPage.total || items.length,
+  };
 }
 
 export type UseAdminsOptions = AdminsListFilters & {
@@ -127,5 +159,6 @@ export function useAdmins(options: UseAdminsOptions = {}) {
     queryKey: [...employeeKeys.list(filters), locale],
     queryFn: () => fetchAdmins(locale, filters),
     enabled,
+    placeholderData: keepPreviousData,
   });
 }

@@ -36,6 +36,7 @@ import {
 } from "@/features/orders/queries/use-orders";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { ORDER_STATUS_LABEL_KEYS } from "@/features/orders/utils";
+import { toSaudiPhoneWithLeadingZero } from "@/lib/format-saudi-phone";
 import { cn } from "@/lib/utils";
 
 export type ReviewTabId = "employer" | "worker" | "documents" | "delivery";
@@ -292,7 +293,7 @@ export default function OrderView({ orderId }: OrderViewProps) {
           label={t("summary.contactNumber")}
           value={
             <CopyablePhoneNumber
-              phone={`+966 ${order.phoneLocal}`}
+              phone={toSaudiPhoneWithLeadingZero(order.phoneLocal)}
               className="text-sm font-semibold text-brand-black"
             />
           }
