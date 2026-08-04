@@ -3,9 +3,10 @@ import {
   getAuthTokenType,
 } from "@/features/auth/lib/session";
 import type {
-  CitiesListResponse,
-  CityMutationResponse,
   CityStatus,
+  IssuePlaceCountry,
+  IssuePlaceMutationResponse,
+  IssuePlacesListResponse,
 } from "@/features/cities/types";
 import { ApiError, api, normalizeApiLocale } from "@/lib/api";
 import arMessages from "@/messages/ar.json";
@@ -29,10 +30,11 @@ function collectQueryParams(requestUrl: string) {
   return params;
 }
 
-function parseCityBody(body: Record<string, unknown>): {
+function parseIssuePlaceBody(body: Record<string, unknown>): {
   name_ar: string;
   name_en: string;
   status: CityStatus;
+  country: IssuePlaceCountry;
 } | { error: string } {
   const nameAr =
     typeof body.name_ar === "string"
@@ -48,6 +50,8 @@ function parseCityBody(body: Record<string, unknown>): {
         : "";
   const statusRaw =
     typeof body.status === "string" ? body.status.trim() : "";
+  const countryRaw =
+    typeof body.country === "string" ? body.country.trim() : "";
 
   if (!nameAr) {
     return { error: "nameArRequired" };
@@ -58,11 +62,15 @@ function parseCityBody(body: Record<string, unknown>): {
   if (statusRaw !== "active" && statusRaw !== "inactive") {
     return { error: "statusRequired" };
   }
+  if (countryRaw !== "sa" && countryRaw !== "ph") {
+    return { error: "countryRequired" };
+  }
 
   return {
     name_ar: nameAr,
     name_en: nameEn,
     status: statusRaw,
+    country: countryRaw,
   };
 }
 
@@ -81,13 +89,16 @@ export async function GET(request: Request) {
   }
 
   try {
-    const result = await api.get<CitiesListResponse>("/admin/cities", {
-      locale,
-      params: collectQueryParams(request.url),
-      headers: {
-        Authorization: `${tokenType} ${token}`,
+    const result = await api.get<IssuePlacesListResponse>(
+      "/admin/passport-issue-places",
+      {
+        locale,
+        params: collectQueryParams(request.url),
+        headers: {
+          Authorization: `${tokenType} ${token}`,
+        },
       },
-    });
+    );
 
     return Response.json({
       success: true,
@@ -99,17 +110,17 @@ export async function GET(request: Request) {
       return Response.json(
         {
           success: false,
-          message: error.message || t.unableToFetchCities,
+          message: error.message || t.unableToFetchIssuePlaces,
           data: error.data,
         },
         { status: error.status || 500 },
       );
     }
 
-    console.error("Cities list fetch failed:", error);
+    console.error("Issue places list fetch failed:", error);
 
     return Response.json(
-      { success: false, message: t.unableToFetchCities },
+      { success: false, message: t.unableToFetchIssuePlaces },
       { status: 500 },
     );
   }
@@ -130,14 +141,16 @@ export async function POST(request: Request) {
     );
   }
 
-  const parsed = parseCityBody(body);
+  const parsed = parseIssuePlaceBody(body);
   if ("error" in parsed) {
     const message =
       parsed.error === "nameArRequired"
         ? t.nameArRequired
         : parsed.error === "nameEnRequired"
           ? t.nameEnRequired
-          : t.statusRequired;
+          : parsed.error === "countryRequired"
+            ? t.countryRequired
+            : t.statusRequired;
 
     return Response.json({ success: false, message }, { status: 400 });
   }
@@ -153,13 +166,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await api.post<CityMutationResponse>("/admin/cities", {
-      locale,
-      headers: {
-        Authorization: `${tokenType} ${token}`,
+    const result = await api.post<IssuePlaceMutationResponse>(
+      "/admin/passport-issue-places",
+      {
+        locale,
+        headers: {
+          Authorization: `${tokenType} ${token}`,
+        },
+        body: parsed,
       },
-      body: parsed,
-    });
+    );
 
     return Response.json({
       success: true,
@@ -171,17 +187,17 @@ export async function POST(request: Request) {
       return Response.json(
         {
           success: false,
-          message: error.message || t.unableToCreateCity,
+          message: error.message || t.unableToCreateIssuePlace,
           data: error.data,
         },
         { status: error.status || 500 },
       );
     }
 
-    console.error("Create city failed:", error);
+    console.error("Create issue place failed:", error);
 
     return Response.json(
-      { success: false, message: t.unableToCreateCity },
+      { success: false, message: t.unableToCreateIssuePlace },
       { status: 500 },
     );
   }

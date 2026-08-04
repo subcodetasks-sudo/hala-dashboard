@@ -26,7 +26,7 @@
       "searchLabel": "البحث",
       "searchPlaceholder": "ابحث برقم الطلب أو اسم العميل...",
       "status": "الحالة",
-      "apply": "تطبيق الفلترة",
+      "apply": "تطبيق التصفية",
       "statusAll": "جميع الحالات",
       "statusNew": "جديد",
       "statusUnderReview": "قيد المراجعة",
@@ -149,7 +149,7 @@
       "statusAll": "الكل",
       "statusActive": "نشط",
       "statusSuspended": "موقوف",
-      "apply": "تطبيق الفلترة",
+      "apply": "تطبيق التصفية",
       "pickDate": "يوم/شهر/سنة"
     },
     "table": {
@@ -299,7 +299,7 @@
         "statusAwaitingPayment": "بانتظار الدفع",
         "statusCompleted": "مكتمل",
         "statusCancelled": "ملغى",
-        "apply": "تطبيق الفلترة",
+        "apply": "تطبيق التصفية",
         "pickDate": "اختر التاريخ"
       },
       "table": {
@@ -538,7 +538,8 @@
           "suspend": "تعليق الطلب",
           "showContract": "عرض العقد",
           "sendForAuth": "إرسال العقد للمصادقة",
-          "uploadFinalContract": "رفع العقد النهائي"
+          "uploadFinalContract": "رفع العقد النهائي",
+          "cities": "المدن و اماكن الإصدار"
         },
         "validation": {
           "employerNameArRequired": "اسم صاحب العمل بالعربية مطلوب",
@@ -578,7 +579,7 @@
         "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
         "suspensionType": "نوع التعليق",
         "reasonAll": "الكل",
-        "apply": "تطبيق الفلترة",
+        "apply": "تطبيق التصفية",
         "pickDate": "اختر التاريخ"
       },
       "reasons": {
@@ -668,7 +669,7 @@
         "typeAll": "الكل",
         "typeEform": "E-form",
         "typeManual": "يدوي",
-        "apply": "تطبيق الفلترة",
+        "apply": "تطبيق التصفية",
         "pickDate": "اختر التاريخ"
       },
       "table": {
@@ -744,7 +745,7 @@
         "statusAll": "الكل",
         "statusSentForVerification": "تم الإرسال للمصادقة",
         "statusFinalContractUploaded": "العقد النهائي مرفوع",
-        "apply": "تطبيق الفلترة",
+        "apply": "تطبيق التصفية",
         "pickDate": "اختر التاريخ"
       },
       "table": {
@@ -817,7 +818,7 @@
         "deliveryAll": "الكل",
         "deliveryRequired": "مطلوب",
         "deliveryNotRequired": "غير مطلوب",
-        "apply": "تطبيق الفلترة",
+        "apply": "تطبيق التصفية",
         "pickDate": "اختر التاريخ"
       },
       "table": {
@@ -895,7 +896,7 @@
         "paymentAll": "الكل",
         "paymentOnline": "أونلاين",
         "paymentManual": "يدوي",
-        "apply": "تطبيق الفلترة",
+        "apply": "تطبيق التصفية",
         "pickDate": "اختر التاريخ"
       },
       "table": {
@@ -943,7 +944,7 @@
         "sourceAll": "الكل",
         "cancellationReason": "سبب الإلغاء",
         "reasonAll": "الكل",
-        "apply": "تطبيق الفلترة",
+        "apply": "تطبيق التصفية",
         "pickDate": "اختر التاريخ"
       },
       "route": {
@@ -998,7 +999,7 @@
         "statusAll": "الكل",
         "refundMethod": "طريقة الاسترداد",
         "methodAll": "الكل",
-        "apply": "تطبيق الفلترة",
+        "apply": "تطبيق التصفية",
         "pickDate": "اختر التاريخ"
       },
       "table": {
@@ -1060,7 +1061,7 @@
       "contractAll": "الكل",
       "contractAvailable": "متاح",
       "contractUnavailable": "غير متاح مؤقتاً",
-      "apply": "تطبيق الفلترة",
+      "apply": "تطبيق التصفية",
       "pickDate": "dd/mm/yyyy"
     },
     "table": {
@@ -1109,8 +1110,10 @@
         "tracking": "أرقام التتبع",
         "employees": "الموظفين",
         "permissions": "الصلاحيات",
+        "cancelStatuses": "حالات الإلغاء",
         "contentManagement": "إدارة المحتوى",
         "accountManagement": "إدارة الحساب",
+        "cities": "المدن و اماكن الإصدار",
         "logout": "تسجيل الخروج"
       }
     },
@@ -1142,6 +1145,290 @@
       "summary": "صفحة {page} من {lastPage} · {total} نتيجة"
     }
   },
+  "Cities": {
+    "title": "المدن و اماكن الإصدار",
+    "description": "إدارة المدن وأماكن إصدار جوازات السفر المستخدمة في طلبات التجديد.",
+    "period": "هذا الأسبوع",
+    "addCity": "إضافة مدينة",
+    "addIssuePlace": "إضافة مكان إصدار",
+    "indicators": {
+      "cities": {
+        "total": "إجمالي المدن",
+        "active": "المدن النشطة",
+        "inactive": "المدن غير النشطة"
+      },
+      "issuePlaces": {
+        "total": "إجمالي أماكن الإصدار",
+        "active": "أماكن الإصدار النشطة",
+        "inactive": "أماكن الإصدار غير النشطة"
+      }
+    },
+    "tabs": {
+      "cities": "المدن",
+      "issuePlaces": "أماكن الإصدار"
+    },
+    "countryTabs": {
+      "sa": "السعودية",
+      "ph": "الفلبين"
+    },
+    "listTitle": {
+      "cities": "قائمة المدن",
+      "issuePlaces": "قائمة أماكن الإصدار",
+      "issuePlacesByCountry": {
+        "sa": "أماكن الإصدار في السعودية",
+        "ph": "أماكن الإصدار في الفلبين"
+      }
+    },
+    "filters": {
+      "searchLabel": "البحث",
+      "searchPlaceholder": "ابحث بالاسم...",
+      "status": "الحالة",
+      "statusAll": "الكل",
+      "statusActive": "نشطة",
+      "statusInactive": "غير نشطة",
+      "apply": "تطبيق التصفية"
+    },
+    "table": {
+      "nameAr": "الاسم (عربي)",
+      "nameEn": "الاسم (إنجليزي)",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "آخر تحديث",
+      "action": "إجراء",
+      "statusActive": "نشطة",
+      "statusInactive": "غير نشطة",
+      "edit": "تعديل {name}",
+      "delete": "حذف {name}",
+      "view": "عرض {name}"
+    },
+    "empty": {
+      "cities": {
+        "title": "لا توجد مدن",
+        "description": "لا توجد مدن مطابقة للفلاتر الحالية. جرّب تغيير معايير البحث أو إعادة التعيين."
+      },
+      "issuePlaces": {
+        "title": "لا توجد أماكن إصدار",
+        "description": "لا توجد أماكن إصدار مطابقة للفلاتر الحالية. جرّب تغيير معايير البحث أو إعادة التعيين."
+      }
+    },
+    "viewDialog": {
+      "title": "تفاصيل المدينة",
+      "close": "إغلاق",
+      "nameAr": "الاسم (عربي)",
+      "nameEn": "الاسم (إنجليزي)",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "آخر تحديث",
+      "errorToast": "تعذر تحميل تفاصيل المدينة. حاول مرة أخرى."
+    },
+    "issuePlaceViewDialog": {
+      "title": "تفاصيل مكان الإصدار",
+      "close": "إغلاق",
+      "nameAr": "الاسم (عربي)",
+      "nameEn": "الاسم (إنجليزي)",
+      "country": "الدولة",
+      "countrySa": "السعودية",
+      "countryPh": "الفلبين",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "آخر تحديث",
+      "errorToast": "تعذر تحميل تفاصيل مكان الإصدار. حاول مرة أخرى."
+    },
+    "cityDialog": {
+      "createTitle": "إضافة مدينة",
+      "editTitle": "تعديل مدينة",
+      "close": "إغلاق",
+      "nameArLabel": "الاسم (عربي)",
+      "nameArPlaceholder": "أدخل اسم المدينة بالعربية",
+      "nameEnLabel": "الاسم (إنجليزي)",
+      "nameEnPlaceholder": "أدخل اسم المدينة بالإنجليزية",
+      "statusLabel": "الحالة",
+      "status": {
+        "active": "نشطة",
+        "inactive": "غير نشطة"
+      },
+      "create": "إنشاء",
+      "save": "حفظ التعديلات",
+      "cancel": "إلغاء",
+      "toastCreated": "تم إنشاء المدينة بنجاح",
+      "toastUpdated": "تم تحديث المدينة بنجاح",
+      "errorToast": "تعذر حفظ المدينة. حاول مرة أخرى.",
+      "validation": {
+        "nameArRequired": "الاسم بالعربية مطلوب",
+        "nameEnRequired": "الاسم بالإنجليزية مطلوب",
+        "statusRequired": "الحالة مطلوبة"
+      }
+    },
+    "issuePlaceDialog": {
+      "createTitle": "إضافة مكان إصدار",
+      "editTitle": "تعديل مكان إصدار",
+      "close": "إغلاق",
+      "nameArLabel": "الاسم (عربي)",
+      "nameArPlaceholder": "أدخل اسم المكان بالعربية",
+      "nameEnLabel": "الاسم (إنجليزي)",
+      "nameEnPlaceholder": "أدخل اسم المكان بالإنجليزية",
+      "countryLabel": "الدولة",
+      "country": {
+        "sa": "السعودية",
+        "ph": "الفلبين"
+      },
+      "statusLabel": "الحالة",
+      "status": {
+        "active": "نشطة",
+        "inactive": "غير نشطة"
+      },
+      "create": "إنشاء",
+      "save": "حفظ التعديلات",
+      "cancel": "إلغاء",
+      "toastCreated": "تم إنشاء مكان الإصدار بنجاح",
+      "toastUpdated": "تم تحديث مكان الإصدار بنجاح",
+      "errorToast": "تعذر حفظ مكان الإصدار. حاول مرة أخرى.",
+      "validation": {
+        "nameArRequired": "الاسم بالعربية مطلوب",
+        "nameEnRequired": "الاسم بالإنجليزية مطلوب",
+        "statusRequired": "الحالة مطلوبة",
+        "countryRequired": "الدولة مطلوبة"
+      }
+    },
+    "deleteDialog": {
+      "title": "حذف مدينة",
+      "close": "إغلاق",
+      "heading": "هل تريد حذف هذه المدينة؟",
+      "description": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف المدينة من النظام.",
+      "cityLabel": "المدينة",
+      "confirm": "حذف",
+      "cancel": "إلغاء",
+      "toastSuccess": "تم حذف المدينة بنجاح",
+      "errorToast": "تعذر حذف المدينة. حاول مرة أخرى."
+    },
+    "issuePlaceDeleteDialog": {
+      "title": "حذف مكان إصدار",
+      "close": "إغلاق",
+      "heading": "هل تريد حذف مكان الإصدار هذا؟",
+      "description": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف مكان الإصدار من النظام.",
+      "placeLabel": "مكان الإصدار",
+      "confirm": "حذف",
+      "cancel": "إلغاء",
+      "toastSuccess": "تم حذف مكان الإصدار بنجاح",
+      "errorToast": "تعذر حذف مكان الإصدار. حاول مرة أخرى."
+    },
+    "route": {
+      "unauthorized": "غير مصرح",
+      "invalidJson": "بيانات الطلب غير صالحة",
+      "invalidId": "معرّف المدينة غير صالح",
+      "invalidIssuePlaceId": "معرّف مكان الإصدار غير صالح",
+      "nameArRequired": "الاسم بالعربية مطلوب",
+      "nameEnRequired": "الاسم بالإنجليزية مطلوب",
+      "statusRequired": "الحالة مطلوبة",
+      "countryRequired": "الدولة مطلوبة",
+      "unableToFetchCities": "تعذر تحميل المدن. يرجى المحاولة مرة أخرى.",
+      "unableToFetchCity": "تعذر تحميل المدينة. يرجى المحاولة مرة أخرى.",
+      "unableToCreateCity": "تعذر إنشاء المدينة. يرجى المحاولة مرة أخرى.",
+      "unableToUpdateCity": "تعذر تحديث المدينة. يرجى المحاولة مرة أخرى.",
+      "unableToDeleteCity": "تعذر حذف المدينة. يرجى المحاولة مرة أخرى.",
+      "unableToFetchIssuePlaces": "تعذر تحميل أماكن الإصدار. يرجى المحاولة مرة أخرى.",
+      "unableToFetchIssuePlace": "تعذر تحميل مكان الإصدار. يرجى المحاولة مرة أخرى.",
+      "unableToCreateIssuePlace": "تعذر إنشاء مكان الإصدار. يرجى المحاولة مرة أخرى.",
+      "unableToUpdateIssuePlace": "تعذر تحديث مكان الإصدار. يرجى المحاولة مرة أخرى.",
+      "unableToDeleteIssuePlace": "تعذر حذف مكان الإصدار. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "CancelStatuses": {
+    "title": "حالات الإلغاء",
+    "description": "إدارة أسباب الإلغاء المستخدمة عند إلغاء طلبات التجديد.",
+    "period": "هذا الأسبوع",
+    "addItem": "إضافة حالة إلغاء",
+    "listTitle": "قائمة حالات الإلغاء",
+    "indicators": {
+      "total": "إجمالي الحالات",
+      "active": "الحالات النشطة",
+      "inactive": "الحالات غير النشطة"
+    },
+    "filters": {
+      "searchLabel": "البحث",
+      "searchPlaceholder": "ابحث بنص الحالة...",
+      "status": "الحالة",
+      "statusAll": "الكل",
+      "statusActive": "نشطة",
+      "statusInactive": "غير نشطة",
+      "apply": "تطبيق التصفية"
+    },
+    "table": {
+      "textAr": "النص (عربي)",
+      "textEn": "النص (إنجليزي)",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "آخر تحديث",
+      "action": "إجراء",
+      "statusActive": "نشطة",
+      "statusInactive": "غير نشطة",
+      "edit": "تعديل {name}",
+      "delete": "حذف {name}",
+      "view": "عرض {name}"
+    },
+    "empty": {
+      "title": "لا توجد حالات إلغاء",
+      "description": "لا توجد حالات إلغاء مطابقة للفلاتر الحالية. جرّب تغيير معايير البحث أو إعادة التعيين."
+    },
+    "viewDialog": {
+      "title": "تفاصيل حالة الإلغاء",
+      "close": "إغلاق",
+      "textAr": "النص (عربي)",
+      "textEn": "النص (إنجليزي)",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "آخر تحديث",
+      "errorToast": "تعذر تحميل تفاصيل حالة الإلغاء. حاول مرة أخرى."
+    },
+    "formDialog": {
+      "createTitle": "إضافة حالة إلغاء",
+      "editTitle": "تعديل حالة إلغاء",
+      "close": "إغلاق",
+      "textArLabel": "النص (عربي)",
+      "textArPlaceholder": "أدخل حالة الإلغاء بالعربية",
+      "textEnLabel": "النص (إنجليزي)",
+      "textEnPlaceholder": "أدخل حالة الإلغاء بالإنجليزية",
+      "statusLabel": "الحالة",
+      "status": {
+        "active": "نشطة",
+        "inactive": "غير نشطة"
+      },
+      "create": "إنشاء",
+      "save": "حفظ التعديلات",
+      "cancel": "إلغاء",
+      "toastCreated": "تم إنشاء حالة الإلغاء بنجاح",
+      "toastUpdated": "تم تحديث حالة الإلغاء بنجاح",
+      "errorToast": "تعذر حفظ حالة الإلغاء. حاول مرة أخرى.",
+      "validation": {
+        "textArRequired": "النص بالعربية مطلوب",
+        "textEnRequired": "النص بالإنجليزية مطلوب"
+      }
+    },
+    "deleteDialog": {
+      "title": "حذف حالة إلغاء",
+      "close": "إغلاق",
+      "heading": "هل تريد حذف حالة الإلغاء هذه؟",
+      "description": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف حالة الإلغاء من النظام.",
+      "itemLabel": "حالة الإلغاء",
+      "confirm": "حذف",
+      "cancel": "إلغاء",
+      "toastSuccess": "تم حذف حالة الإلغاء بنجاح",
+      "errorToast": "تعذر حذف حالة الإلغاء. حاول مرة أخرى."
+    },
+    "route": {
+      "unauthorized": "غير مصرح",
+      "invalidJson": "بيانات الطلب غير صالحة",
+      "invalidId": "معرّف حالة الإلغاء غير صالح",
+      "textArRequired": "النص بالعربية مطلوب",
+      "textEnRequired": "النص بالإنجليزية مطلوب",
+      "activeRequired": "الحالة مطلوبة",
+      "unableToFetchList": "تعذر تحميل حالات الإلغاء. يرجى المحاولة مرة أخرى.",
+      "unableToFetchOne": "تعذر تحميل حالة الإلغاء. يرجى المحاولة مرة أخرى.",
+      "unableToCreate": "تعذر إنشاء حالة الإلغاء. يرجى المحاولة مرة أخرى.",
+      "unableToUpdate": "تعذر تحديث حالة الإلغاء. يرجى المحاولة مرة أخرى.",
+      "unableToDelete": "تعذر حذف حالة الإلغاء. يرجى المحاولة مرة أخرى."
+    }
+  },
   "ContentManagement": {
     "title": "إدارة المحتوى",
     "description": "تحكم في محتوى الموقع والصفحات التعريفية والأسئلة الشائعة والمقالات من مكان واحد.",
@@ -1171,7 +1458,7 @@
       "statusAll": "الكل",
       "statusPublished": "منشور",
       "statusDraft": "مسودة",
-      "apply": "تطبيق الفلترة"
+      "apply": "تطبيق التصفية"
     },
     "table": {
       "title": "عنوان المحتوى",

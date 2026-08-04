@@ -3,16 +3,15 @@ import {
   getAuthTokenType,
 } from "@/features/auth/lib/session";
 import type {
-  CitiesListResponse,
-  CityMutationResponse,
-  CityStatus,
-} from "@/features/cities/types";
+  CancelStatusMutationResponse,
+  CancelStatusesListResponse,
+} from "@/features/cancel-statuses/types";
 import { ApiError, api, normalizeApiLocale } from "@/lib/api";
 import arMessages from "@/messages/ar.json";
 import enMessages from "@/messages/en.json";
 
 function getRouteMessages(locale: ReturnType<typeof normalizeApiLocale>) {
-  return (locale === "en" ? enMessages : arMessages).Cities.route;
+  return (locale === "en" ? enMessages : arMessages).CancelStatuses.route;
 }
 
 function collectQueryParams(requestUrl: string) {
@@ -29,40 +28,51 @@ function collectQueryParams(requestUrl: string) {
   return params;
 }
 
-function parseCityBody(body: Record<string, unknown>): {
-  name_ar: string;
-  name_en: string;
-  status: CityStatus;
+function parseCancelStatusBody(body: Record<string, unknown>): {
+  text_ar: string;
+  text_en: string;
+  active: boolean;
 } | { error: string } {
-  const nameAr =
-    typeof body.name_ar === "string"
-      ? body.name_ar.trim()
-      : typeof body.nameAr === "string"
-        ? body.nameAr.trim()
+  const textAr =
+    typeof body.text_ar === "string"
+      ? body.text_ar.trim()
+      : typeof body.textAr === "string"
+        ? body.textAr.trim()
         : "";
-  const nameEn =
-    typeof body.name_en === "string"
-      ? body.name_en.trim()
-      : typeof body.nameEn === "string"
-        ? body.nameEn.trim()
+  const textEn =
+    typeof body.text_en === "string"
+      ? body.text_en.trim()
+      : typeof body.textEn === "string"
+        ? body.textEn.trim()
         : "";
-  const statusRaw =
-    typeof body.status === "string" ? body.status.trim() : "";
 
-  if (!nameAr) {
-    return { error: "nameArRequired" };
+  let active: boolean | null = null;
+  if (typeof body.active === "boolean") {
+    active = body.active;
+  } else if (body.active === "true" || body.active === 1 || body.active === "1") {
+    active = true;
+  } else if (
+    body.active === "false" ||
+    body.active === 0 ||
+    body.active === "0"
+  ) {
+    active = false;
   }
-  if (!nameEn) {
-    return { error: "nameEnRequired" };
+
+  if (!textAr) {
+    return { error: "textArRequired" };
   }
-  if (statusRaw !== "active" && statusRaw !== "inactive") {
-    return { error: "statusRequired" };
+  if (!textEn) {
+    return { error: "textEnRequired" };
+  }
+  if (active === null) {
+    return { error: "activeRequired" };
   }
 
   return {
-    name_ar: nameAr,
-    name_en: nameEn,
-    status: statusRaw,
+    text_ar: textAr,
+    text_en: textEn,
+    active,
   };
 }
 
@@ -81,13 +91,16 @@ export async function GET(request: Request) {
   }
 
   try {
-    const result = await api.get<CitiesListResponse>("/admin/cities", {
-      locale,
-      params: collectQueryParams(request.url),
-      headers: {
-        Authorization: `${tokenType} ${token}`,
+    const result = await api.get<CancelStatusesListResponse>(
+      "/admin/cancel-statuses",
+      {
+        locale,
+        params: collectQueryParams(request.url),
+        headers: {
+          Authorization: `${tokenType} ${token}`,
+        },
       },
-    });
+    );
 
     return Response.json({
       success: true,
@@ -99,17 +112,17 @@ export async function GET(request: Request) {
       return Response.json(
         {
           success: false,
-          message: error.message || t.unableToFetchCities,
+          message: error.message || t.unableToFetchList,
           data: error.data,
         },
         { status: error.status || 500 },
       );
     }
 
-    console.error("Cities list fetch failed:", error);
+    console.error("Cancel statuses list fetch failed:", error);
 
     return Response.json(
-      { success: false, message: t.unableToFetchCities },
+      { success: false, message: t.unableToFetchList },
       { status: 500 },
     );
   }
@@ -130,14 +143,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const parsed = parseCityBody(body);
+  const parsed = parseCancelStatusBody(body);
   if ("error" in parsed) {
     const message =
-      parsed.error === "nameArRequired"
-        ? t.nameArRequired
-        : parsed.error === "nameEnRequired"
-          ? t.nameEnRequired
-          : t.statusRequired;
+      parsed.error === "textArRequired"
+        ? t.textArRequired
+        : parsed.error === "textEnRequired"
+          ? t.textEnRequired
+          : t.activeRequired;
 
     return Response.json({ success: false, message }, { status: 400 });
   }
@@ -153,13 +166,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await api.post<CityMutationResponse>("/admin/cities", {
-      locale,
-      headers: {
-        Authorization: `${tokenType} ${token}`,
+    const result = await api.post<CancelStatusMutationResponse>(
+      "/admin/cancel-statuses",
+      {
+        locale,
+        headers: {
+          Authorization: `${tokenType} ${token}`,
+        },
+        body: parsed,
       },
-      body: parsed,
-    });
+    );
 
     return Response.json({
       success: true,
@@ -171,17 +187,17 @@ export async function POST(request: Request) {
       return Response.json(
         {
           success: false,
-          message: error.message || t.unableToCreateCity,
+          message: error.message || t.unableToCreate,
           data: error.data,
         },
         { status: error.status || 500 },
       );
     }
 
-    console.error("Create city failed:", error);
+    console.error("Create cancel status failed:", error);
 
     return Response.json(
-      { success: false, message: t.unableToCreateCity },
+      { success: false, message: t.unableToCreate },
       { status: 500 },
     );
   }
