@@ -113,7 +113,16 @@
     "route": {
       "unauthorized": "Unauthorized",
       "unableToFetch": "Unable to load employees. Please try again.",
-      "unableToFetchRoles": "Unable to load employee roles. Please try again."
+      "unableToFetchRoles": "Unable to load employee roles. Please try again.",
+      "invalidForm": "Invalid form data",
+      "required": "Name, email, employee ID, phone, password, password confirmation, and role are required",
+      "requiredUpdate": "Name, email, employee ID, phone, status, and role are required",
+      "unableToCreate": "Unable to add employee. Please try again.",
+      "unableToUpdate": "Unable to update employee. Please try again.",
+      "unableToDeactivate": "Unable to deactivate account. Please try again.",
+      "unableToActivate": "Unable to activate account. Please try again.",
+      "deactivateSuccess": "Employee account deactivated successfully.",
+      "activateSuccess": "Employee account activated successfully."
     },
     "title": "Employees",
     "description": "Manage employee accounts, assign job roles, and control system access permissions.",
@@ -156,7 +165,8 @@
       "action": "Action",
       "viewDetails": "View Details",
       "edit": "Edit Employee",
-      "suspend": "Deactivate Employee Account"
+      "suspend": "Deactivate Employee Account",
+      "activate": "Activate Employee Account"
     },
     "empty": {
       "title": "No employees yet",
@@ -168,6 +178,7 @@
       "close": "Close",
       "edit": "Edit Data",
       "suspend": "Deactivate Account",
+      "activate": "Activate Account",
       "info": {
         "title": "Employee Information",
         "employeeNumber": "Employee ID",
@@ -194,6 +205,55 @@
           "followUpContracts": "Follow up on contracts and verification",
           "sendForVerification": "Send contracts for verification"
         }
+      }
+    },
+    "FormDialog": {
+      "titleEdit": "Edit Employee Data",
+      "titleCreate": "Add New Employee",
+      "close": "Close",
+      "photoLabel": "Employee Photo",
+      "photoHint": "Add one photo only",
+      "photoChange": "Change employee photo",
+      "photoInvalidType": "Please choose a PNG or JPEG image.",
+      "idNumber": "ID Number",
+      "idNumberPlaceholder": "Enter ID number here...",
+      "nationalId": "National ID Number",
+      "nationalIdPlaceholder": "Enter national ID here...",
+      "name": "Employee Name",
+      "phone": "Mobile Number",
+      "phonePlaceholder": "05XXXXXXXX",
+      "email": "Email",
+      "role": "Job Role",
+      "rolePlaceholder": "Select a job role",
+      "rolesLoading": "Loading roles...",
+      "passwordSection": "Password",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "saveEdit": "Save Changes",
+      "saveCreate": "Add Employee",
+      "cancel": "Back and Cancel",
+      "successToastEdit": "Employee data updated successfully.",
+      "successToastCreate": "Employee added successfully.",
+      "errorToastEdit": "Unable to update employee data. Please try again.",
+      "errorToastCreate": "Unable to add employee. Please try again.",
+      "validation": {
+        "idNumberRequired": "ID number is required",
+        "idNumberFormat": "ID number must be 10 digits starting with 1 or 2",
+        "nationalIdRequired": "National ID is required",
+        "nationalIdFormat": "National ID must be 10 digits starting with 1 or 2",
+        "nameRequired": "Employee name is required",
+        "phoneRequired": "Mobile number is required",
+        "phoneFormat": "Enter a valid Saudi mobile number (10 digits starting with 05)",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Enter a valid email address",
+        "roleRequired": "Job role is required",
+        "passwordRequired": "Password is required",
+        "passwordMin": "Password must be at least 8 characters",
+        "passwordUppercase": "Password must contain at least one uppercase letter",
+        "passwordLowercase": "Password must contain at least one lowercase letter",
+        "passwordSymbol": "Password must contain at least one symbol",
+        "confirmPasswordRequired": "Confirm password is required",
+        "passwordsMismatch": "Passwords do not match"
       }
     }
   },
@@ -407,6 +467,7 @@
           "cityPlaceholder": "Select city...",
           "passportIssuePlace": "Place of Issue",
           "passportIssuePlacePlaceholder": "Select place of issue...",
+          "comboboxNoResults": "No matching options",
           "changeHistory": "Change History",
           "historyEmployee": "Employee",
           "historyAction": "Action Type",
@@ -428,7 +489,8 @@
           "homeAddress": "Address in the Philippines",
           "homeAddressPlaceholder": "Enter the address in the Philippines...",
           "passportIssuePlace": "Passport Issue Place in English",
-          "passportIssuePlacePlaceholder": "Enter the place here...",
+          "passportIssuePlacePlaceholder": "Select place of issue...",
+          "comboboxNoResults": "No matching options",
           "passportNumber": "Passport Number in Arabic",
           "passportNumberPlaceholder": "Enter the passport number here...",
           "passportIssueDate": "Passport Issue Date",
@@ -476,7 +538,7 @@
           "actions": "Review Actions",
           "reviewed": "Processed",
           "suspend": "Suspend Order",
-          "showContract": "Show Contract",
+          "showContract": "View Contract",
           "sendForAuth": "Send for Authentication",
           "uploadFinalContract": "Upload Final Contract",
           "cities": "Cities and Issuance places"
@@ -704,7 +766,30 @@
         "viewDownloadContract": "View and Download Contract",
         "uploadFinalContract": "Upload Final Contract",
         "confirmUploadFinalContract": "Confirm Final Contract Upload",
-        "uploadFinalContractSuccess": "Final contract {orderNumber} uploaded successfully."
+        "uploadFinalContractSuccess": "Final contract {orderNumber} uploaded successfully.",
+        "uploadFinalContractError": "Unable to upload the final contract. Please try again."
+      },
+      "uploadFinalContractDialog": {
+        "title": "Upload Final Contract",
+        "close": "Close",
+        "heading": "Upload the final authenticated contract",
+        "description": "Attach the final contract file (PDF or PNG) to complete verification and move the order to the payment stage.",
+        "dropzoneLabel": "Drag the contract file here or choose from your device",
+        "fileConstraints": "PDF or PNG · max 10 MB",
+        "invalidType": "Only PDF or PNG files are allowed.",
+        "invalidSize": "File size must be 10 MB or less.",
+        "removeFile": "Remove file",
+        "confirm": "Confirm Final Contract Upload",
+        "cancel": "Back and Cancel",
+        "toastSuccess": "Final contract {orderNumber} uploaded successfully.",
+        "errorToast": "Unable to upload the final contract. Please try again.",
+        "route": {
+          "unauthorized": "Unauthorized",
+          "invalidId": "Renewal request ID is required",
+          "invalidForm": "Invalid upload form data",
+          "fileRequired": "A final contract file is required",
+          "unableToComplete": "Unable to upload the final contract. Please try again."
+        }
       },
       "empty": {
         "title": "No orders sent for verification",
@@ -1561,6 +1646,66 @@
         "endDateAfterStart": "End date must be on or after the start date",
         "statusRequired": "Status is required"
       }
+    }
+  },
+  "Tracking": {
+    "title": "Order Tracking Numbers",
+    "subtitle": "Manage shipment tracking numbers for contract delivery service, monitor available and used numbers, and link them to renewal orders.",
+    "addNumbers": "Add Tracking Numbers",
+    "refreshData": "Refresh Data",
+    "periodWeek": "This Week",
+    "logTitle": "Tracking Numbers Log",
+    "indicators": {
+      "total": "Total Tracking Numbers",
+      "available": "Available Numbers",
+      "used": "Used Numbers"
+    },
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by order number or business owner name...",
+      "usageDate": "Usage Date",
+      "status": "Status",
+      "shippingCompany": "Shipping Company",
+      "apply": "Apply Filter",
+      "all": "All",
+      "statusAvailable": "Available",
+      "statusUsed": "Used"
+    },
+    "table": {
+      "trackingNumber": "Tracking Number",
+      "shippingCompany": "Shipping Company",
+      "entryDate": "Entry Date",
+      "status": "Status",
+      "orderNumber": "Order Number",
+      "customer": "Customer Name / Phone",
+      "usageDate": "Usage Date",
+      "action": "Action"
+    },
+    "empty": {
+      "title": "No tracking numbers found",
+      "description": "No tracking numbers have been added yet. You can add new numbers individually or in bulk."
+    },
+    "modal": {
+      "title": "Add New Tracking Numbers",
+      "heading": "Add New Tracking Numbers!",
+      "modeSingle": "Single Entry",
+      "modeBulk": "Bulk Entry",
+      "companyLabel": "Shipping Company",
+      "companyPlaceholder": "Select shipping company..",
+      "trackingNumberLabel": "Tracking Number",
+      "trackingNumberPlaceholder": "Enter tracking number...",
+      "uploadTitle": "Upload CSV or XLSX file",
+      "uploadSubtitle": "Drag file here or click to browse",
+      "uploadNote": "Must contain column \"Tracking Number\" or \"رقم التتبع\"",
+      "uploadLimit": "( 10 MB max CSV XLSX )",
+      "orManual": "Or enter numbers manually",
+      "numbersListLabel": "Tracking Numbers List",
+      "numbersListPlaceholder": "Enter tracking numbers, one per line:",
+      "numbersListHint": "One number per line — duplicate numbers detected automatically",
+      "submitSingle": "Save Tracking Number",
+      "submitBulk": "Save Tracking Numbers",
+      "cancel": "Cancel",
+      "success": "Tracking numbers added successfully"
     }
   }
 }

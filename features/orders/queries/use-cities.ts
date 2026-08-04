@@ -13,7 +13,7 @@ import {
   extractCollection,
   extractPaginationMeta,
   readStringField,
-} from "@/features/orders/utils/api-payload";
+} from "@/lib/api-payload";
 
 function buildSearchParams(filters: CitiesListFilters): URLSearchParams {
   const params = new URLSearchParams();

@@ -14,7 +14,12 @@ export type EmployeeJobRole =
 /** Row shape for the employees data table (list UI). */
 export type EmployeeRow = {
   id: string;
+  /** Job / employee number shown in the list. */
   employeeNumber: string;
+  /** Backend `id_number`. */
+  idNumber: string;
+  /** Backend `national_id`. */
+  nationalId: string;
   name: string;
   phone: string;
   email: string;
@@ -87,6 +92,54 @@ export type AdminsListResponse = {
   success: boolean;
   message: string;
   data: AdminsListPage;
+};
+
+/** Fields accepted by the create-admin App Router proxy (camelCase). */
+export type CreateAdminClientFields = {
+  name: string;
+  email: string;
+  idNumber: string;
+  nationalId: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  status: string;
+  /** Backend role `name`, e.g. `review-officer`. */
+  role: string;
+  avatar?: File;
+};
+
+/** Fields for `PUT /api/admins/:id` — password optional (omit when unchanged). */
+export type UpdateAdminClientFields = {
+  name: string;
+  email: string;
+  idNumber: string;
+  nationalId: string;
+  phone: string;
+  /** When empty/undefined, password fields are omitted from the multipart body. */
+  password?: string;
+  confirmPassword?: string;
+  status: string;
+  /** Backend role `name`, e.g. `review-officer`. */
+  role: string;
+  avatar?: File;
+};
+
+/** `POST /admins` success payload. */
+export type CreateAdminResponse = {
+  success: boolean;
+  message: string;
+  data: Employee;
+};
+
+/** `PUT /admins/:id` success payload. */
+export type UpdateAdminResponse = CreateAdminResponse;
+
+/** Single admin payload from `GET /admins/:id`. */
+export type AdminDetailResponse = {
+  success: boolean;
+  message: string;
+  data: Employee;
 };
 
 export type Role = {

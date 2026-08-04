@@ -24,8 +24,8 @@ import {
   formatIsoDateWithClockTime,
   parseCompletedOrdersFilters,
   serializeCompletedOrdersFilters,
-  useOrderFilters,
 } from "@/features/orders/utils";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -65,7 +65,7 @@ export default function CompletedOrdersView() {
   const t = useTranslations("Orders.Completed");
   const locale = useLocale() === "en" ? "en" : "ar";
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_COMPLETED_ORDERS_FILTERS,
       serialize: serializeCompletedOrdersFilters,
       parse: parseCompletedOrdersFilters,

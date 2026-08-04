@@ -2,6 +2,7 @@ import type {
   CitiesListFilters,
   CompletedOrdersFilterValues,
   OrdersFilterValues,
+  PassportIssuePlacesListFilters,
   PaymentOrdersFilterValues,
   RefundOrdersFilterValues,
   RenewalRequestsFilters,
@@ -21,6 +22,8 @@ export const orderKeys = {
   statuses: () => [...orderKeys.all, "statuses"] as const,
   cities: (filters?: CitiesListFilters) =>
     [...orderKeys.all, "cities", { filters }] as const,
+  passportIssuePlaces: (filters?: PassportIssuePlacesListFilters) =>
+    [...orderKeys.all, "passport-issue-places", { filters }] as const,
   renewalRequestStats: () => [...orderKeys.all, "renewal-request-stats"] as const,
   renewalRequestHeldStats: () => [...orderKeys.all, "renewal-request-held-stats"] as const,
   renewalRequestProcessedStats: () => [...orderKeys.all, "renewal-request-processed-stats"] as const,

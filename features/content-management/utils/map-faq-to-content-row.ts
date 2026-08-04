@@ -7,7 +7,7 @@ import type {
 import {
   formatApiDateTime,
   type AppLocale,
-} from "@/features/orders/utils/format-datetime";
+} from "@/lib/format-datetime";
 
 function pickLocalizedText(
   value: LocalizedText | undefined,

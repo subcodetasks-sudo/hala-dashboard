@@ -1,5 +1,5 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import TrackingView from "@/features/tracking/components/tracking-view";
 
 export default function TrackingPage() {
-  return <DashboardPagePlaceholder titleKey="tracking" />;
+  return <TrackingView />;
 }

@@ -31,8 +31,8 @@ import {
   parsePendingOrdersFilters,
   serializePendingOrdersFilters,
   toIsoDate,
-  useOrderFilters,
 } from "@/features/orders/utils";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 import { Link } from "@/i18n/navigation";
 
 /** RTL: first item renders on the right (matches design order). */
@@ -72,7 +72,7 @@ export default function PendingOrdersView() {
     isLoading: isStatsLoading,
   } = useRenewalRequestHeldStats();
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_PENDING_ORDERS_FILTERS,
       serialize: serializePendingOrdersFilters,
       parse: parsePendingOrdersFilters,

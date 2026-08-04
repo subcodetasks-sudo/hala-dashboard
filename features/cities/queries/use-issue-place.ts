@@ -9,7 +9,7 @@ import type {
   IssuePlaceRow,
 } from "@/features/cities/types";
 import { mapIssuePlaceToRow } from "@/features/cities/utils/map-issue-place-to-row";
-import type { AppLocale } from "@/features/orders/utils/format-datetime";
+import type { AppLocale } from "@/lib/format-datetime";
 
 async function fetchIssuePlace(
   locale: string,

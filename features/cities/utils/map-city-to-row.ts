@@ -5,8 +5,8 @@ import type {
 import {
   formatApiDateTime,
   type AppLocale,
-} from "@/features/orders/utils/format-datetime";
-import { readStringField } from "@/features/orders/utils/api-payload";
+} from "@/lib/format-datetime";
+import { readStringField } from "@/lib/api-payload";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);

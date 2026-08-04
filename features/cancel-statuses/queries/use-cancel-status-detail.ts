@@ -9,7 +9,7 @@ import type {
   CancelStatusRow,
 } from "@/features/cancel-statuses/types";
 import { mapCancelStatusToRow } from "@/features/cancel-statuses/utils/map-cancel-status-to-row";
-import type { AppLocale } from "@/features/orders/utils/format-datetime";
+import type { AppLocale } from "@/lib/format-datetime";
 
 async function fetchCancelStatus(
   locale: string,

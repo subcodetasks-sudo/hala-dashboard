@@ -1,4 +1,16 @@
-import type { HomeEmployeeRoleKey } from "@/features/employees/types";
+import type {
+  EmployeeJobRole,
+  EmployeePermissionKey,
+  EmployeesFilterValues,
+  HomeEmployeeRoleKey,
+} from "@/features/employees/types";
+
+export const DEFAULT_EMPLOYEES_FILTERS: EmployeesFilterValues = {
+  createdAt: undefined,
+  search: "",
+  role: "all",
+  status: "all",
+};
 
 /**
  * Role names from `/v1/roles` behind each home dashboard employee card.
@@ -30,3 +42,28 @@ export const AVATAR_FALLBACK_CLASSES = [
   "bg-[#E8913A]",
   "bg-[#8B6BB5]",
 ] as const;
+
+/** Default permission checklist shown on the employee details page, by job role. */
+export const ROLE_PERMISSIONS: Record<
+  EmployeeJobRole,
+  EmployeePermissionKey[]
+> = {
+  review: [
+    "accessNewRequests",
+    "editDuringReview",
+    "holdWithReason",
+    "approveAsProcessed",
+  ],
+  dataProcessing: [
+    "enterOrderData",
+    "uploadDocuments",
+    "editDuringReview",
+    "approveAsProcessed",
+  ],
+  contractFollowUp: [
+    "followUpContracts",
+    "sendForVerification",
+    "uploadDocuments",
+    "holdWithReason",
+  ],
+};

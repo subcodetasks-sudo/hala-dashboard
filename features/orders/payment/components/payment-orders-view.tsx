@@ -24,8 +24,8 @@ import {
   formatIsoDateWithClockTime,
   parsePaymentOrdersFilters,
   serializePaymentOrdersFilters,
-  useOrderFilters,
 } from "@/features/orders/utils";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -51,7 +51,7 @@ export default function PaymentOrdersView() {
   const t = useTranslations("Orders.Payment");
   const locale = useLocale() === "en" ? "en" : "ar";
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_PAYMENT_ORDERS_FILTERS,
       serialize: serializePaymentOrdersFilters,
       parse: parsePaymentOrdersFilters,

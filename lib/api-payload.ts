@@ -80,7 +80,7 @@ export function extractPaginationMeta(
     sources.push(options.topLevelMeta);
   }
 
-  const read = (key: string) => {
+  const read = (key: string): number | undefined => {
     for (const source of sources) {
       const value = toFiniteNumber(source[key]);
       if (value != null) {

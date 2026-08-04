@@ -2,37 +2,42 @@
 
 import { Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
+import TablePagination from "@/components/table-pagination";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import EmployeeActions from "@/features/employees/components/employee-actions";
+import EmployeeFormDialog from "@/features/employees/components/employee-form-dialog";
 import EmployeeRoleBadge from "@/features/employees/components/employee-role-badge";
 import EmployeeStatusBadge from "@/features/employees/components/employee-status-badge";
 import EmployeesFilters from "@/features/employees/components/employees-filters";
 import { CopyableEmail } from "@/features/employees/components/copyable-email";
 import { CopyableEmployeeNumber } from "@/features/employees/components/copyable-employee-number";
-import { DEFAULT_EMPLOYEES_FILTERS } from "@/features/employees/mock-data";
-import {
-  useEmployeeIndicators,
-  useEmployees,
-} from "@/features/employees/queries/use-employees";
+import { DEFAULT_EMPLOYEES_FILTERS } from "@/features/employees/constants";
+import { useAdmins } from "@/features/employees/queries/use-admins";
+import { useEmployeeIndicators } from "@/features/employees/queries/use-employee-indicators";
 import type { EmployeeRow } from "@/features/employees/types";
+import { mapAdminToEmployeeRow } from "@/features/employees/utils/map-admin-to-employee-row";
 import {
   parseEmployeesFilters,
   serializeEmployeesFilters,
 } from "@/features/employees/utils/filter-query-params";
+import { toAdminsListFilters } from "@/features/employees/utils/to-admins-list-filters";
 import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 import {
   formatChangePercent,
+  formatStatsCount,
+} from "@/lib/format-stats";
+import {
   formatIsoDateWithClockTime,
   formatRelativeTimeLabel,
-  formatStatsCount,
-  useOrderFilters,
-} from "@/features/orders/utils";
+} from "@/lib/format-datetime";
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -67,14 +72,31 @@ function getInitials(name: string): string {
 export default function EmployeesView() {
   const t = useTranslations("Employees");
   const locale = useLocale() === "en" ? "en" : "ar";
+  const [isCreateOpen, setCreateOpen] = useState(false);
+  const [page, setPage] = useState(1);
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_EMPLOYEES_FILTERS,
       serialize: serializeEmployeesFilters,
       parse: parseEmployeesFilters,
     });
 
-  const { data: rows = [], isLoading } = useEmployees(appliedFilters);
+  const handleApplyFilters = () => {
+    setPage(1);
+    applyFilters();
+  };
+
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+  } = useAdmins(toAdminsListFilters(appliedFilters, { page }));
+
+  const rows: EmployeeRow[] = (data?.items ?? []).map((admin) =>
+    mapAdminToEmployeeRow(admin, locale),
+  );
+
   const { data: indicators, isLoading: isStatsLoading } =
     useEmployeeIndicators();
 
@@ -172,7 +194,7 @@ export default function EmployeesView() {
     {
       id: "action",
       header: t("table.action"),
-      cell: (row) => <EmployeeActions employeeId={row.id} />,
+      cell: (row) => <EmployeeActions employee={row} />,
     },
   ];
 
@@ -189,6 +211,7 @@ export default function EmployeesView() {
         <Button
           type="button"
           variant="outline"
+          onClick={() => setCreateOpen(true)}
           className="h-11 shrink-0 gap-2 rounded-xl border-black/10 bg-brand-gris px-5 text-brand-white hover:bg-brand-gris/80 hover:text-brand-white"
         >
           <Plus className="size-4" strokeWidth={2} />
@@ -227,7 +250,7 @@ export default function EmployeesView() {
         <EmployeesFilters
           value={draftFilters}
           onChange={setDraftFilters}
-          onApply={applyFilters}
+          onApply={handleApplyFilters}
         />
 
         <DataTable
@@ -239,12 +262,31 @@ export default function EmployeesView() {
           emptyContent={
             <EmptyTableState
               iconSrc="/svg/profile-2user.svg"
-              title={t("empty.title")}
-              description={t("empty.description")}
+              title={
+                isError
+                  ? error instanceof Error
+                    ? error.message
+                    : t("empty.title")
+                  : t("empty.title")
+              }
+              description={isError ? " " : t("empty.description")}
             />
           }
         />
+
+        <TablePagination
+          page={data?.currentPage ?? page}
+          lastPage={data?.lastPage ?? 1}
+          total={data?.total}
+          onPageChange={setPage}
+        />
       </section>
+
+      <EmployeeFormDialog
+        open={isCreateOpen}
+        onOpenChange={setCreateOpen}
+        mode="create"
+      />
     </div>
   );
 }

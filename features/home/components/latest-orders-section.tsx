@@ -33,9 +33,9 @@ import {
   parseOrdersFilters,
   serializeOrdersFilters,
   toUiOrderSource,
-  useOrderFilters,
 } from "@/features/orders/utils";
 import { useProfile } from "@/features/profile/queries/use-profile";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 
 /** Under-review order still assigned to the signed-in employee. */
 function isMyUnderReviewAssignment(
@@ -81,7 +81,7 @@ export default function LatestOrdersSection() {
   } = useOrderStatuses();
 
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_HOME_ORDERS_FILTERS,
       serialize: serializeOrdersFilters,
       parse: parseOrdersFilters,
@@ -116,12 +116,46 @@ export default function LatestOrdersSection() {
 
   const isSuperAdmin = permissions.isSuperAdmin();
   const filterOrderStatus = permissions.filterOrderStatus;
+  const canSeeUnderReview = filterOrderStatus("under_review");
+  const shouldPinMyUnderReview =
+    employeeId != null &&
+    canSeeUnderReview &&
+    (queryStatus == null || queryStatus === "under_review");
+
+  // Separate fetch so assigned under-review rows stay on top across pagination.
+  const { data: underReviewData, isLoading: isUnderReviewLoading } =
+    useRenewalRequests({
+      status: "under_review",
+      search: appliedFilters.search,
+      perPage: 100,
+      page: 1,
+      enabled: shouldPinMyUnderReview,
+    });
+
+  const myUnderReviewOrders = useMemo(() => {
+    if (!shouldPinMyUnderReview || employeeId == null) {
+      return [];
+    }
+
+    return (underReviewData?.items ?? []).filter((order) =>
+      isMyUnderReviewAssignment(order, employeeId),
+    );
+  }, [employeeId, shouldPinMyUnderReview, underReviewData?.items]);
+
+  const myUnderReviewIds = useMemo(
+    () => new Set(myUnderReviewOrders.map((order) => order.id)),
+    [myUnderReviewOrders],
+  );
 
   // Hide others' under-review rows (super-admin sees all); pin own under-review to top.
   // Restricted roles also drop statuses outside their allowed set (needed when "all" is selected).
   const rows = useMemo(() => {
     const visible = (data?.items ?? []).filter((order) => {
       if (!filterOrderStatus(order.status)) {
+        return false;
+      }
+      // Avoid duplicating pinned assignments that we prepend separately.
+      if (myUnderReviewIds.has(order.id)) {
         return false;
       }
       if (order.status !== "under_review") {
@@ -135,16 +169,25 @@ export default function LatestOrdersSection() {
       );
     });
 
-    if (employeeId == null) {
-      return visible;
+    // Lead with my under-review assignments on page 1; later pages exclude them
+    // so they stay first overall instead of only sorting within a single page.
+    if (page === 1 && myUnderReviewOrders.length > 0) {
+      return [...myUnderReviewOrders, ...visible];
     }
 
-    return [...visible].sort((a, b) => {
-      const aMine = isMyUnderReviewAssignment(a, employeeId) ? 0 : 1;
-      const bMine = isMyUnderReviewAssignment(b, employeeId) ? 0 : 1;
-      return aMine - bMine;
-    });
-  }, [data?.items, employeeId, filterOrderStatus, isSuperAdmin]);
+    return visible;
+  }, [
+    data?.items,
+    employeeId,
+    filterOrderStatus,
+    isSuperAdmin,
+    myUnderReviewIds,
+    myUnderReviewOrders,
+    page,
+  ]);
+
+  const tableLoading =
+    isLoading || (shouldPinMyUnderReview && isUnderReviewLoading);
 
   const columns: DataTableColumn<OrderListItem>[] = [
     {
@@ -318,7 +361,7 @@ export default function LatestOrdersSection() {
             : undefined
         }
         selectable
-        isLoading={isLoading}
+        isLoading={tableLoading}
         emptyMessage={
           isError
             ? error instanceof Error

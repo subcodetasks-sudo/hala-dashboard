@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, Check, CircleCheck, Copy } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 
 import CustomIcon from "@/components/custom-svg";
@@ -17,9 +17,9 @@ import ApproveProcessDialog from "@/features/orders/new/components/approve-proce
 import PendOrderDialog from "@/features/orders/new/components/pend-order-dialog";
 import MarkProcessedDialog from "@/features/orders/pending/components/mark-processed-dialog";
 import SendContractForAuthDialog from "@/features/orders/processed/components/send-contract-for-auth-dialog";
+import ReviewActionsCard from "@/features/orders/components/review-actions-card";
 import ViewDownloadContractDialog from "@/features/orders/components/view-download-contract-dialog";
-import { useMarkFinalContractUploaded } from "@/features/orders/verification/queries/use-verification-orders";
-import { toast } from "sonner";
+import UploadFinalContractDialog from "@/features/orders/verification/components/upload-final-contract-dialog";
 import {
   NEW_ORDER_CHECKLIST_IDS,
   useReviewChecklist,
@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils";
 type ReviewOrderSidebarProps = {
   orderId: string;
   isEditing?: boolean;
-  /** When false, checklist + review actions are read-only (e.g. another employee's under_review). */
+  /** When false, checklist + new/held review actions are read-only (e.g. another employee's under_review). */
   canMutate?: boolean;
 };
 
@@ -42,7 +42,6 @@ export default function ReviewOrderSidebar({
 }: ReviewOrderSidebarProps) {
   const t = useTranslations("Orders.New.Review.sidebar");
   const tStatus = useTranslations("Orders.New.Review.statuses");
-  const locale = useLocale();
   const { data: order } = useOrder(orderId);
   const { checklist, toggleChecklistItem, canCompleteReview } =
     useReviewChecklist(orderId);
@@ -53,7 +52,7 @@ export default function ReviewOrderSidebar({
   const [isPendOrderOpen, setPendOrderOpen] = useState(false);
   const [isContractDialogOpen, setContractDialogOpen] = useState(false);
   const [isSendForAuthOpen, setSendForAuthOpen] = useState(false);
-  const markUploaded = useMarkFinalContractUploaded();
+  const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   if (!order) {
     return null;
@@ -71,22 +70,11 @@ export default function ReviewOrderSidebar({
   const canReview = canMutate && isReviewableStatus;
   const showChecklist = !isCancelled;
   const showReviewActions = canReview && !isEditing;
-  const showProcessedActions = canMutate && isProcessed && !isEditing;
-  const showSentForAuthActions = canMutate && isSentForAuth && !isEditing;
+  // Stage actions are independent of form-edit rights (canEditOrderDetail only
+  // covers new / under_review / held). Anyone who can open the detail page may act.
+  const showProcessedActions = isProcessed && !isEditing;
+  const showSentForAuthActions = isSentForAuth && !isEditing;
   const statusLabel = tStatus(ORDER_STATUS_LABEL_KEYS[order.status]);
-
-  const handleUploadFinalContract = () => {
-    if (markUploaded.isPending) return;
-    markUploaded.mutate(order.id, {
-      onSuccess: () => {
-        toast.success(
-          locale.startsWith("ar")
-            ? `تم رفع العقد النهائي للطلب ${order.orderNumber} بنجاح.`
-            : `Final contract for order ${order.orderNumber} uploaded successfully.`
-        );
-      },
-    });
-  };
 
   const relativeTime = order.relativeTimeLabel;
   const isInstantRelative =
@@ -289,54 +277,43 @@ export default function ReviewOrderSidebar({
       ) : null}
 
       {showProcessedActions ? (
-        <section className="rounded-[1.75rem] bg-[#F5F5F5] p-4">
-          <SectionTitle iconSrc="/svg/flash.svg" title={t("actions")} />
-
-          <div className="mt-3 flex flex-col gap-2.5">
-            <Button
-              type="button"
-              onClick={() => setSendForAuthOpen(true)}
-              className="h-12 gap-2 rounded-full border-none bg-brand-primary px-4 font-semibold text-brand-white shadow-sm hover:bg-brand-primary/90"
-            >
-              <CustomIcon src="/svg/maximize.svg" size={20} />
-              {t("sendForAuth")}
-            </Button>
-            <Button
-              type="button"
-              onClick={() => setContractDialogOpen(true)}
-              className="h-12 gap-2 rounded-full border-none bg-brand-blue px-4 font-semibold text-brand-white shadow-sm hover:bg-brand-blue/90"
-            >
-              <CustomIcon src="/svg/receipt-item.svg" size={20} />
-              {t("showContract")}
-            </Button>
-          </div>
-        </section>
+        <ReviewActionsCard
+          title={t("actions")}
+          actions={[
+            {
+              label: t("sendForAuth"),
+              iconSrc: "/svg/maximize.svg",
+              variant: "primary",
+              onClick: () => setSendForAuthOpen(true),
+            },
+            {
+              label: t("showContract"),
+              iconSrc: "/svg/receipt-item.svg",
+              variant: "secondary",
+              onClick: () => setContractDialogOpen(true),
+            },
+          ]}
+        />
       ) : null}
 
       {showSentForAuthActions ? (
-        <section className="rounded-[1.75rem] bg-[#F5F5F5] p-4">
-          <SectionTitle iconSrc="/svg/flash.svg" title={t("actions")} />
-
-          <div className="mt-3 flex flex-col gap-2.5">
-            <Button
-              type="button"
-              onClick={handleUploadFinalContract}
-              disabled={markUploaded.isPending}
-              className="h-12 gap-2 rounded-full border-none bg-brand-primary px-4 font-semibold text-brand-white shadow-sm hover:bg-brand-primary/90"
-            >
-              <CustomIcon src="/svg/maximize.svg" size={20} />
-              {t("uploadFinalContract")}
-            </Button>
-            <Button
-              type="button"
-              onClick={() => setContractDialogOpen(true)}
-              className="h-12 gap-2 rounded-full border-none bg-brand-blue px-4 font-semibold text-brand-white shadow-sm hover:bg-brand-blue/90"
-            >
-              <CustomIcon src="/svg/receipt-item.svg" size={20} />
-              {t("showContract")}
-            </Button>
-          </div>
-        </section>
+        <ReviewActionsCard
+          title={t("actions")}
+          actions={[
+            {
+              label: t("uploadFinalContract"),
+              iconSrc: "/svg/maximize.svg",
+              variant: "primary",
+              onClick: () => setUploadDialogOpen(true),
+            },
+            {
+              label: t("showContract"),
+              iconSrc: "/svg/receipt-item.svg",
+              variant: "secondary",
+              onClick: () => setContractDialogOpen(true),
+            },
+          ]}
+        />
       ) : null}
 
       <ApproveProcessDialog
@@ -366,6 +343,22 @@ export default function ReviewOrderSidebar({
       <ViewDownloadContractDialog
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
+        orderNumber={order.orderNumber}
+        showConfirmAction={showProcessedActions}
+        onConfirmSend={
+          showProcessedActions
+            ? () => {
+                setContractDialogOpen(false);
+                setSendForAuthOpen(true);
+              }
+            : undefined
+        }
+      />
+
+      <UploadFinalContractDialog
+        open={isUploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+        orderId={order.id}
         orderNumber={order.orderNumber}
       />
 

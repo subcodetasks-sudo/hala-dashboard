@@ -1,89 +1,64 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useLocale } from "next-intl";
 
-import {
-  DEFAULT_EMPLOYEES_FILTERS,
-  EMPLOYEES,
-  filterEmployees,
-  toEmployeeDetail,
-} from "@/features/employees/mock-data";
 import { employeeKeys } from "@/features/employees/query-keys";
 import type {
+  AdminDetailResponse,
   EmployeeDetail,
-  EmployeeRow,
-  EmployeesFilterValues,
 } from "@/features/employees/types";
+import { mapAdminToEmployeeDetail } from "@/features/employees/utils/map-admin-to-employee-row";
+import type { AppLocale } from "@/lib/format-datetime";
 
-export type EmployeeIndicators = {
-  total: number;
-  active: number;
-  suspended: number;
-  changePercent: number;
-};
+export type { EmployeeIndicators } from "@/features/employees/queries/use-employee-indicators";
+export { useEmployeeIndicators } from "@/features/employees/queries/use-employee-indicators";
 
-const employeesStore: EmployeeRow[] = [...EMPLOYEES];
-
-export async function fetchEmployees(
-  filters: EmployeesFilterValues = DEFAULT_EMPLOYEES_FILTERS,
-): Promise<EmployeeRow[]> {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  return filterEmployees(employeesStore, filters);
-}
-
-export async function fetchEmployeeIndicators(): Promise<EmployeeIndicators> {
-  await new Promise((resolve) => setTimeout(resolve, 150));
-
-  const active = employeesStore.filter((row) => row.status === "active").length;
-  const suspended = employeesStore.filter(
-    (row) => row.status === "suspended",
-  ).length;
-
-  return {
-    total: employeesStore.length,
-    active,
-    suspended,
-    changePercent: 24,
-  };
-}
-
-export async function fetchEmployee(
+async function fetchEmployee(
+  locale: string,
   employeeId: string,
 ): Promise<EmployeeDetail | null> {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  const row = employeesStore.find((employee) => employee.id === employeeId);
-  return row ? toEmployeeDetail(row) : null;
+  const response = await fetch(
+    `/api/admins/${encodeURIComponent(employeeId)}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Accept-Language": locale,
+      },
+    },
+  );
+
+  const payload = (await response.json().catch(() => null)) as
+    | AdminDetailResponse
+    | { success?: false; message?: string }
+    | null;
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok || !payload || !("success" in payload) || !payload.success) {
+    throw new Error(
+      payload && "message" in payload && typeof payload.message === "string"
+        ? payload.message
+        : "Failed to load employee",
+    );
+  }
+
+  const appLocale: AppLocale = locale === "en" ? "en" : "ar";
+  return mapAdminToEmployeeDetail(payload.data, appLocale);
 }
 
 /**
- * Lists employees with optional filter criteria.
- */
-export function useEmployees(
-  filters: EmployeesFilterValues = DEFAULT_EMPLOYEES_FILTERS,
-) {
-  return useQuery({
-    queryKey: employeeKeys.list(filters),
-    queryFn: () => fetchEmployees(filters),
-  });
-}
-
-/**
- * Single employee profile for the details page.
+ * Single employee profile for the details page (`GET /admins/:id`).
  */
 export function useEmployee(employeeId: string) {
-  return useQuery({
-    queryKey: employeeKeys.detail(employeeId),
-    queryFn: () => fetchEmployee(employeeId),
-    enabled: Boolean(employeeId),
-  });
-}
+  const locale = useLocale();
 
-/**
- * Summary indicator cards for the employees page.
- */
-export function useEmployeeIndicators() {
   return useQuery({
-    queryKey: employeeKeys.indicators(),
-    queryFn: fetchEmployeeIndicators,
+    queryKey: [...employeeKeys.detail(employeeId), locale],
+    queryFn: () => fetchEmployee(locale, employeeId),
+    enabled: Boolean(employeeId),
   });
 }

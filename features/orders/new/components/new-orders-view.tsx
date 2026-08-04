@@ -28,8 +28,8 @@ import {
   serializeOrdersFilters,
   toIsoDate,
   toUiOrderSource,
-  useOrderFilters,
 } from "@/features/orders/utils";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -68,7 +68,7 @@ export default function NewOrdersView() {
     isLoading: isStatsLoading,
   } = useRenewalRequestStats();
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_ORDERS_FILTERS,
       serialize: serializeOrdersFilters,
       parse: parseOrdersFilters,

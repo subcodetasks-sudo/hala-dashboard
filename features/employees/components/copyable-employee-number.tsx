@@ -10,7 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { copyTextWithFeedback } from "@/features/orders/utils/copy-to-clipboard";
+import { copyTextWithFeedback } from "@/lib/copy-to-clipboard";
 import { cn } from "@/lib/utils";
 
 type CopyableEmployeeNumberProps = {

@@ -8,7 +8,7 @@ import type {
   Role,
   RolesResponse,
 } from "@/features/employees/types";
-import { extractCollection } from "@/features/orders/utils/api-payload";
+import { extractCollection } from "@/lib/api-payload";
 
 async function fetchRoles(locale: string): Promise<Role[]> {
   const response = await fetch("/api/roles", {

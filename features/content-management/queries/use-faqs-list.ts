@@ -14,8 +14,8 @@ import { mapFaqToContentRow } from "@/features/content-management/utils/map-faq-
 import {
   extractCollection,
   extractPaginationMeta,
-} from "@/features/orders/utils/api-payload";
-import type { AppLocale } from "@/features/orders/utils/format-datetime";
+} from "@/lib/api-payload";
+import type { AppLocale } from "@/lib/format-datetime";
 
 function mapFilterStatusToApi(
   status: ContentFilterValues["status"]

@@ -29,8 +29,8 @@ import {
   parseVerificationOrdersFilters,
   serializeVerificationOrdersFilters,
   toIsoDate,
-  useOrderFilters,
 } from "@/features/orders/utils";
+import { useUrlFilters } from "@/hooks/use-url-filters";
 import VerificationOrderActions from "@/features/orders/verification/components/verification-order-actions";
 import VerificationOrdersFilters from "@/features/orders/verification/components/verification-orders-filters";
 import VerificationStatusBadge from "@/features/orders/verification/components/verification-status-badge";
@@ -79,7 +79,7 @@ export default function VerificationOrdersView() {
     isLoading: isStatsLoading,
   } = useRenewalRequestAuthenticationSentStats();
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useOrderFilters({
+    useUrlFilters({
       defaults: DEFAULT_VERIFICATION_ORDERS_FILTERS,
       serialize: serializeVerificationOrdersFilters,
       parse: parseVerificationOrdersFilters,

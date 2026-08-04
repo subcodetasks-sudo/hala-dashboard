@@ -3,7 +3,6 @@
 import { ChevronLeft, Eye, MoreVertical } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
-import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ViewDownloadContractDialog from "@/features/orders/components/view-download-contract-dialog";
 import type { VerificationOrderStatus } from "@/features/orders/types";
-import { useMarkFinalContractUploaded } from "@/features/orders/verification/queries/use-verification-orders";
+import UploadFinalContractDialog from "@/features/orders/verification/components/upload-final-contract-dialog";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -57,17 +56,9 @@ export default function VerificationOrderActions({
 }: VerificationOrderActionsProps) {
   const t = useTranslations("Orders.Verification.table");
   const [isContractDialogOpen, setContractDialogOpen] = useState(false);
-  const markUploaded = useMarkFinalContractUploaded();
+  const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
 
-  const handleUploadFinalContract = () => {
-    if (status === "finalContractUploaded" || markUploaded.isPending) return;
-
-    markUploaded.mutate(orderId, {
-      onSuccess: () => {
-        toast.success(t("uploadFinalContractSuccess", { orderNumber }));
-      },
-    });
-  };
+  const alreadyUploaded = status === "finalContractUploaded";
 
   return (
     <>
@@ -117,10 +108,11 @@ export default function VerificationOrderActions({
 
             <DropdownMenuItem
               className={ITEM_CLASS}
-              disabled={
-                status === "finalContractUploaded" || markUploaded.isPending
-              }
-              onSelect={handleUploadFinalContract}
+              disabled={alreadyUploaded}
+              onSelect={() => {
+                if (alreadyUploaded) return;
+                setUploadDialogOpen(true);
+              }}
             >
               <ActionItemContent
                 icon={
@@ -141,11 +133,19 @@ export default function VerificationOrderActions({
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
         orderNumber={orderNumber}
+        showConfirmAction={!alreadyUploaded}
         confirmLabel={t("confirmUploadFinalContract")}
-        confirmDisabled={
-          status === "finalContractUploaded" || markUploaded.isPending
-        }
-        onConfirmSend={handleUploadFinalContract}
+        onConfirmSend={() => {
+          setContractDialogOpen(false);
+          setUploadDialogOpen(true);
+        }}
+      />
+
+      <UploadFinalContractDialog
+        open={isUploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+        orderId={orderId}
+        orderNumber={orderNumber}
       />
     </>
   );

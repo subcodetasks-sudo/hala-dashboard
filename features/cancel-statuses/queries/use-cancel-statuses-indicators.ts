@@ -12,8 +12,8 @@ import { mapCancelStatusToRow } from "@/features/cancel-statuses/utils/map-cance
 import {
   extractCollection,
   extractPaginationMeta,
-} from "@/features/orders/utils/api-payload";
-import type { AppLocale } from "@/features/orders/utils/format-datetime";
+} from "@/lib/api-payload";
+import type { AppLocale } from "@/lib/format-datetime";
 
 async function fetchAllCancelStatuses(
   locale: string,

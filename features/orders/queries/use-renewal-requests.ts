@@ -12,7 +12,7 @@ import type {
 import {
   extractCollection,
   extractPaginationMeta,
-} from "@/features/orders/utils/api-payload";
+} from "@/lib/api-payload";
 import { toApiOrderSource } from "@/features/orders/utils/map-order-list-item";
 import type { OrderSource } from "@/features/home/types";
 

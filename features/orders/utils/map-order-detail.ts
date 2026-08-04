@@ -13,7 +13,7 @@ import {
   formatRelativeTimeLabel,
   formatRelativeTimeShort,
   type AppLocale,
-} from "@/features/orders/utils/format-datetime";
+} from "@/lib/format-datetime";
 import {
   getOrderRefInitials,
   toUiOrderSource,

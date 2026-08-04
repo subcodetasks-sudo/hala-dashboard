@@ -3,6 +3,8 @@
 import { ArrowLeft, ArrowRight, Check, Mail } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
+import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,15 +12,18 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CopyableEmail } from "@/features/employees/components/copyable-email";
 import { CopyableEmployeeNumber } from "@/features/employees/components/copyable-employee-number";
+import EmployeeFormDialog from "@/features/employees/components/employee-form-dialog";
 import EmployeeRoleBadge from "@/features/employees/components/employee-role-badge";
 import EmployeeStatusBadge from "@/features/employees/components/employee-status-badge";
 import { useEmployee } from "@/features/employees/queries/use-employees";
+import {
+  useActivateAdmin,
+  useDeactivateAdmin,
+} from "@/features/employees/queries/use-toggle-admin-status";
 import type { EmployeeActivityStats } from "@/features/employees/types";
 import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
-import {
-  formatApiDateTime,
-  formatStatsCount,
-} from "@/features/orders/utils";
+import { formatApiDateTime } from "@/lib/format-datetime";
+import { formatStatsCount } from "@/lib/format-stats";
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
@@ -97,12 +102,44 @@ export default function EmployeeDetailsView({
   employeeId,
 }: EmployeeDetailsViewProps) {
   const t = useTranslations("Employees.Details");
+  const routeT = useTranslations("Employees.route");
   const locale = useLocale() === "en" ? "en" : "ar";
   const router = useRouter();
+  const [isEditOpen, setEditOpen] = useState(false);
   const { data: employee, isPending, isError } = useEmployee(employeeId);
+
+  const { mutate: deactivateAdmin, isPending: isDeactivating } =
+    useDeactivateAdmin();
+  const { mutate: activateAdmin, isPending: isActivating } = useActivateAdmin();
+
+  const isTogglePending = isDeactivating || isActivating;
 
   const handleBack = () => {
     router.push("/employees");
+  };
+
+  const handleToggleStatus = () => {
+    if (!employee || isTogglePending) return;
+
+    if (employee.status === "suspended") {
+      activateAdmin(employee.id, {
+        onSuccess: (data) => {
+          toast.success(data.message || routeT("activateSuccess"));
+        },
+        onError: (error) => {
+          toast.error(error.message || routeT("unableToActivate"));
+        },
+      });
+    } else {
+      deactivateAdmin(employee.id, {
+        onSuccess: (data) => {
+          toast.success(data.message || routeT("deactivateSuccess"));
+        },
+        onError: (error) => {
+          toast.error(error.message || routeT("unableToDeactivate"));
+        },
+      });
+    }
   };
 
   if (isPending) {
@@ -112,6 +149,8 @@ export default function EmployeeDetailsView({
   if (isError || !employee) {
     notFound();
   }
+
+  const isSuspended = employee.status === "suspended";
 
   const infoRows = [
     {
@@ -291,6 +330,7 @@ export default function EmployeeDetailsView({
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button
               type="button"
+              onClick={() => setEditOpen(true)}
               className="h-11 gap-2 rounded-full bg-brand-primary px-5 font-semibold text-brand-white hover:bg-brand-primary/90"
             >
               <CustomIcon
@@ -302,14 +342,21 @@ export default function EmployeeDetailsView({
             </Button>
             <Button
               type="button"
-              className="h-11 gap-2 rounded-full bg-brand-error px-5 font-semibold text-brand-white hover:bg-brand-error/90"
+              disabled={isTogglePending}
+              onClick={handleToggleStatus}
+              className={cn(
+                "h-11 gap-2 rounded-full px-5 font-semibold text-brand-white",
+                isSuspended
+                  ? "bg-brand-success hover:bg-brand-success/90"
+                  : "bg-brand-error hover:bg-brand-error/90",
+              )}
             >
               <CustomIcon
-                src="/svg/forbidden-2.svg"
+                src={isSuspended ? "/svg/person.svg" : "/svg/forbidden-2.svg"}
                 size={18}
                 className="text-brand-white"
               />
-              <span>{t("suspend")}</span>
+              <span>{isSuspended ? t("activate") : t("suspend")}</span>
             </Button>
           </div>
 
@@ -323,6 +370,13 @@ export default function EmployeeDetailsView({
           </Button>
         </footer>
       </article>
+
+      <EmployeeFormDialog
+        open={isEditOpen}
+        onOpenChange={setEditOpen}
+        mode="edit"
+        employee={employee}
+      />
     </div>
   );
 }
