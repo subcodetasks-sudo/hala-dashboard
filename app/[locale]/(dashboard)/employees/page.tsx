@@ -1,5 +1,5 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import EmployeesView from "@/features/employees/components/employees-view";
 
 export default function EmployeesPage() {
-  return <DashboardPagePlaceholder titleKey="employees" />;
+  return <EmployeesView />;
 }

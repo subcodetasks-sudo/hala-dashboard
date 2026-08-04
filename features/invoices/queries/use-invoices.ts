@@ -33,12 +33,17 @@ export async function fetchInvoices(
 export async function fetchInvoiceIndicators(): Promise<InvoiceIndicators> {
   await new Promise((resolve) => setTimeout(resolve, 150));
 
-  // Design KPI values for the invoices overview cards.
+  const totalAmount = invoicesStore.reduce((sum, row) => sum + row.amount, 0);
+  const online = invoicesStore.filter((row) => row.paymentMethod === "online")
+    .length;
+  const manual = invoicesStore.filter((row) => row.paymentMethod === "manual")
+    .length;
+
   return {
-    total: 12,
-    totalAmount: 5850,
-    online: 14,
-    manual: 10,
+    total: invoicesStore.length,
+    totalAmount,
+    online,
+    manual,
     change: "+24%",
   };
 }
