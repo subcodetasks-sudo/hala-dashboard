@@ -392,7 +392,8 @@
           "suspend": "Suspend Order",
           "showContract": "Show Contract",
           "sendForAuth": "Send for Authentication",
-          "uploadFinalContract": "Upload Final Contract"
+          "uploadFinalContract": "Upload Final Contract",
+          "cities": "Cities and Issuance places"
         },
         "validation": {
           "employerNameArRequired": "Employer name in Arabic is required",
@@ -936,6 +937,7 @@
         "tracking": "Tracking Numbers",
         "employees": "Employees",
         "permissions": "Permissions",
+        "cities": "Cities and Issuance places",
         "contentManagement": "Content Management",
         "accountManagement": "Account Management",
         "logout": "Log Out"
@@ -967,6 +969,194 @@
       "next": "Next",
       "goToPage": "Go to page {page}",
       "summary": "Page {page} of {lastPage} · {total} results"
+    }
+  },
+  "Cities": {
+    "title": "Cities and Issuance places",
+    "description": "Manage cities and passport issuance places used across renewal requests.",
+    "period": "This week",
+    "addCity": "Add City",
+    "addIssuePlace": "Add Issuance Place",
+    "indicators": {
+      "cities": {
+        "total": "Total Cities",
+        "active": "Active Cities",
+        "inactive": "Inactive Cities"
+      },
+      "issuePlaces": {
+        "total": "Total Issuance Places",
+        "active": "Active Issuance Places",
+        "inactive": "Inactive Issuance Places"
+      }
+    },
+    "tabs": {
+      "cities": "Cities",
+      "issuePlaces": "Issuance Places"
+    },
+    "countryTabs": {
+      "sa": "Saudi Arabia",
+      "ph": "Philippines"
+    },
+    "listTitle": {
+      "cities": "Cities List",
+      "issuePlaces": "Issuance Places List",
+      "issuePlacesByCountry": {
+        "sa": "Saudi Arabia Issuance Places",
+        "ph": "Philippines Issuance Places"
+      }
+    },
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by name...",
+      "status": "Status",
+      "statusAll": "All",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "apply": "Apply Filter"
+    },
+    "table": {
+      "nameAr": "Name (Arabic)",
+      "nameEn": "Name (English)",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Last Update",
+      "action": "Action",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "edit": "Edit {name}",
+      "delete": "Delete {name}",
+      "view": "View {name}"
+    },
+    "empty": {
+      "cities": {
+        "title": "No cities found",
+        "description": "There are no cities matching the current filters. Try changing the search criteria or resetting."
+      },
+      "issuePlaces": {
+        "title": "No issuance places found",
+        "description": "There are no issuance places matching the current filters. Try changing the search criteria or resetting."
+      }
+    },
+    "viewDialog": {
+      "title": "City Details",
+      "close": "Close",
+      "nameAr": "Name (Arabic)",
+      "nameEn": "Name (English)",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Last Update",
+      "errorToast": "Unable to load city details. Please try again."
+    },
+    "issuePlaceViewDialog": {
+      "title": "Issuance Place Details",
+      "close": "Close",
+      "nameAr": "Name (Arabic)",
+      "nameEn": "Name (English)",
+      "country": "Country",
+      "countrySa": "Saudi Arabia",
+      "countryPh": "Philippines",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Last Update",
+      "errorToast": "Unable to load issuance place details. Please try again."
+    },
+    "cityDialog": {
+      "createTitle": "Add City",
+      "editTitle": "Edit City",
+      "close": "Close",
+      "nameArLabel": "Name (Arabic)",
+      "nameArPlaceholder": "Enter the city name in Arabic",
+      "nameEnLabel": "Name (English)",
+      "nameEnPlaceholder": "Enter the city name in English",
+      "statusLabel": "Status",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "create": "Create",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "toastCreated": "City created successfully",
+      "toastUpdated": "City updated successfully",
+      "errorToast": "Unable to save the city. Please try again.",
+      "validation": {
+        "nameArRequired": "Arabic name is required",
+        "nameEnRequired": "English name is required",
+        "statusRequired": "Status is required"
+      }
+    },
+    "issuePlaceDialog": {
+      "createTitle": "Add Issuance Place",
+      "editTitle": "Edit Issuance Place",
+      "close": "Close",
+      "nameArLabel": "Name (Arabic)",
+      "nameArPlaceholder": "Enter the place name in Arabic",
+      "nameEnLabel": "Name (English)",
+      "nameEnPlaceholder": "Enter the place name in English",
+      "countryLabel": "Country",
+      "country": {
+        "sa": "Saudi Arabia",
+        "ph": "Philippines"
+      },
+      "statusLabel": "Status",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "create": "Create",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "toastCreated": "Issuance place created successfully",
+      "toastUpdated": "Issuance place updated successfully",
+      "errorToast": "Unable to save the issuance place. Please try again.",
+      "validation": {
+        "nameArRequired": "Arabic name is required",
+        "nameEnRequired": "English name is required",
+        "statusRequired": "Status is required",
+        "countryRequired": "Country is required"
+      }
+    },
+    "deleteDialog": {
+      "title": "Delete City",
+      "close": "Close",
+      "heading": "Delete this city?",
+      "description": "This action cannot be undone. The city will be removed from the system.",
+      "cityLabel": "City",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "toastSuccess": "City deleted successfully",
+      "errorToast": "Unable to delete the city. Please try again."
+    },
+    "issuePlaceDeleteDialog": {
+      "title": "Delete Issuance Place",
+      "close": "Close",
+      "heading": "Delete this issuance place?",
+      "description": "This action cannot be undone. The issuance place will be removed from the system.",
+      "placeLabel": "Issuance Place",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "toastSuccess": "Issuance place deleted successfully",
+      "errorToast": "Unable to delete the issuance place. Please try again."
+    },
+    "route": {
+      "unauthorized": "Unauthorized",
+      "invalidJson": "Invalid request body",
+      "invalidId": "Invalid city id",
+      "invalidIssuePlaceId": "Invalid issuance place id",
+      "nameArRequired": "Arabic name is required",
+      "nameEnRequired": "English name is required",
+      "statusRequired": "Status is required",
+      "countryRequired": "Country is required",
+      "unableToFetchCities": "Unable to load cities. Please try again.",
+      "unableToFetchCity": "Unable to load city. Please try again.",
+      "unableToCreateCity": "Unable to create city. Please try again.",
+      "unableToUpdateCity": "Unable to update city. Please try again.",
+      "unableToDeleteCity": "Unable to delete city. Please try again.",
+      "unableToFetchIssuePlaces": "Unable to load issuance places. Please try again.",
+      "unableToFetchIssuePlace": "Unable to load issuance place. Please try again.",
+      "unableToCreateIssuePlace": "Unable to create issuance place. Please try again.",
+      "unableToUpdateIssuePlace": "Unable to update issuance place. Please try again.",
+      "unableToDeleteIssuePlace": "Unable to delete issuance place. Please try again."
     }
   },
   "ContentManagement": {

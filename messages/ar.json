@@ -392,7 +392,8 @@
           "suspend": "تعليق الطلب",
           "showContract": "عرض العقد",
           "sendForAuth": "إرسال العقد للمصادقة",
-          "uploadFinalContract": "رفع العقد النهائي"
+          "uploadFinalContract": "رفع العقد النهائي",
+          "cities": "المدن و اماكن الإصدار"
         },
         "validation": {
           "employerNameArRequired": "اسم صاحب العمل بالعربية مطلوب",
@@ -938,6 +939,7 @@
         "permissions": "الصلاحيات",
         "contentManagement": "إدارة المحتوى",
         "accountManagement": "إدارة الحساب",
+        "cities": "المدن و اماكن الإصدار",
         "logout": "تسجيل الخروج"
       }
     },
@@ -967,6 +969,194 @@
       "next": "التالي",
       "goToPage": "الانتقال إلى الصفحة {page}",
       "summary": "صفحة {page} من {lastPage} · {total} نتيجة"
+    }
+  },
+  "Cities": {
+    "title": "المدن و اماكن الإصدار",
+    "description": "إدارة المدن وأماكن إصدار جوازات السفر المستخدمة في طلبات التجديد.",
+    "period": "هذا الأسبوع",
+    "addCity": "إضافة مدينة",
+    "addIssuePlace": "إضافة مكان إصدار",
+    "indicators": {
+      "cities": {
+        "total": "إجمالي المدن",
+        "active": "المدن النشطة",
+        "inactive": "المدن غير النشطة"
+      },
+      "issuePlaces": {
+        "total": "إجمالي أماكن الإصدار",
+        "active": "أماكن الإصدار النشطة",
+        "inactive": "أماكن الإصدار غير النشطة"
+      }
+    },
+    "tabs": {
+      "cities": "المدن",
+      "issuePlaces": "أماكن الإصدار"
+    },
+    "countryTabs": {
+      "sa": "السعودية",
+      "ph": "الفلبين"
+    },
+    "listTitle": {
+      "cities": "قائمة المدن",
+      "issuePlaces": "قائمة أماكن الإصدار",
+      "issuePlacesByCountry": {
+        "sa": "أماكن الإصدار في السعودية",
+        "ph": "أماكن الإصدار في الفلبين"
+      }
+    },
+    "filters": {
+      "searchLabel": "البحث",
+      "searchPlaceholder": "ابحث بالاسم...",
+      "status": "الحالة",
+      "statusAll": "الكل",
+      "statusActive": "نشطة",
+      "statusInactive": "غير نشطة",
+      "apply": "تطبيق الفلترة"
+    },
+    "table": {
+      "nameAr": "الاسم (عربي)",
+      "nameEn": "الاسم (إنجليزي)",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "آخر تحديث",
+      "action": "إجراء",
+      "statusActive": "نشطة",
+      "statusInactive": "غير نشطة",
+      "edit": "تعديل {name}",
+      "delete": "حذف {name}",
+      "view": "عرض {name}"
+    },
+    "empty": {
+      "cities": {
+        "title": "لا توجد مدن",
+        "description": "لا توجد مدن مطابقة للفلاتر الحالية. جرّب تغيير معايير البحث أو إعادة التعيين."
+      },
+      "issuePlaces": {
+        "title": "لا توجد أماكن إصدار",
+        "description": "لا توجد أماكن إصدار مطابقة للفلاتر الحالية. جرّب تغيير معايير البحث أو إعادة التعيين."
+      }
+    },
+    "viewDialog": {
+      "title": "تفاصيل المدينة",
+      "close": "إغلاق",
+      "nameAr": "الاسم (عربي)",
+      "nameEn": "الاسم (إنجليزي)",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "آخر تحديث",
+      "errorToast": "تعذر تحميل تفاصيل المدينة. حاول مرة أخرى."
+    },
+    "issuePlaceViewDialog": {
+      "title": "تفاصيل مكان الإصدار",
+      "close": "إغلاق",
+      "nameAr": "الاسم (عربي)",
+      "nameEn": "الاسم (إنجليزي)",
+      "country": "الدولة",
+      "countrySa": "السعودية",
+      "countryPh": "الفلبين",
+      "status": "الحالة",
+      "createdAt": "تاريخ الإنشاء",
+      "updatedAt": "آخر تحديث",
+      "errorToast": "تعذر تحميل تفاصيل مكان الإصدار. حاول مرة أخرى."
+    },
+    "cityDialog": {
+      "createTitle": "إضافة مدينة",
+      "editTitle": "تعديل مدينة",
+      "close": "إغلاق",
+      "nameArLabel": "الاسم (عربي)",
+      "nameArPlaceholder": "أدخل اسم المدينة بالعربية",
+      "nameEnLabel": "الاسم (إنجليزي)",
+      "nameEnPlaceholder": "أدخل اسم المدينة بالإنجليزية",
+      "statusLabel": "الحالة",
+      "status": {
+        "active": "نشطة",
+        "inactive": "غير نشطة"
+      },
+      "create": "إنشاء",
+      "save": "حفظ التعديلات",
+      "cancel": "إلغاء",
+      "toastCreated": "تم إنشاء المدينة بنجاح",
+      "toastUpdated": "تم تحديث المدينة بنجاح",
+      "errorToast": "تعذر حفظ المدينة. حاول مرة أخرى.",
+      "validation": {
+        "nameArRequired": "الاسم بالعربية مطلوب",
+        "nameEnRequired": "الاسم بالإنجليزية مطلوب",
+        "statusRequired": "الحالة مطلوبة"
+      }
+    },
+    "issuePlaceDialog": {
+      "createTitle": "إضافة مكان إصدار",
+      "editTitle": "تعديل مكان إصدار",
+      "close": "إغلاق",
+      "nameArLabel": "الاسم (عربي)",
+      "nameArPlaceholder": "أدخل اسم المكان بالعربية",
+      "nameEnLabel": "الاسم (إنجليزي)",
+      "nameEnPlaceholder": "أدخل اسم المكان بالإنجليزية",
+      "countryLabel": "الدولة",
+      "country": {
+        "sa": "السعودية",
+        "ph": "الفلبين"
+      },
+      "statusLabel": "الحالة",
+      "status": {
+        "active": "نشطة",
+        "inactive": "غير نشطة"
+      },
+      "create": "إنشاء",
+      "save": "حفظ التعديلات",
+      "cancel": "إلغاء",
+      "toastCreated": "تم إنشاء مكان الإصدار بنجاح",
+      "toastUpdated": "تم تحديث مكان الإصدار بنجاح",
+      "errorToast": "تعذر حفظ مكان الإصدار. حاول مرة أخرى.",
+      "validation": {
+        "nameArRequired": "الاسم بالعربية مطلوب",
+        "nameEnRequired": "الاسم بالإنجليزية مطلوب",
+        "statusRequired": "الحالة مطلوبة",
+        "countryRequired": "الدولة مطلوبة"
+      }
+    },
+    "deleteDialog": {
+      "title": "حذف مدينة",
+      "close": "إغلاق",
+      "heading": "هل تريد حذف هذه المدينة؟",
+      "description": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف المدينة من النظام.",
+      "cityLabel": "المدينة",
+      "confirm": "حذف",
+      "cancel": "إلغاء",
+      "toastSuccess": "تم حذف المدينة بنجاح",
+      "errorToast": "تعذر حذف المدينة. حاول مرة أخرى."
+    },
+    "issuePlaceDeleteDialog": {
+      "title": "حذف مكان إصدار",
+      "close": "إغلاق",
+      "heading": "هل تريد حذف مكان الإصدار هذا؟",
+      "description": "لا يمكن التراجع عن هذا الإجراء. سيتم حذف مكان الإصدار من النظام.",
+      "placeLabel": "مكان الإصدار",
+      "confirm": "حذف",
+      "cancel": "إلغاء",
+      "toastSuccess": "تم حذف مكان الإصدار بنجاح",
+      "errorToast": "تعذر حذف مكان الإصدار. حاول مرة أخرى."
+    },
+    "route": {
+      "unauthorized": "غير مصرح",
+      "invalidJson": "بيانات الطلب غير صالحة",
+      "invalidId": "معرّف المدينة غير صالح",
+      "invalidIssuePlaceId": "معرّف مكان الإصدار غير صالح",
+      "nameArRequired": "الاسم بالعربية مطلوب",
+      "nameEnRequired": "الاسم بالإنجليزية مطلوب",
+      "statusRequired": "الحالة مطلوبة",
+      "countryRequired": "الدولة مطلوبة",
+      "unableToFetchCities": "تعذر تحميل المدن. يرجى المحاولة مرة أخرى.",
+      "unableToFetchCity": "تعذر تحميل المدينة. يرجى المحاولة مرة أخرى.",
+      "unableToCreateCity": "تعذر إنشاء المدينة. يرجى المحاولة مرة أخرى.",
+      "unableToUpdateCity": "تعذر تحديث المدينة. يرجى المحاولة مرة أخرى.",
+      "unableToDeleteCity": "تعذر حذف المدينة. يرجى المحاولة مرة أخرى.",
+      "unableToFetchIssuePlaces": "تعذر تحميل أماكن الإصدار. يرجى المحاولة مرة أخرى.",
+      "unableToFetchIssuePlace": "تعذر تحميل مكان الإصدار. يرجى المحاولة مرة أخرى.",
+      "unableToCreateIssuePlace": "تعذر إنشاء مكان الإصدار. يرجى المحاولة مرة أخرى.",
+      "unableToUpdateIssuePlace": "تعذر تحديث مكان الإصدار. يرجى المحاولة مرة أخرى.",
+      "unableToDeleteIssuePlace": "تعذر حذف مكان الإصدار. يرجى المحاولة مرة أخرى."
     }
   },
   "ContentManagement": {
