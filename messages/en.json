@@ -105,10 +105,96 @@
     }
   },
   "Employees": {
+    "Common": {
+      "copyEmail": "Copy Email",
+      "copyEmployeeNumber": "Copy Employee Number",
+      "copied": "Copied!"
+    },
     "route": {
       "unauthorized": "Unauthorized",
       "unableToFetch": "Unable to load employees. Please try again.",
       "unableToFetchRoles": "Unable to load employee roles. Please try again."
+    },
+    "title": "Employees",
+    "description": "Manage employee accounts, assign job roles, and control system access permissions.",
+    "listTitle": "Employees List",
+    "addUser": "Add New Employee",
+    "periodWeek": "This week",
+    "indicators": {
+      "total": "Total Employees in the System",
+      "active": "Active Accounts",
+      "suspended": "Suspended Accounts"
+    },
+    "filters": {
+      "createdAt": "Account Creation Date",
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by employee number or job role...",
+      "role": "Role",
+      "roleAll": "All",
+      "roles": {
+        "review": "Review Employee",
+        "dataProcessing": "Data Entry Employee",
+        "contractFollowUp": "Contracts Employee"
+      },
+      "status": "Status",
+      "statusAll": "All",
+      "statusActive": "Active",
+      "statusSuspended": "Suspended",
+      "apply": "Apply Filter",
+      "pickDate": "dd/mm/yyyy"
+    },
+    "table": {
+      "employeeNumber": "Employee Number",
+      "employee": "Employee Name / Mobile",
+      "email": "Email",
+      "role": "Job Role",
+      "dailyTarget": "Daily Target",
+      "status": "Account Status",
+      "statusActive": "Active",
+      "statusSuspended": "Suspended",
+      "createdAt": "Creation Date",
+      "action": "Action",
+      "viewDetails": "View Details",
+      "edit": "Edit Employee",
+      "suspend": "Deactivate Employee Account"
+    },
+    "empty": {
+      "title": "No employees yet",
+      "description": "Start by adding the first user to the system and defining their job role and permissions."
+    },
+    "Details": {
+      "title": "Employee Details — {employeeNumber}",
+      "back": "Back",
+      "close": "Close",
+      "edit": "Edit Data",
+      "suspend": "Deactivate Account",
+      "info": {
+        "title": "Employee Information",
+        "employeeNumber": "Employee ID",
+        "dailyTarget": "Daily Target",
+        "lastLogin": "Last Login",
+        "createdAt": "Account Creation Date",
+        "today": "Today"
+      },
+      "activity": {
+        "title": "Employee Activity",
+        "todayRequests": "Today's Requests",
+        "thisWeek": "This Week",
+        "totalCompleted": "Total Completed"
+      },
+      "permissions": {
+        "title": "Permissions Linked to the Role",
+        "items": {
+          "accessNewRequests": "Access new requests and start review",
+          "editDuringReview": "Edit request data during review",
+          "holdWithReason": "Hold the request with a reason",
+          "approveAsProcessed": "Approve the request as 'Processed'",
+          "enterOrderData": "Enter and update order data",
+          "uploadDocuments": "Upload and attach required documents",
+          "followUpContracts": "Follow up on contracts and verification",
+          "sendForVerification": "Send contracts for verification"
+        }
+      }
     }
   },
   "Orders": {
@@ -861,6 +947,10 @@
     }
   },
   "Invoices": {
+    "Common": {
+      "copyInvoiceNumber": "Copy Invoice Number",
+      "copied": "Copied!"
+    },
     "title": "Invoices",
     "description": "Manage and follow up on invoices issued after successful payment of contract renewal requests.",
     "listTitle": "Invoices Record",

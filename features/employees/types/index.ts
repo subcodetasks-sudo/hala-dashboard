@@ -2,6 +2,64 @@ import type { Employee } from "@/features/profile/types";
 
 export type { Employee, EmployeeRole } from "@/features/profile/types";
 
+/** Account status shown on the employees list. */
+export type EmployeeAccountStatus = "active" | "suspended";
+
+/** Job-role filter keys for the employees list UI. */
+export type EmployeeJobRole =
+  | "review"
+  | "dataProcessing"
+  | "contractFollowUp";
+
+/** Row shape for the employees data table (list UI). */
+export type EmployeeRow = {
+  id: string;
+  employeeNumber: string;
+  name: string;
+  phone: string;
+  email: string;
+  role: EmployeeJobRole;
+  dailyTarget: number;
+  status: EmployeeAccountStatus;
+  createdAtIso: string;
+  createdDate: string;
+  createdTime: string;
+  createdAtDateTime: string;
+  avatarUrl?: string;
+};
+
+/** Activity counters shown on the employee profile. */
+export type EmployeeActivityStats = {
+  todayRequests: number;
+  thisWeek: number;
+  totalCompleted: number;
+};
+
+/** Permission copy keys under `Employees.Details.permissions.items`. */
+export type EmployeePermissionKey =
+  | "accessNewRequests"
+  | "editDuringReview"
+  | "holdWithReason"
+  | "approveAsProcessed"
+  | "enterOrderData"
+  | "uploadDocuments"
+  | "followUpContracts"
+  | "sendForVerification";
+
+/** Full employee profile for the details page. */
+export type EmployeeDetail = EmployeeRow & {
+  lastLoginAtDateTime: string;
+  activity: EmployeeActivityStats;
+  permissions: EmployeePermissionKey[];
+};
+
+export type EmployeesFilterValues = {
+  createdAt: Date | undefined;
+  search: string;
+  role: "all" | EmployeeJobRole;
+  status: "all" | EmployeeAccountStatus;
+};
+
 /** Query params for `GET /admins`. */
 export type AdminsListFilters = {
   search?: string;

@@ -105,10 +105,96 @@
     }
   },
   "Employees": {
+    "Common": {
+      "copyEmail": "نسخ البريد الإلكتروني",
+      "copyEmployeeNumber": "نسخ رقم الموظف",
+      "copied": "تم النسخ!"
+    },
     "route": {
       "unauthorized": "غير مصرح",
       "unableToFetch": "تعذر تحميل الموظفين. يرجى المحاولة مرة أخرى.",
       "unableToFetchRoles": "تعذر تحميل أدوار الموظفين. يرجى المحاولة مرة أخرى."
+    },
+    "title": "الموظفين",
+    "description": "إدارة حسابات الموظفين، وتعيين الأدوار الوظيفية، والتحكم في صلاحيات الوصول للنظام.",
+    "listTitle": "قائمة الموظفين",
+    "addUser": "إضافة موظف جديد",
+    "periodWeek": "منذ الأسبوع",
+    "indicators": {
+      "total": "إجمالي الموظفين في النظام",
+      "active": "الحسابات النشطة",
+      "suspended": "الحسابات الموقوفة"
+    },
+    "filters": {
+      "createdAt": "تاريخ إنشاء الحساب",
+      "searchLabel": "البحث",
+      "searchPlaceholder": "ابحث برقم الموظف أو الدور الوظيفي...",
+      "role": "الدور",
+      "roleAll": "الكل",
+      "roles": {
+        "review": "موظف مراجعة",
+        "dataProcessing": "موظف إدخال بيانات",
+        "contractFollowUp": "موظف العقود"
+      },
+      "status": "الحالة",
+      "statusAll": "الكل",
+      "statusActive": "نشط",
+      "statusSuspended": "موقوف",
+      "apply": "تطبيق الفلترة",
+      "pickDate": "يوم/شهر/سنة"
+    },
+    "table": {
+      "employeeNumber": "الرقم الوظيفي",
+      "employee": "اسم الموظف / الجوال",
+      "email": "البريد الإلكتروني",
+      "role": "الدور الوظيفي",
+      "dailyTarget": "الهدف اليومي",
+      "status": "حالة الحساب",
+      "statusActive": "نشط",
+      "statusSuspended": "موقوف",
+      "createdAt": "تاريخ الإنشاء",
+      "action": "إجراء",
+      "viewDetails": "عرض التفاصيل",
+      "edit": "تعديل الموظف",
+      "suspend": "إيقاف حساب الموظف"
+    },
+    "empty": {
+      "title": "لا يوجد موظفون حتى الآن",
+      "description": "ابدأ بإضافة أول مستخدم داخل النظام وتحديد دوره الوظيفي وصلاحياته."
+    },
+    "Details": {
+      "title": "تفاصيل الموظف — {employeeNumber}",
+      "back": "رجوع",
+      "close": "إغلاق",
+      "edit": "تعديل البيانات",
+      "suspend": "إيقاف الحساب",
+      "info": {
+        "title": "معلومات الموظف",
+        "employeeNumber": "الرقم الوظيفي",
+        "dailyTarget": "الهدف اليومي",
+        "lastLogin": "آخر تسجيل دخول",
+        "createdAt": "تاريخ إنشاء الحساب",
+        "today": "اليوم"
+      },
+      "activity": {
+        "title": "نشاط الموظف",
+        "todayRequests": "طلبات اليوم",
+        "thisWeek": "هذا الأسبوع",
+        "totalCompleted": "إجمالي المنجزة"
+      },
+      "permissions": {
+        "title": "الصلاحيات المرتبطة بالدور",
+        "items": {
+          "accessNewRequests": "الوصول إلى الطلبات الجديدة وبدء المراجعة",
+          "editDuringReview": "تعديل بيانات الطلب أثناء المراجعة",
+          "holdWithReason": "تعليق الطلب مع توضيح السبب",
+          "approveAsProcessed": "اعتماد الطلب كـ 'تمت المعالجة'",
+          "enterOrderData": "إدخال وتحديث بيانات الطلب",
+          "uploadDocuments": "رفع وإرفاق المستندات المطلوبة",
+          "followUpContracts": "متابعة العقود والتحقق",
+          "sendForVerification": "إرسال العقود للتحقق"
+        }
+      }
     }
   },
   "Orders": {
@@ -861,6 +947,10 @@
     }
   },
   "Invoices": {
+    "Common": {
+      "copyInvoiceNumber": "نسخ رقم الفاتورة",
+      "copied": "تم النسخ!"
+    },
     "title": "الفواتير",
     "description": "إدارة ومتابعة الفواتير الصادرة بعد إتمام سداد طلبات تجديد العقود بنجاح.",
     "listTitle": "سجل الفواتير",
@@ -934,7 +1024,7 @@
         "refundOrders": "طلبات الاسترداد",
         "invoices": "الفواتير",
         "tracking": "أرقام التتبع",
-        "employees": "للموظفين",
+        "employees": "الموظفين",
         "permissions": "الصلاحيات",
         "contentManagement": "إدارة المحتوى",
         "accountManagement": "إدارة الحساب",

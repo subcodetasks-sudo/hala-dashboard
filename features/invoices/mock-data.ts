@@ -2,6 +2,8 @@ import type {
   InvoiceRow,
   InvoicesFilterValues,
 } from "@/features/invoices/types";
+import { COMPLETED_ORDERS } from "@/features/orders/completed/mock-data";
+import type { CompletedOrderRow } from "@/features/orders/types";
 
 export const DEFAULT_INVOICES_FILTERS: InvoicesFilterValues = {
   paidAt: undefined,
@@ -11,86 +13,36 @@ export const DEFAULT_INVOICES_FILTERS: InvoicesFilterValues = {
   contractStatus: "all",
 };
 
-const BASE_INVOICE = {
-  invoiceNumber: "#ORD-01",
-  orderNumber: "ONT-2026-1248",
-  employerName: "عبد الله القحطاني",
-  employerPhone: "+966 514 111001",
-  workerName: "ياسين الدهراني",
-  paidDate: "Tuesday, 12 January 2026",
-  paidTime: "10:30 AM",
-  paidAtIso: "2026-01-12",
-  paidAtDateTime: "2026-01-12 10:30:00",
-  amount: 250,
-} as const;
+/** Map a completed order into an invoice row (shared identity + payment fields). */
+function mapCompletedOrderToInvoice(
+  order: CompletedOrderRow,
+  index: number,
+): InvoiceRow {
+  const n = String(index + 1).padStart(2, "0");
 
-/** Alternating payment method + contract status to match the filled design. */
-export const INVOICES: InvoiceRow[] = [
-  {
-    id: "inv-mock-01",
-    orderId: "order-mock-01",
-    ...BASE_INVOICE,
-    source: "eform",
-    paymentMethod: "manual",
-    contractStatus: "available",
-  },
-  {
-    id: "inv-mock-02",
-    orderId: "order-mock-02",
-    ...BASE_INVOICE,
-    source: "manual",
-    paymentMethod: "online",
-    contractStatus: "temporarily_unavailable",
-  },
-  {
-    id: "inv-mock-03",
-    orderId: "order-mock-03",
-    ...BASE_INVOICE,
-    source: "eform",
-    paymentMethod: "manual",
-    contractStatus: "available",
-  },
-  {
-    id: "inv-mock-04",
-    orderId: "order-mock-04",
-    ...BASE_INVOICE,
-    source: "manual",
-    paymentMethod: "online",
-    contractStatus: "temporarily_unavailable",
-  },
-  {
-    id: "inv-mock-05",
-    orderId: "order-mock-05",
-    ...BASE_INVOICE,
-    source: "eform",
-    paymentMethod: "manual",
-    contractStatus: "available",
-  },
-  {
-    id: "inv-mock-06",
-    orderId: "order-mock-06",
-    ...BASE_INVOICE,
-    source: "manual",
-    paymentMethod: "online",
-    contractStatus: "temporarily_unavailable",
-  },
-  {
-    id: "inv-mock-07",
-    orderId: "order-mock-07",
-    ...BASE_INVOICE,
-    source: "eform",
-    paymentMethod: "manual",
-    contractStatus: "available",
-  },
-  {
-    id: "inv-mock-08",
-    orderId: "order-mock-08",
-    ...BASE_INVOICE,
-    source: "manual",
-    paymentMethod: "online",
-    contractStatus: "temporarily_unavailable",
-  },
-];
+  return {
+    id: `inv-${order.id}`,
+    invoiceNumber: `#INV-${n}`,
+    orderId: order.id,
+    orderNumber: order.orderNumber,
+    employerName: order.employerName,
+    employerPhone: order.employerPhone,
+    workerName: order.workerName,
+    paidDate: order.paidDate,
+    paidTime: order.paidTime,
+    paidAtIso: order.paidAtIso,
+    paidAtDateTime: `${order.paidAtIso} ${order.paidTime}`,
+    amount: order.dueFees,
+    paymentMethod: order.paymentMethod,
+    source: order.source,
+    // Invoice-only field — alternate to keep the filled design variety.
+    contractStatus: index % 2 === 0 ? "available" : "temporarily_unavailable",
+  };
+}
+
+/** Invoices derived from completed orders so list rows stay in sync. */
+export const INVOICES: InvoiceRow[] =
+  COMPLETED_ORDERS.map(mapCompletedOrderToInvoice);
 
 function toIsoDate(date: Date): string {
   const year = date.getFullYear();

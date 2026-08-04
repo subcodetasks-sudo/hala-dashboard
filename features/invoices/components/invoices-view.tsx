@@ -7,6 +7,7 @@ import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
+import { CopyableInvoiceNumber } from "@/features/invoices/components/copyable-invoice-number";
 import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
 import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
 import InvoiceActions from "@/features/invoices/components/invoice-actions";
@@ -79,9 +80,10 @@ export default function InvoicesView() {
       id: "invoiceNumber",
       header: t("table.invoiceNumber"),
       cell: (row) => (
-        <span className="font-clash font-semibold text-brand-black" dir="ltr">
-          {row.invoiceNumber}
-        </span>
+        <CopyableInvoiceNumber
+          invoiceNumber={row.invoiceNumber}
+          className="font-semibold text-brand-black"
+        />
       ),
     },
     {
