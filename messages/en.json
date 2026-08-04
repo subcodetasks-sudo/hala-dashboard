@@ -1027,6 +1027,7 @@
         "tracking": "Tracking Numbers",
         "employees": "Employees",
         "permissions": "Permissions",
+        "cancelStatuses": "Cancel Statuses",
         "cities": "Cities and Issuance places",
         "contentManagement": "Content Management",
         "accountManagement": "Account Management",
@@ -1247,6 +1248,102 @@
       "unableToCreateIssuePlace": "Unable to create issuance place. Please try again.",
       "unableToUpdateIssuePlace": "Unable to update issuance place. Please try again.",
       "unableToDeleteIssuePlace": "Unable to delete issuance place. Please try again."
+    }
+  },
+  "CancelStatuses": {
+    "title": "Cancel Statuses",
+    "description": "Manage cancellation reasons used when cancelling renewal requests.",
+    "period": "This week",
+    "addItem": "Add Cancel Status",
+    "listTitle": "Cancel Statuses List",
+    "indicators": {
+      "total": "Total Statuses",
+      "active": "Active Statuses",
+      "inactive": "Inactive Statuses"
+    },
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by status text...",
+      "status": "Status",
+      "statusAll": "All",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "apply": "Apply Filter"
+    },
+    "table": {
+      "textAr": "Text (Arabic)",
+      "textEn": "Text (English)",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Last Update",
+      "action": "Action",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "edit": "Edit {name}",
+      "delete": "Delete {name}",
+      "view": "View {name}"
+    },
+    "empty": {
+      "title": "No cancel statuses found",
+      "description": "There are no cancel statuses matching the current filters. Try changing the search criteria or resetting."
+    },
+    "viewDialog": {
+      "title": "Cancel Status Details",
+      "close": "Close",
+      "textAr": "Text (Arabic)",
+      "textEn": "Text (English)",
+      "status": "Status",
+      "createdAt": "Created At",
+      "updatedAt": "Last Update",
+      "errorToast": "Unable to load cancel status details. Please try again."
+    },
+    "formDialog": {
+      "createTitle": "Add Cancel Status",
+      "editTitle": "Edit Cancel Status",
+      "close": "Close",
+      "textArLabel": "Text (Arabic)",
+      "textArPlaceholder": "Enter the cancel status in Arabic",
+      "textEnLabel": "Text (English)",
+      "textEnPlaceholder": "Enter the cancel status in English",
+      "statusLabel": "Status",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "create": "Create",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "toastCreated": "Cancel status created successfully",
+      "toastUpdated": "Cancel status updated successfully",
+      "errorToast": "Unable to save the cancel status. Please try again.",
+      "validation": {
+        "textArRequired": "Arabic text is required",
+        "textEnRequired": "English text is required"
+      }
+    },
+    "deleteDialog": {
+      "title": "Delete Cancel Status",
+      "close": "Close",
+      "heading": "Delete this cancel status?",
+      "description": "This action cannot be undone. The cancel status will be removed from the system.",
+      "itemLabel": "Cancel Status",
+      "confirm": "Delete",
+      "cancel": "Cancel",
+      "toastSuccess": "Cancel status deleted successfully",
+      "errorToast": "Unable to delete the cancel status. Please try again."
+    },
+    "route": {
+      "unauthorized": "Unauthorized",
+      "invalidJson": "Invalid request body",
+      "invalidId": "Invalid cancel status id",
+      "textArRequired": "Arabic text is required",
+      "textEnRequired": "English text is required",
+      "activeRequired": "Status is required",
+      "unableToFetchList": "Unable to load cancel statuses. Please try again.",
+      "unableToFetchOne": "Unable to load cancel status. Please try again.",
+      "unableToCreate": "Unable to create cancel status. Please try again.",
+      "unableToUpdate": "Unable to update cancel status. Please try again.",
+      "unableToDelete": "Unable to delete cancel status. Please try again."
     }
   },
   "ContentManagement": {
