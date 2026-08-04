@@ -1,14 +1,19 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import ReviewFormComboboxField from "@/components/combobox-field";
 import DateField from "@/components/date-field";
 import ReviewFormPhoneField from "@/components/phone-field";
 import ReviewFormTextField from "@/components/text-field";
 import ReviewFormSectionHeader from "@/features/orders/components/section-header";
+import {
+  getPassportIssuePlaceLabel,
+  usePassportIssuePlaces,
+} from "@/features/orders/queries/use-passport-issue-places";
 import type { OrderReviewDetail } from "@/features/orders/types";
 import {
   createWorkerSchema,
@@ -37,6 +42,11 @@ export default function WorkerDataPanel({
 }: WorkerDataPanelProps) {
   const t = useTranslations("Orders.New.Review.worker");
   const tValidation = useTranslations("Orders.New.Review.validation");
+  const locale = useLocale();
+  const {
+    data: issuePlaces = [],
+    isLoading: isIssuePlacesLoading,
+  } = usePassportIssuePlaces({ country: "ph" });
 
   const schema = useMemo(
     () =>
@@ -75,6 +85,7 @@ export default function WorkerDataPanel({
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<WorkerFormValues>({
     resolver: zodResolver(schema),
@@ -85,6 +96,26 @@ export default function WorkerDataPanel({
   useEffect(() => {
     reset(defaultValues);
   }, [defaultValues, reset]);
+
+  const selectedIssuePlace = watch("passportIssuePlace");
+
+  const issuePlaceOptions = useMemo(() => {
+    const options = issuePlaces.map((place) => {
+      const label = getPassportIssuePlaceLabel(place, locale);
+      return { value: label, label };
+    });
+
+    const selected = selectedIssuePlace?.trim();
+    if (
+      selected &&
+      selected !== "—" &&
+      !options.some((option) => option.value === selected)
+    ) {
+      return [{ value: selected, label: selected }, ...options];
+    }
+
+    return options;
+  }, [issuePlaces, locale, selectedIssuePlace]);
 
   const editing = canEdit && isEditing;
 
@@ -182,14 +213,25 @@ export default function WorkerDataPanel({
           {...register("homeAddress")}
         />
 
-        <ReviewFormTextField
-          id="passportIssuePlace"
-          label={t("passportIssuePlace")}
-          iconSrc="/svg/target.svg"
-          readOnly={!editing}
-          error={errors.passportIssuePlace}
-          placeholder={t("passportIssuePlacePlaceholder")}
-          {...register("passportIssuePlace")}
+        <Controller
+          name="passportIssuePlace"
+          control={control}
+          render={({ field }) => (
+            <ReviewFormComboboxField
+              id="passportIssuePlace"
+              label={t("passportIssuePlace")}
+              iconSrc="/svg/target.svg"
+              value={field.value || undefined}
+              onChange={field.onChange}
+              readOnly={!editing}
+              disabled={editing && isIssuePlacesLoading}
+              error={errors.passportIssuePlace}
+              options={issuePlaceOptions}
+              placeholder={t("passportIssuePlacePlaceholder")}
+              emptyMessage={t("comboboxNoResults")}
+              variant="form"
+            />
+          )}
         />
 
         <ReviewFormTextField

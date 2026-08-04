@@ -96,6 +96,48 @@ export type CitiesListResponse = {
   data: CitiesListPage;
 };
 
+export type PassportIssuePlace = {
+  id: number;
+  name_ar: string;
+  name_en: string;
+  /** Locale-resolved title when the API sends a single `name`/`title`. */
+  name?: string | null;
+  country?: string | null;
+  status?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+};
+
+/** Query params for `GET /admin/passport-issue-places`. */
+export type PassportIssuePlacesListFilters = {
+  search?: string;
+  status?: string;
+  /** Country filter: `sa` (Saudi Arabia) or `ph` (Philippines). */
+  country?: "sa" | "ph" | string;
+  sort?: string;
+  perPage?: number;
+  page?: number;
+};
+
+/** Paginator wrapper returned by `/admin/passport-issue-places`. */
+export type PassportIssuePlacesListPage = {
+  data: PassportIssuePlace[];
+  current_page?: number;
+  last_page?: number;
+  per_page?: number;
+  total?: number;
+  from?: number | null;
+  to?: number | null;
+};
+
+export type PassportIssuePlacesListResponse = {
+  success: boolean;
+  message: string;
+  data: PassportIssuePlacesListPage;
+};
+
 export type OrderPassportIssuePlace = {
   id: number;
   name_ar: string;

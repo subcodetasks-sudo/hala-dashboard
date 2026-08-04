@@ -5,11 +5,15 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import ReviewFormComboboxField from "@/components/combobox-field";
 import ReviewFormPhoneField from "@/components/phone-field";
-import ReviewFormSelectField from "@/components/select-field";
 import ReviewFormTextField from "@/components/text-field";
 import ReviewFormSectionHeader from "@/features/orders/components/section-header";
 import { getCityLabel, useCities } from "@/features/orders/queries/use-cities";
+import {
+  getPassportIssuePlaceLabel,
+  usePassportIssuePlaces,
+} from "@/features/orders/queries/use-passport-issue-places";
 import type { OrderReviewDetail } from "@/features/orders/types";
 import {
   createEmployerSchema,
@@ -40,6 +44,10 @@ export default function EmployerDataPanel({
   const tValidation = useTranslations("Orders.New.Review.validation");
   const locale = useLocale();
   const { data: cities = [], isLoading: isCitiesLoading } = useCities();
+  const {
+    data: issuePlaces = [],
+    isLoading: isIssuePlacesLoading,
+  } = usePassportIssuePlaces({ country: "sa" });
 
   const schema = useMemo(
     () =>
@@ -93,22 +101,35 @@ export default function EmployerDataPanel({
       return { value: label, label };
     });
 
-    const extras = [selectedCity, selectedIssuePlace]
-      .map((value) => value?.trim())
-      .filter(
-        (value): value is string =>
-          Boolean(value) &&
-          value !== "—" &&
-          !options.some((option) => option.value === value)
-      );
+    const selected = selectedCity?.trim();
+    if (
+      selected &&
+      selected !== "—" &&
+      !options.some((option) => option.value === selected)
+    ) {
+      return [{ value: selected, label: selected }, ...options];
+    }
 
-    const uniqueExtras = [...new Set(extras)].map((value) => ({
-      value,
-      label: value,
-    }));
+    return options;
+  }, [cities, locale, selectedCity]);
 
-    return [...uniqueExtras, ...options];
-  }, [cities, locale, selectedCity, selectedIssuePlace]);
+  const issuePlaceOptions = useMemo(() => {
+    const options = issuePlaces.map((place) => {
+      const label = getPassportIssuePlaceLabel(place, locale);
+      return { value: label, label };
+    });
+
+    const selected = selectedIssuePlace?.trim();
+    if (
+      selected &&
+      selected !== "—" &&
+      !options.some((option) => option.value === selected)
+    ) {
+      return [{ value: selected, label: selected }, ...options];
+    }
+
+    return options;
+  }, [issuePlaces, locale, selectedIssuePlace]);
 
   const editing = canEdit && isEditing;
 
@@ -199,7 +220,7 @@ export default function EmployerDataPanel({
           name="city"
           control={control}
           render={({ field }) => (
-            <ReviewFormSelectField
+            <ReviewFormComboboxField
               id="city"
               label={t("city")}
               iconSrc="/svg/location.svg"
@@ -210,6 +231,8 @@ export default function EmployerDataPanel({
               error={errors.city}
               options={cityOptions}
               placeholder={t("cityPlaceholder")}
+              emptyMessage={t("comboboxNoResults")}
+              variant="form"
             />
           )}
         />
@@ -218,17 +241,19 @@ export default function EmployerDataPanel({
           name="passportIssuePlace"
           control={control}
           render={({ field }) => (
-            <ReviewFormSelectField
+            <ReviewFormComboboxField
               id="passportIssuePlace"
               label={t("passportIssuePlace")}
               iconSrc="/svg/location.svg"
               value={field.value || undefined}
               onChange={field.onChange}
               readOnly={!editing}
-              disabled={editing && isCitiesLoading}
+              disabled={editing && isIssuePlacesLoading}
               error={errors.passportIssuePlace}
-              options={cityOptions}
+              options={issuePlaceOptions}
               placeholder={t("passportIssuePlacePlaceholder")}
+              emptyMessage={t("comboboxNoResults")}
+              variant="form"
             />
           )}
         />

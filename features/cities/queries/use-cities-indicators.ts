@@ -13,7 +13,7 @@ import type {
 import {
   extractCollection,
   extractPaginationMeta,
-} from "@/features/orders/utils/api-payload";
+} from "@/lib/api-payload";
 
 async function fetchCityCount(
   locale: string,

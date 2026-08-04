@@ -467,6 +467,7 @@
           "cityPlaceholder": "اختر المدينة هنا ...",
           "passportIssuePlace": "مكان الإصدار",
           "passportIssuePlacePlaceholder": "اختر مكان الإصدار هنا ...",
+          "comboboxNoResults": "لا توجد نتائج مطابقة",
           "changeHistory": "سجل التعديلات",
           "historyEmployee": "الموظف",
           "historyAction": "نوع الإجراء",
@@ -488,7 +489,8 @@
           "homeAddress": "العنوان في الفلبين",
           "homeAddressPlaceholder": "أدخل العنوان في الفلبين هنا ...",
           "passportIssuePlace": "مكان إصدار الجواز بالإنجليزية",
-          "passportIssuePlacePlaceholder": "أدخل المكان هنا ...",
+          "passportIssuePlacePlaceholder": "اختر مكان الإصدار هنا ...",
+          "comboboxNoResults": "لا توجد نتائج مطابقة",
           "passportNumber": "رقم جواز السفر بالعربي",
           "passportNumberPlaceholder": "أدخل رقم جواز السفر هنا ...",
           "passportIssueDate": "تاريخ إصدار الجواز",
@@ -1644,6 +1646,66 @@
         "endDateAfterStart": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية أو مساوياً له",
         "statusRequired": "الحالة مطلوبة"
       }
+    }
+  },
+  "Tracking": {
+    "title": "أرقام تتبع الطلبات",
+    "subtitle": "إدارة أرقام تتبع الشحنات الخاصة بخدمة توصيل العقود، ومتابعة الأرقام المتاحة والمستخدمة وربطها بطلبات التجديد.",
+    "addNumbers": "إضافة أرقام تتبع",
+    "refreshData": "تحديث البيانات",
+    "periodWeek": "هذا الأسبوع",
+    "logTitle": "سجل أرقام التتبع",
+    "indicators": {
+      "total": "إجمالي أرقام التتبع",
+      "available": "الأرقام المتاحة",
+      "used": "الأرقام المستخدمة"
+    },
+    "filters": {
+      "searchLabel": "البحث",
+      "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
+      "usageDate": "تاريخ الاستخدام",
+      "status": "الحالة",
+      "shippingCompany": "شركة الشحن",
+      "apply": "تطبيق الفلترة",
+      "all": "الكل",
+      "statusAvailable": "متاح",
+      "statusUsed": "مستخدم"
+    },
+    "table": {
+      "trackingNumber": "رقم التتبع",
+      "shippingCompany": "شركة الشحن",
+      "entryDate": "تاريخ الإدخال",
+      "status": "الحالة",
+      "orderNumber": "رقم الطلب",
+      "customer": "اسم العميل / الجوال",
+      "usageDate": "تاريخ الاستخدام",
+      "action": "إجراء"
+    },
+    "empty": {
+      "title": "لا توجد أرقام تتبع",
+      "description": "لم يتم إضافة أي أرقام تتبع حتى الآن. يمكنك إضافة أرقام جديدة بشكل فردي أو جماعي."
+    },
+    "modal": {
+      "title": "إضافة أرقام تتبع جديدة",
+      "heading": "إضافة أرقام تتبع جديدة !",
+      "modeSingle": "إدخال فردي",
+      "modeBulk": "إدخال جماعي",
+      "companyLabel": "شركة الشحن",
+      "companyPlaceholder": "اختر شركة الشحن..",
+      "trackingNumberLabel": "رقم التتبع",
+      "trackingNumberPlaceholder": "أدخل رقم التتبع...",
+      "uploadTitle": "ارفع ملف CSV أو XLSX",
+      "uploadSubtitle": "اسحب الملف هنا أو اضغط للتصفح",
+      "uploadNote": "يجب أن يحتوي على عمود \"Tracking Number\" أو \"رقم التتبع\"",
+      "uploadLimit": "( 10 MB حد أقصى CSV XLSX )",
+      "orManual": "أو أدخل الأرقام يدوياً",
+      "numbersListLabel": "قائمة أرقام التتبع",
+      "numbersListPlaceholder": "أدخل أرقام التتبع، كل رقم في سطر منفصل:",
+      "numbersListHint": "كل رقم في سطر منفصل — الأرقام المكررة تُكتشف تلقائياً عند الفحص",
+      "submitSingle": "حفظ رقم التتبع",
+      "submitBulk": "حفظ أرقام التتبع",
+      "cancel": "تراجع وإلغاء",
+      "success": "تمت إضافة أرقام التتبع بنجاح"
     }
   }
 }

@@ -27,7 +27,7 @@ import type {
 import {
   formatChangePercent,
   formatStatsCount,
-} from "@/features/orders/utils/format-stats";
+} from "@/lib/format-stats";
 import { cn } from "@/lib/utils";
 
 const INDICATOR_CARDS = [

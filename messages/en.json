@@ -467,6 +467,7 @@
           "cityPlaceholder": "Select city...",
           "passportIssuePlace": "Place of Issue",
           "passportIssuePlacePlaceholder": "Select place of issue...",
+          "comboboxNoResults": "No matching options",
           "changeHistory": "Change History",
           "historyEmployee": "Employee",
           "historyAction": "Action Type",
@@ -488,7 +489,8 @@
           "homeAddress": "Address in the Philippines",
           "homeAddressPlaceholder": "Enter the address in the Philippines...",
           "passportIssuePlace": "Passport Issue Place in English",
-          "passportIssuePlacePlaceholder": "Enter the place here...",
+          "passportIssuePlacePlaceholder": "Select place of issue...",
+          "comboboxNoResults": "No matching options",
           "passportNumber": "Passport Number in Arabic",
           "passportNumberPlaceholder": "Enter the passport number here...",
           "passportIssueDate": "Passport Issue Date",
@@ -1644,6 +1646,66 @@
         "endDateAfterStart": "End date must be on or after the start date",
         "statusRequired": "Status is required"
       }
+    }
+  },
+  "Tracking": {
+    "title": "Order Tracking Numbers",
+    "subtitle": "Manage shipment tracking numbers for contract delivery service, monitor available and used numbers, and link them to renewal orders.",
+    "addNumbers": "Add Tracking Numbers",
+    "refreshData": "Refresh Data",
+    "periodWeek": "This Week",
+    "logTitle": "Tracking Numbers Log",
+    "indicators": {
+      "total": "Total Tracking Numbers",
+      "available": "Available Numbers",
+      "used": "Used Numbers"
+    },
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by order number or business owner name...",
+      "usageDate": "Usage Date",
+      "status": "Status",
+      "shippingCompany": "Shipping Company",
+      "apply": "Apply Filter",
+      "all": "All",
+      "statusAvailable": "Available",
+      "statusUsed": "Used"
+    },
+    "table": {
+      "trackingNumber": "Tracking Number",
+      "shippingCompany": "Shipping Company",
+      "entryDate": "Entry Date",
+      "status": "Status",
+      "orderNumber": "Order Number",
+      "customer": "Customer Name / Phone",
+      "usageDate": "Usage Date",
+      "action": "Action"
+    },
+    "empty": {
+      "title": "No tracking numbers found",
+      "description": "No tracking numbers have been added yet. You can add new numbers individually or in bulk."
+    },
+    "modal": {
+      "title": "Add New Tracking Numbers",
+      "heading": "Add New Tracking Numbers!",
+      "modeSingle": "Single Entry",
+      "modeBulk": "Bulk Entry",
+      "companyLabel": "Shipping Company",
+      "companyPlaceholder": "Select shipping company..",
+      "trackingNumberLabel": "Tracking Number",
+      "trackingNumberPlaceholder": "Enter tracking number...",
+      "uploadTitle": "Upload CSV or XLSX file",
+      "uploadSubtitle": "Drag file here or click to browse",
+      "uploadNote": "Must contain column \"Tracking Number\" or \"رقم التتبع\"",
+      "uploadLimit": "( 10 MB max CSV XLSX )",
+      "orManual": "Or enter numbers manually",
+      "numbersListLabel": "Tracking Numbers List",
+      "numbersListPlaceholder": "Enter tracking numbers, one per line:",
+      "numbersListHint": "One number per line — duplicate numbers detected automatically",
+      "submitSingle": "Save Tracking Number",
+      "submitBulk": "Save Tracking Numbers",
+      "cancel": "Cancel",
+      "success": "Tracking numbers added successfully"
     }
   }
 }

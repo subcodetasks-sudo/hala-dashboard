@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import { citiesKeys } from "@/features/cities/query-keys";
 import type { CityDetailResponse, CityRow } from "@/features/cities/types";
 import { mapCityToRow } from "@/features/cities/utils/map-city-to-row";
-import type { AppLocale } from "@/features/orders/utils/format-datetime";
+import type { AppLocale } from "@/lib/format-datetime";
 
 async function fetchCity(
   locale: string,

@@ -10,6 +10,7 @@ export * from "./use-renewal-request-cancelled-stats";
 export * from "./use-renewal-request-refund-stats";
 export * from "./use-order-statuses";
 export * from "./use-cities";
+export * from "./use-passport-issue-places";
 export * from "./use-process-renewal-request";
 export * from "./use-send-for-authentication";
 export * from "./use-hold-renewal-request";

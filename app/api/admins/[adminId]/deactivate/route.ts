@@ -50,7 +50,6 @@ export async function PATCH(request: Request, context: RouteContext) {
     return Response.json({
       success: true,
       message: result.message,
-      data: result.data,
     });
   } catch (error) {
     if (error instanceof ApiError) {

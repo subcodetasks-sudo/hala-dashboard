@@ -24,6 +24,7 @@
   --color-brand-blue: rgb(0 119 255);
   --color-brand-background: rgb(235 246 247);
   --color-brand-gris: rgb(120 120 120);
+  --color-brand-gris-light: rgb(245 245 245);
   --color-brand-purple: rgb(203 5 234);
   --color-brand-purple-dark: rgb(181 70 255);
   --color-brand-error: rgb(217 45 32);
@@ -79,6 +80,7 @@
   --brand-warning: hsla(32, 95%, 44%, 1);
   --brand-background: rgb(235 246 247);
   --brand-gris: rgb(120 120 120);
+  --brand-gris-light: rgb(245 245 245);
   --brand-purple: rgb(203 5 234);
   --brand-purple-dark: rgb(181 70 255);
   --brand-error: rgb(217 45 32);
