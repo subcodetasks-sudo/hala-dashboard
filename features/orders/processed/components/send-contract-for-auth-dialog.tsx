@@ -26,7 +26,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useSendForAuthentication } from "@/features/orders/queries/use-send-for-authentication";
+import { useSendForAuthentication } from "@/features/orders/processed/queries/use-send-for-authentication";
 import { copyTextWithFeedback } from "@/features/orders/utils";
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { notFound, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,15 +26,16 @@ import EmployerDataPanel from "@/features/orders/components/employer-data-panel"
 import HoldReasonCard from "@/features/orders/components/hold-reason-card";
 import ReviewOrderSidebar from "@/features/orders/components/review-order-sidebar";
 import WorkerDataPanel from "@/features/orders/components/worker-data-panel";
-import type { EmployerFormValues } from "@/features/orders/schemas/employer-schema";
+import type { UpdateEmployerInput } from "@/features/orders/schemas/employer-schema";
 import type { WorkerFormValues } from "@/features/orders/schemas/worker-schema";
 import type { HoldReasonValue } from "@/features/orders/types";
 import {
   seedOrderDetail,
   useOrder,
-  useUpdateOrderEmployer,
-  useUpdateOrderWorker,
 } from "@/features/orders/queries/use-orders";
+import { useUpdateRenewalRequestEmployer } from "@/features/orders/queries/use-update-renewal-request-employer";
+import { useUpdateRenewalRequestWorker } from "@/features/orders/queries/use-update-renewal-request-worker";
+import { isMockOrderDetailId } from "@/features/orders/mock-order-details";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { ORDER_STATUS_LABEL_KEYS } from "@/features/orders/utils";
 import { toSaudiPhoneWithLeadingZero } from "@/lib/format-saudi-phone";
@@ -84,6 +86,8 @@ type OrderViewProps = {
 
 export default function OrderView({ orderId }: OrderViewProps) {
   const t = useTranslations("Orders.New.Review");
+  const tEmployer = useTranslations("Orders.New.Review.employer");
+  const tWorker = useTranslations("Orders.New.Review.worker");
   const tStatus = useTranslations("Orders.New.Review.statuses");
   const router = useRouter();
   const pathname = usePathname();
@@ -92,8 +96,8 @@ export default function OrderView({ orderId }: OrderViewProps) {
   // useOrder resolves real API details and known mock ids
   // (payment / completed / refund) from `mock-order-details`.
   const { data: order, isPending, isError } = useOrder(orderId);
-  const updateEmployer = useUpdateOrderEmployer();
-  const updateWorker = useUpdateOrderWorker();
+  const updateRenewalRequestEmployer = useUpdateRenewalRequestEmployer();
+  const updateRenewalRequestWorker = useUpdateRenewalRequestWorker();
 
   const requestedTab = parseReviewTab(searchParams.get(TAB_QUERY_KEY));
   const [editingTab, setEditingTab] = useState<ReviewTabId | null>(null);
@@ -179,12 +183,60 @@ export default function OrderView({ orderId }: OrderViewProps) {
     setEditingTab(editing ? tab : null);
   };
 
-  const handleEmployerSaved = (values: EmployerFormValues) => {
-    updateEmployer.mutate({ id: order.id, values });
+  const handleEmployerSaved = (values: UpdateEmployerInput) => {
+    const promise = updateRenewalRequestEmployer
+      .mutateAsync({ renewalRequestId: order.id, values })
+      .then(() => {
+        router.refresh();
+      });
+
+    toast.promise(promise, {
+      loading: tEmployer("loadingToast"),
+      success: tEmployer("successToast"),
+      error: (error) =>
+        error instanceof Error && error.message
+          ? error.message
+          : tEmployer("errorToast"),
+    });
+
+    void promise.catch(() => {
+      setEditingTab("employer");
+    });
   };
 
-  const handleWorkerSaved = (values: WorkerFormValues) => {
-    updateWorker.mutate({ id: order.id, values });
+  const handleWorkerSaved = (
+    values: WorkerFormValues,
+    meta: { passportIssuePlaceId: number },
+  ) => {
+    if (order.salary == null && !isMockOrderDetailId(order.id)) {
+      toast.error(tWorker("salaryMissingToast"));
+      setEditingTab("worker");
+      return;
+    }
+
+    const promise = updateRenewalRequestWorker
+      .mutateAsync({
+        renewalRequestId: order.id,
+        values,
+        passportIssuePlaceId: meta.passportIssuePlaceId,
+        salary: order.salary,
+      })
+      .then(() => {
+        router.refresh();
+      });
+
+    toast.promise(promise, {
+      loading: tWorker("loadingToast"),
+      success: tWorker("successToast"),
+      error: (error) =>
+        error instanceof Error && error.message
+          ? error.message
+          : tWorker("errorToast"),
+    });
+
+    void promise.catch(() => {
+      setEditingTab("worker");
+    });
   };
 
   const listBreadcrumb =
@@ -354,6 +406,7 @@ export default function OrderView({ orderId }: OrderViewProps) {
                   handleEditingChange("employer", editing)
                 }
                 onSaved={handleEmployerSaved}
+                isSaving={updateRenewalRequestEmployer.isPending}
               />
             </TabsContent>
             <TabsContent
@@ -368,6 +421,7 @@ export default function OrderView({ orderId }: OrderViewProps) {
                   handleEditingChange("worker", editing)
                 }
                 onSaved={handleWorkerSaved}
+                isSaving={updateRenewalRequestWorker.isPending}
               />
             </TabsContent>
             <TabsContent value="documents" className="mt-2">

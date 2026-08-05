@@ -17,7 +17,7 @@ import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone
 import PendingOrdersFilters from "@/features/orders/pending/components/pending-orders-filters";
 import SuspensionReasonBadge from "@/features/orders/pending/components/suspension-reason-badge";
 import { DEFAULT_PENDING_ORDERS_FILTERS } from "@/features/orders/pending/mock-data";
-import { useRenewalRequestHeldStats } from "@/features/orders/queries/use-renewal-request-held-stats";
+import { useRenewalRequestHeldStats } from "@/features/orders/pending/queries/use-renewal-request-held-stats";
 import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
 import type { OrderListItem } from "@/features/orders/types";
 import {

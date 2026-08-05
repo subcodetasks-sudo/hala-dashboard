@@ -246,6 +246,37 @@ function readNestedLocaleName(
   );
 }
 
+/** Resolves a combobox label to a passport issue place id. */
+export function findPassportIssuePlaceId(
+  label: string,
+  places: PassportIssuePlace[],
+  locale: string,
+  fallbackId: number | null = null,
+): number | null {
+  const trimmed = label.trim();
+  if (!trimmed || trimmed === "—") {
+    return fallbackId;
+  }
+
+  const byLabel = places.find(
+    (place) => getPassportIssuePlaceLabel(place, locale) === trimmed,
+  );
+  if (byLabel) {
+    return byLabel.id;
+  }
+
+  const byName = places.find((place) => {
+    const nameAr = place.name_ar?.trim();
+    const nameEn = place.name_en?.trim();
+    return trimmed === nameAr || trimmed === nameEn;
+  });
+  if (byName) {
+    return byName.id;
+  }
+
+  return fallbackId;
+}
+
 /** Localized display label for a passport issue place. */
 export function getPassportIssuePlaceLabel(
   place: PassportIssuePlace,
@@ -279,4 +310,28 @@ export function getPassportIssuePlaceLabel(
   }
 
   return nameEn || fallback || nameAr || String(place.id);
+}
+
+/** Resolves a combobox label back to a passport issue place id. */
+export function findPassportIssuePlaceIdByLabel(
+  places: PassportIssuePlace[],
+  label: string,
+  locale: string,
+): number | null {
+  const normalized = label.trim();
+  if (!normalized || normalized === "—") {
+    return null;
+  }
+
+  for (const place of places) {
+    if (
+      getPassportIssuePlaceLabel(place, locale) === normalized ||
+      getPassportIssuePlaceLabel(place, "ar") === normalized ||
+      getPassportIssuePlaceLabel(place, "en") === normalized
+    ) {
+      return place.id;
+    }
+  }
+
+  return null;
 }

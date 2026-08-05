@@ -2,11 +2,13 @@
 
 import { SaudiRiyal } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
 
 import CustomIcon from "@/components/custom-svg";
 import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
+import TablePagination from "@/components/table-pagination";
 import ManualOrderButton from "@/components/manual-order-button";
 import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
 import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
@@ -14,18 +16,31 @@ import CompletedDeliveryStatusBadge from "@/features/orders/completed/components
 import CompletedOrderActions from "@/features/orders/completed/components/completed-order-actions";
 import CompletedOrdersFilters from "@/features/orders/completed/components/completed-orders-filters";
 import CompletedPaymentMethodBadge from "@/features/orders/completed/components/completed-payment-method-badge";
-import { DEFAULT_COMPLETED_ORDERS_FILTERS } from "@/features/orders/completed/mock-data";
+import { useRenewalRequestCompletedStats } from "@/features/orders/completed/queries/use-renewal-request-completed-stats";
+import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
+import type {
+  CompletedOrdersFilterValues,
+  OrderListItem,
+} from "@/features/orders/types";
 import {
-  useCompletedIndicators,
-  useCompletedOrders,
-} from "@/features/orders/completed/queries/use-completed-orders";
-import type { CompletedOrderRow } from "@/features/orders/types";
-import {
-  formatIsoDateWithClockTime,
+  formatApiDateTime,
+  getOrderEmployerName,
+  getOrderPhoneDisplay,
+  getOrderWorkerName,
   parseCompletedOrdersFilters,
   serializeCompletedOrdersFilters,
+  toIsoDate,
 } from "@/features/orders/utils";
 import { useUrlFilters } from "@/hooks/use-url-filters";
+
+const DEFAULT_COMPLETED_ORDERS_FILTERS: CompletedOrdersFilterValues = {
+  fromDate: undefined,
+  toDate: undefined,
+  search: "",
+  orderType: "all",
+  paymentMethod: "all",
+  deliveryStatus: "all",
+};
 
 /** RTL: first item renders on the right (matches design order). */
 const INDICATOR_CARDS = [
@@ -64,23 +79,50 @@ const INDICATOR_CARDS = [
 export default function CompletedOrdersView() {
   const t = useTranslations("Orders.Completed");
   const locale = useLocale() === "en" ? "en" : "ar";
+  const { data: stats, isLoading: isStatsLoading } =
+    useRenewalRequestCompletedStats();
   const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
     useUrlFilters({
       defaults: DEFAULT_COMPLETED_ORDERS_FILTERS,
       serialize: serializeCompletedOrdersFilters,
       parse: parseCompletedOrdersFilters,
     });
+  const [page, setPage] = useState(1);
+  const handleApplyFilters = () => {
+    setPage(1);
+    applyFilters();
+  };
 
-  const { data: rows = [], isLoading } = useCompletedOrders(appliedFilters);
-  const { data: indicators } = useCompletedIndicators();
+  const { data, isLoading, isError, error } = useRenewalRequests({
+    status: "completed",
+    uiSource: appliedFilters.orderType,
+    deliveryRequired:
+      appliedFilters.deliveryStatus === "all"
+        ? undefined
+        : appliedFilters.deliveryStatus === "required",
+    paymentType:
+      appliedFilters.paymentMethod === "all"
+        ? undefined
+        : appliedFilters.paymentMethod,
+    search: appliedFilters.search,
+    createdFrom: appliedFilters.fromDate
+      ? toIsoDate(appliedFilters.fromDate)
+      : undefined,
+    createdTo: appliedFilters.toDate
+      ? toIsoDate(appliedFilters.toDate)
+      : undefined,
+    perPage: 15,
+    page,
+  });
+  const rows = data?.items ?? [];
 
-  const columns: DataTableColumn<CompletedOrderRow>[] = [
+  const columns: DataTableColumn<OrderListItem>[] = [
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
       cell: (row) => (
         <CopyableOrderNumber
-          orderNumber={row.orderNumber}
+          orderNumber={row.request_number ?? `#ORD-${row.id}`}
           className="font-semibold text-brand-black"
         />
       ),
@@ -90,8 +132,10 @@ export default function CompletedOrdersView() {
       header: t("table.employer"),
       cell: (row) => (
         <div className="flex flex-col gap-1">
-          <span className="font-semibold text-brand-black">{row.employerName}</span>
-          <CopyablePhoneNumber phone={row.employerPhone} />
+          <span className="font-semibold text-brand-black">
+            {getOrderEmployerName(row, locale)}
+          </span>
+          <CopyablePhoneNumber phone={getOrderPhoneDisplay(row)} />
         </div>
       ),
     },
@@ -99,18 +143,16 @@ export default function CompletedOrdersView() {
       id: "worker",
       header: t("table.worker"),
       cell: (row) => (
-        <span className="whitespace-nowrap text-brand-black">{row.workerName}</span>
+        <span className="whitespace-nowrap text-brand-black">
+          {getOrderWorkerName(row, locale)}
+        </span>
       ),
     },
     {
       id: "createdAt",
       header: t("table.createdAt"),
       cell: (row) => {
-        const created = formatIsoDateWithClockTime(
-          row.createdAtIso,
-          row.createdTime,
-          locale,
-        );
+        const created = formatApiDateTime(row.created_at, locale);
         return (
           <div className="flex flex-col gap-0.5">
             <span className="text-brand-black">{created.dateLabel}</span>
@@ -123,9 +165,8 @@ export default function CompletedOrdersView() {
       id: "contractUploadedAt",
       header: t("table.contractUploadedAt"),
       cell: (row) => {
-        const uploaded = formatIsoDateWithClockTime(
-          row.contractUploadedAtIso,
-          row.contractUploadedTime,
+        const uploaded = formatApiDateTime(
+          row.contract_uploaded_at ?? row.final_contract_uploaded_at,
           locale,
         );
         return (
@@ -140,11 +181,7 @@ export default function CompletedOrdersView() {
       id: "paidAt",
       header: t("table.paidAt"),
       cell: (row) => {
-        const paid = formatIsoDateWithClockTime(
-          row.paidAtIso,
-          row.paidTime,
-          locale,
-        );
+        const paid = formatApiDateTime(row.payment_date ?? row.paid_at, locale);
         return (
           <div className="flex flex-col gap-0.5">
             <span className="text-brand-black">{paid.dateLabel}</span>
@@ -156,31 +193,47 @@ export default function CompletedOrdersView() {
     {
       id: "paymentMethod",
       header: t("table.paymentMethod"),
-      cell: (row) => (
-        <CompletedPaymentMethodBadge method={row.paymentMethod} />
-      ),
+      cell: (row) => {
+        const method = row.payment_method ?? row.payment_type;
+        return method ? (
+          <CompletedPaymentMethodBadge method={method} />
+        ) : (
+          <span className="text-brand-gris">—</span>
+        );
+      },
     },
     {
       id: "dueFees",
       header: t("table.dueFees"),
-      cell: (row) => (
-        <span className="font-clash inline-flex items-center gap-1 whitespace-nowrap font-semibold text-brand-success">
-          <span>+{row.dueFees}</span>
-          <SaudiRiyal className="size-4 shrink-0" strokeWidth={1.75} aria-hidden />
-        </span>
-      ),
+      cell: (row) => {
+        const fees = row.fees_due ?? row.total_fee;
+        return fees ? (
+          <span className="font-clash inline-flex items-center gap-1 whitespace-nowrap font-semibold text-brand-success">
+            <span>+{fees}</span>
+            <SaudiRiyal
+              className="size-4 shrink-0"
+              strokeWidth={1.75}
+              aria-hidden
+            />
+          </span>
+        ) : (
+          <span className="text-brand-gris">—</span>
+        );
+      },
     },
     {
       id: "deliveryStatus",
       header: t("table.deliveryStatus"),
       cell: (row) => (
-        <CompletedDeliveryStatusBadge status={row.deliveryStatus} />
+        <CompletedDeliveryStatusBadge
+          status={row.delivery_required ? "required" : "notRequired"}
+        />
       ),
     },
     {
       id: "action",
       header: t("table.action"),
-      cell: (row) => <CompletedOrderActions orderId={row.id} />,
+      cell: (row) => <CompletedOrderActions orderId={String(row.id)} />,
     },
   ];
 
@@ -197,17 +250,27 @@ export default function CompletedOrdersView() {
       </div>
 
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {INDICATOR_CARDS.map((card) => (
-          <InfoCard
-            key={card.key}
-            title={t(`indicators.${card.key}`)}
-            value={indicators?.[card.key] ?? 0}
-            change={indicators?.change ?? "+24%"}
-            period={t(card.periodKey)}
-            iconSrc={card.iconSrc}
-            bgClassName={card.bgClassName}
-          />
-        ))}
+        {INDICATOR_CARDS.map((card) => {
+          const values = {
+            total: stats?.total_completed,
+            paidOnline: stats?.paid_online,
+            paidManual: stats?.paid_manual,
+            withDelivery: stats?.delivery_required,
+            pickup: stats?.pickup,
+          };
+
+          return (
+            <InfoCard
+              key={card.key}
+              title={t(`indicators.${card.key}`)}
+              value={isStatsLoading ? "..." : (values[card.key] ?? 0)}
+              change="-"
+              period={t(card.periodKey)}
+              iconSrc={card.iconSrc}
+              bgClassName={card.bgClassName}
+            />
+          );
+        })}
       </section>
 
       <section className="flex flex-col gap-4">
@@ -223,22 +286,33 @@ export default function CompletedOrdersView() {
         <CompletedOrdersFilters
           value={draftFilters}
           onChange={setDraftFilters}
-          onApply={applyFilters}
+          onApply={handleApplyFilters}
         />
 
         <DataTable
           columns={columns}
           data={rows}
-          getRowId={(row) => row.id}
+          getRowId={(row) => String(row.id)}
           selectable
           isLoading={isLoading}
           emptyContent={
             <EmptyTableState
               iconSrc="/svg/shield-tick.svg"
-              title={t("empty.title")}
-              description={t("empty.description")}
+              title={
+                isError && error instanceof Error
+                  ? error.message
+                  : t("empty.title")
+              }
+              description={isError ? " " : t("empty.description")}
             />
           }
+        />
+
+        <TablePagination
+          page={data?.currentPage ?? page}
+          lastPage={data?.lastPage ?? 1}
+          total={data?.total}
+          onPageChange={setPage}
         />
       </section>
     </div>

@@ -23,7 +23,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { useHoldRenewalRequest } from "@/features/orders/queries/use-hold-renewal-request";
+import { useHoldRenewalRequest } from "@/features/orders/pending/queries/use-hold-renewal-request";
 import type { HoldReasonValue } from "@/features/orders/types";
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";

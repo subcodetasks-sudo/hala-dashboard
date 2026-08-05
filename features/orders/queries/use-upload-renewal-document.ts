@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
 
-import { seedOrderDetail } from "@/features/orders/queries/use-orders";
+import { seedOrderDetail } from "@/features/orders/queries/order-detail-store";
 import { orderKeys } from "@/features/orders/query-keys";
 import type {
   DocumentCollection,

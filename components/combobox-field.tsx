@@ -35,6 +35,8 @@ type ReviewFormComboboxFieldProps = {
   placeholder?: string;
   emptyMessage?: string;
   disabled?: boolean;
+  /** Shows a required marker next to the label. */
+  required?: boolean;
   /** `filter` = filter control style; `form` = form modal style (bg-white). */
   variant?: "filter" | "form";
 };
@@ -66,21 +68,29 @@ export default function ReviewFormComboboxField({
   placeholder,
   emptyMessage,
   disabled = false,
+  required = false,
   variant = "filter",
 }: ReviewFormComboboxFieldProps) {
   const items = useMemo(() => {
     const normalized = options.map(toComboboxOption);
     const selected = value?.trim();
 
-    if (
-      selected &&
-      selected !== "—" &&
-      !normalized.some((option) => option.value === selected)
-    ) {
-      return [{ value: selected, label: selected }, ...normalized];
+    const result: NormalizedOption[] = [];
+    const seenValues = new Set<string>();
+
+    if (selected && selected !== "—") {
+      result.push({ value: selected, label: selected });
+      seenValues.add(selected);
     }
 
-    return normalized;
+    for (const opt of normalized) {
+      if (!seenValues.has(opt.value)) {
+        seenValues.add(opt.value);
+        result.push(opt);
+      }
+    }
+
+    return result;
   }, [options, value]);
 
   const selectedItem = useMemo(() => {
@@ -100,9 +110,14 @@ export default function ReviewFormComboboxField({
     <Field className={className} data-invalid={!!error || undefined}>
       <FieldLabel
         htmlFor={id}
-        className="px-1 text-xs font-semibold text-brand-black"
+        className="gap-1 px-1 text-xs font-semibold text-brand-black"
       >
         {label}
+        {required ? (
+          <span aria-hidden className="text-brand-accent">
+            *
+          </span>
+        ) : null}
       </FieldLabel>
       <Combobox
         items={items}

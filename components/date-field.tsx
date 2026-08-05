@@ -34,6 +34,8 @@ type DateFieldProps = {
   className?: string;
   buttonClassName?: string;
   iconSrc?: string;
+  /** Shows a required marker next to the label. */
+  required?: boolean;
   /** `filter` = orders filters style; `form` = review form input style. */
   variant?: "filter" | "form";
 };
@@ -57,6 +59,7 @@ export default function DateField({
   className,
   buttonClassName,
   iconSrc,
+  required = false,
   variant = "filter",
 }: DateFieldProps) {
   const locale = useLocale();
@@ -95,10 +98,16 @@ export default function DateField({
         <FieldLabel
           htmlFor={id}
           className={cn(
+            "gap-1",
             !isForm && "px-1 text-xs font-semibold text-brand-black"
           )}
         >
           {label}
+          {required ? (
+            <span aria-hidden className="text-brand-accent">
+              *
+            </span>
+          ) : null}
         </FieldLabel>
       ) : null}
 

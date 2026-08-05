@@ -1,4 +1,4 @@
-export type TrackingStatus = "available" | "used";
+export type TrackingStatus = "available" | "used" | "disabled";
 
 export type TrackingShippingCompany = "aramex" | "smsa" | "spl" | "dhl";
 

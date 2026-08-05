@@ -23,7 +23,7 @@ import type { InvoiceRow } from "@/features/invoices/types";
 import {
   parseInvoicesFilters,
   serializeInvoicesFilters,
-} from "@/features/invoices/utils/filter-query-params";
+} from "@/lib/filter-query-params";
 import { useUrlFilters } from "@/hooks/use-url-filters";
 import { formatIsoDateWithClockTime } from "@/lib/format-datetime";
 

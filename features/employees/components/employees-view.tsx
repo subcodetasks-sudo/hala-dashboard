@@ -26,7 +26,7 @@ import { mapAdminToEmployeeRow } from "@/features/employees/utils/map-admin-to-e
 import {
   parseEmployeesFilters,
   serializeEmployeesFilters,
-} from "@/features/employees/utils/filter-query-params";
+} from "@/lib/filter-query-params";
 import { toAdminsListFilters } from "@/features/employees/utils/to-admins-list-filters";
 import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
 import { useUrlFilters } from "@/hooks/use-url-filters";

@@ -13,6 +13,8 @@ type ReviewFormPhoneFieldProps = {
   error?: { message?: string };
   placeholder?: string;
   className?: string;
+  /** Shows a required marker next to the label. */
+  required?: boolean;
   field: Pick<
     ControllerRenderProps<any>,
     "value" | "onChange" | "onBlur"
@@ -26,11 +28,19 @@ export default function ReviewFormPhoneField({
   error,
   placeholder,
   className,
+  required = false,
   field,
 }: ReviewFormPhoneFieldProps) {
   return (
     <Field className={className} data-invalid={!!error || undefined}>
-      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <FieldLabel htmlFor={id} className="gap-1">
+        {label}
+        {required ? (
+          <span aria-hidden className="text-brand-accent">
+            *
+          </span>
+        ) : null}
+      </FieldLabel>
       <SaudiPhoneField
         id={id}
         value={field.value}

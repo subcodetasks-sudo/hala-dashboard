@@ -22,7 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { useUploadFinalContract } from "@/features/orders/queries/use-upload-final-contract";
+import { useUploadFinalContract } from "@/features/orders/verification/queries/use-upload-final-contract";
 import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 

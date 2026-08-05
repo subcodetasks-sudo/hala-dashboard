@@ -337,7 +337,7 @@
     0 18px 25px -8px rgb(from var(--brand-black) r g b / 0.24),
     0 8px 10px -6px rgb(from var(--brand-black) r g b / 0.16) !important;
   justify-content: flex-start !important;
-  gap: 8px !important;
+  gap: 10px !important;
 }
 
 /* Re-center the shrink-wrapped pill inside the absolutely positioned track */
@@ -354,10 +354,38 @@
   --toast-surface: var(--brand-accent);
 }
 
+[data-sonner-toast][data-type="loading"],
+[data-sonner-toast][data-promise="true"] {
+  --toast-surface: var(--brand-primary);
+}
+
 [data-sonner-toast] [data-icon] {
   width: auto !important;
   height: auto !important;
   margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-inline-end: 10px !important;
+}
+
+/* A custom `icons.loading` is wrapped in `.sonner-loader`, which sonner
+   absolutely centers inside its fixed-size icon slot. The slot is auto-sized
+   here, so the spinner would collapse it to zero width and overlap the title —
+   keep the spinner in flow instead, and drop it once the promise settles so it
+   leaves no gap next to the success/error icon. */
+[data-sonner-toast] .sonner-loader {
+  position: static !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: none !important;
+  margin-inline-end: 10px !important;
+}
+
+[data-sonner-toast] .sonner-loader[data-visible="false"] {
+  display: none !important;
+  margin-inline-end: 0 !important;
 }
 
 [data-sonner-toast] [data-icon] svg {

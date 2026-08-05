@@ -37,3 +37,26 @@ export function toSaudiPhoneWithLeadingZero(
 
   return `0${localDigits}`;
 }
+
+/**
+ * Formats a Saudi phone number for API submission (`+966` + 9 local digits).
+ *
+ * @example
+ * toSaudiPhoneInternational("0514111001") // "+966514111001"
+ */
+export function toSaudiPhoneInternational(
+  phone: string | null | undefined,
+): string {
+  const withLeadingZero = toSaudiPhoneWithLeadingZero(phone);
+  const digits = withLeadingZero.replace(/\D/g, "");
+
+  if (digits.startsWith("0") && digits.length >= 10) {
+    return `+966${digits.slice(1, 10)}`;
+  }
+
+  if (digits.length >= 9) {
+    return `+966${digits.slice(-9)}`;
+  }
+
+  return withLeadingZero ? `+966${digits}` : "";
+}

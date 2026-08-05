@@ -9,8 +9,9 @@ import ReviewFormComboboxField from "@/components/combobox-field";
 import ReviewFormPhoneField from "@/components/phone-field";
 import ReviewFormTextField from "@/components/text-field";
 import ReviewFormSectionHeader from "@/features/orders/components/section-header";
-import { getCityLabel, useCities } from "@/features/orders/queries/use-cities";
+import { findCityIdByLabel, getCityLabel, useCities } from "@/features/orders/queries/use-cities";
 import {
+  findPassportIssuePlaceIdByLabel,
   getPassportIssuePlaceLabel,
   usePassportIssuePlaces,
 } from "@/features/orders/queries/use-passport-issue-places";
@@ -18,7 +19,9 @@ import type { OrderReviewDetail } from "@/features/orders/types";
 import {
   createEmployerSchema,
   type EmployerFormValues,
+  type UpdateEmployerInput,
 } from "@/features/orders/schemas/employer-schema";
+import { toast } from "sonner";
 
 type EmployerDataPanelProps = {
   order: OrderReviewDetail;
@@ -26,7 +29,8 @@ type EmployerDataPanelProps = {
   /** When false, form stays read-only and edit controls are hidden. */
   canEdit?: boolean;
   onEditingChange: (editing: boolean) => void;
-  onSaved?: (values: EmployerFormValues) => void;
+  onSaved?: (values: UpdateEmployerInput) => void | Promise<void>;
+  isSaving?: boolean;
 };
 
 function displayOrEmpty(value: string): string {
@@ -39,6 +43,7 @@ export default function EmployerDataPanel({
   canEdit = true,
   onEditingChange,
   onSaved,
+  isSaving = false,
 }: EmployerDataPanelProps) {
   const t = useTranslations("Orders.New.Review.employer");
   const tValidation = useTranslations("Orders.New.Review.validation");
@@ -59,6 +64,9 @@ export default function EmployerDataPanel({
         phoneRequired: tValidation("phoneRequired"),
         phoneFormat: tValidation("phoneFormat"),
         cityRequired: tValidation("cityRequired"),
+        passportIssuePlaceRequired: tValidation(
+          "passportIssuePlaceRequired",
+        ),
       }),
     [tValidation]
   );
@@ -135,7 +143,37 @@ export default function EmployerDataPanel({
 
   const onSubmit = (values: EmployerFormValues) => {
     if (!canEdit) return;
-    onSaved?.(values);
+
+    const cityId =
+      findCityIdByLabel(cities, values.city, locale) ??
+      (values.city === defaultValues.city ? order.cityId : null);
+
+    if (cityId == null) {
+      toast.error(tValidation("cityRequired"));
+      return;
+    }
+
+    const passportIssuePlaceId = values.passportIssuePlace.trim()
+      ? findPassportIssuePlaceIdByLabel(
+          issuePlaces,
+          values.passportIssuePlace,
+          locale,
+        ) ??
+        (values.passportIssuePlace === defaultValues.passportIssuePlace
+          ? order.passportIssuePlaceId
+          : null)
+      : order.passportIssuePlaceId;
+
+    if (passportIssuePlaceId == null) {
+      toast.error(tValidation("passportIssuePlaceRequired"));
+      return;
+    }
+
+    onSaved?.({
+      ...values,
+      cityId,
+      passportIssuePlaceId,
+    });
     onEditingChange(false);
   };
 
@@ -157,6 +195,7 @@ export default function EmployerDataPanel({
         onEdit={() => onEditingChange(true)}
         onSave={handleSubmit(onSubmit)}
         onCancel={handleCancel}
+        isSaving={isSaving}
       />
 
       <form

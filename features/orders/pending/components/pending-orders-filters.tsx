@@ -168,9 +168,9 @@ export default function PendingOrdersFilters({
           <SelectContent
             position="popper"
             align="center"
-            className="min-w-[14rem] rounded-3xl border border-brand-primary/25 bg-white p-3 shadow-[0_0_0_1px_rgba(14,165,180,0.12),0_8px_24px_rgba(14,165,180,0.08)] ring-0"
+            className="min-w-[14rem] no-scrollbar rounded-3xl border border-brand-primary/25 bg-white p-3 shadow-[0_0_0_1px_rgba(14,165,180,0.12),0_8px_24px_rgba(14,165,180,0.08)] ring-0"
           >
-            <div className="flex max-h-64 flex-col gap-2 overflow-y-auto">
+            <div className="flex max-h-64 flex-col gap-2 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <SelectItem
                 value="all"
                 className={cn(

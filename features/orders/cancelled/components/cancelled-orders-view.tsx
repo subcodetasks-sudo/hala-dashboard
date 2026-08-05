@@ -18,7 +18,7 @@ import CancelledSourceBadge from "@/features/orders/cancelled/components/cancell
 import CancelledStatusBadge from "@/features/orders/cancelled/components/cancelled-status-badge";
 import { DEFAULT_CANCELLED_ORDERS_FILTERS } from "@/features/orders/cancelled/mock-data";
 import ManualOrderButton from "@/components/manual-order-button";
-import { useRenewalRequestCancelledStats } from "@/features/orders/queries/use-renewal-request-cancelled-stats";
+import { useRenewalRequestCancelledStats } from "@/features/orders/cancelled/queries/use-renewal-request-cancelled-stats";
 import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
 import type { OrderListItem } from "@/features/orders/types";
 import {

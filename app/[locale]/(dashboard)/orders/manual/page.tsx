@@ -1,5 +1,5 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import ManualOrderView from "@/features/orders/manual/components/manual-order-view";
 
 export default function ManualOrderPage() {
-  return <DashboardPagePlaceholder titleKey="manualOrder" />;
+  return <ManualOrderView />;
 }

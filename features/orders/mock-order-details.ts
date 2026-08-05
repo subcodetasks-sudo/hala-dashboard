@@ -4,6 +4,7 @@ import type {
   OrderDocuments,
   OrderEmployer,
   OrderNamedRef,
+  OrderPlan,
   OrderRefundMethod,
   OrderRefundStatus,
   OrderStatus,
@@ -20,6 +21,14 @@ const ADMIN: OrderNamedRef = {
   name: "Rayan Al-Turki",
   name_ar: "ريان التركي",
   name_en: "Rayan Al-Turki",
+};
+
+const BASIC_RENEWAL_PLAN: OrderPlan = {
+  id: 1,
+  title_ar: "باقة التجديد الأساسية",
+  title_en: "Basic Renewal Plan",
+  price: 299,
+  type: "plan_renewal",
 };
 
 const CITY_RIYADH = {
@@ -161,6 +170,8 @@ function buildDetail(seed: MockDetailSeed): OrderDetail {
     service_fee: seed.serviceFee,
     delivery_fee: seed.deliveryFee,
     total_fee: seed.totalFee,
+    plan_id: seed.status === "completed" ? BASIC_RENEWAL_PLAN.id : null,
+    plan: seed.status === "completed" ? BASIC_RENEWAL_PLAN : null,
     payment_type: seed.paymentType,
     payment_type_label: seed.paymentTypeLabel,
     paid_at: seed.paidAt,
