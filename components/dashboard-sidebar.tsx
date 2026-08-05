@@ -120,6 +120,11 @@ const navGroups: NavGroupItem[] = [
         icon: "/svg/profile-tick.svg",
       },
       {
+        href: "/pricing",
+        labelKey: "pricing",
+        icon: "/svg/dollar-circle.svg",
+      },
+      {
         href: "/cancel-statuses",
         labelKey: "cancelStatuses",
         icon: "/svg/block.svg",

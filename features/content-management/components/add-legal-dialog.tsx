@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import BlogContentEditor from "@/features/content-management/components/blog-content-editor";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { useAddLegal } from "@/features/content-management/queries/use-add-legal";
 import { createAddLegalSchema } from "@/features/content-management/schemas/add-legal-schema";
 import type { AddLegalFormValues } from "@/features/content-management/types";
@@ -225,7 +225,7 @@ export default function AddLegalDialog({
                 control={control}
                 name="content"
                 render={({ field }) => (
-                  <BlogContentEditor
+                  <RichTextEditor
                     id="legal-content"
                     value={field.value}
                     onChange={field.onChange}
