@@ -1672,6 +1672,10 @@
       "legal": {
         "title": "الصفحات القانونية",
         "description": "تعديل سياسة الخصوصية والشروط والصفحات القانونية الأخرى."
+      },
+      "support": {
+        "title": "صفحات الدعم",
+        "description": "تعديل محتوى صفحات الدعم ومركز المساعدة."
       }
     },
     "hero": {
@@ -2395,7 +2399,36 @@
       "invalidLegalSectionForm": "بيانات نموذج قسم الصفحة القانونية غير صالحة.",
       "invalidLegalSectionId": "معرّف قسم الصفحة القانونية غير صالح.",
       "legalSectionRequired": "العنوان والمحتوى والوصف وترتيب العرض مطلوبة بالعربية والإنجليزية.",
-      "legalSectionSortOrderInvalid": "ترتيب العرض يجب أن يكون رقمًا صالحًا."
+      "legalSectionSortOrderInvalid": "ترتيب العرض يجب أن يكون رقمًا صالحًا.",
+      "unableToFetchBlogs": "تعذر تحميل مقالات المدونة. حاول مرة أخرى.",
+      "unableToSaveBlog": "تعذر حفظ مقال المدونة. حاول مرة أخرى.",
+      "unableToDeleteBlog": "تعذر حذف مقال المدونة. حاول مرة أخرى.",
+      "invalidBlogForm": "بيانات نموذج مقال المدونة غير صالحة.",
+      "invalidBlogId": "معرّف مقال المدونة غير صالح.",
+      "blogRequired": "العنوان والمحتوى والمسار وتاريخ النشر مطلوبة بالعربية والإنجليزية.",
+      "blogStatusInvalid": "الحالة يجب أن تكون نشط أو غير نشط.",
+      "blogPublishedAtInvalid": "تاريخ النشر غير صالح.",
+      "unableToFetchSupportFormHeader": "تعذر تحميل عنوان نموذج الدعم. حاول مرة أخرى.",
+      "unableToSaveSupportFormHeader": "تعذر حفظ عنوان نموذج الدعم. حاول مرة أخرى.",
+      "invalidSupportFormHeaderForm": "بيانات عنوان نموذج الدعم غير صالحة.",
+      "supportFormHeaderRequired": "العنوان والوصف مطلوبان بالعربية والإنجليزية.",
+      "unableToFetchSupportCards": "تعذر تحميل بطاقات الدعم. حاول مرة أخرى.",
+      "unableToSaveSupportCard": "تعذر حفظ بطاقة الدعم. حاول مرة أخرى.",
+      "invalidSupportCardForm": "بيانات نموذج بطاقة الدعم غير صالحة.",
+      "supportCardRequired": "العنوان والوصف وقيمة الزر ونصوص الزر مطلوبة بالعربية والإنجليزية.",
+      "supportCardNumberInvalid": "رقم البطاقة يجب أن يكون 1 أو 2.",
+      "supportCardButtonTypeInvalid": "نوع الزر يجب أن يكون هاتف أو بريد.",
+      "unableToFetchInquiryTypes": "تعذر تحميل أنواع الاستفسار. حاول مرة أخرى.",
+      "unableToSaveInquiryType": "تعذر حفظ نوع الاستفسار. حاول مرة أخرى.",
+      "unableToDeleteInquiryType": "تعذر حذف نوع الاستفسار. حاول مرة أخرى.",
+      "invalidInquiryTypeForm": "بيانات نموذج نوع الاستفسار غير صالحة.",
+      "invalidInquiryTypeId": "معرّف نوع الاستفسار غير صالح.",
+      "inquiryTypeRequired": "الاسم وترتيب العرض مطلوبان بالعربية والإنجليزية.",
+      "inquiryTypeSortOrderInvalid": "ترتيب العرض يجب أن يكون رقمًا صالحًا.",
+      "unableToFetchSupportSubmissions": "تعذر تحميل طلبات الدعم. حاول مرة أخرى.",
+      "unableToDeleteSupportSubmission": "تعذر حذف طلب الدعم. حاول مرة أخرى.",
+      "unableToMarkSupportSubmissionRead": "تعذر تعليم الطلب كمقروء. حاول مرة أخرى.",
+      "invalidSupportSubmissionId": "معرّف طلب الدعم غير صالح."
     },
     "addFaqDialog": {
       "title": "إضافة سؤال شائع",
@@ -2546,6 +2579,328 @@
         "endDateRequired": "تاريخ نهاية الظهور مطلوب",
         "endDateAfterStart": "تاريخ النهاية يجب أن يكون بعد تاريخ البداية أو مساوياً له",
         "statusRequired": "الحالة مطلوبة"
+      }
+    },
+    "blog": {
+      "title": "المدونة",
+      "description": "إنشاء وتحديث مقالات المدونة والمحتوى المرتبط بها.",
+      "back": "رجوع",
+      "listTitle": "مقالات المدونة",
+      "addItem": "إضافة مقال",
+      "filters": {
+        "searchLabel": "بحث",
+        "searchPlaceholder": "ابحث بالعنوان أو المسار...",
+        "status": "الحالة",
+        "statusAll": "الكل",
+        "statusActive": "نشطه",
+        "statusInactive": "غير نشطه",
+        "apply": "تطبيق الفلتر"
+      },
+      "table": {
+        "image": "الصورة",
+        "title": "العنوان",
+        "slug": "المسار",
+        "status": "الحالة",
+        "statusActive": "نشطه",
+        "statusInactive": "غير نشطه",
+        "publishedAt": "تاريخ النشر",
+        "updatedAt": "آخر تحديث",
+        "action": "الإجراء",
+        "view": "عرض {name}",
+        "edit": "تعديل {name}",
+        "delete": "حذف {name}"
+      },
+      "empty": {
+        "title": "لا توجد مقالات",
+        "description": "أضف مقالًا لعرض محتوى المدونة في الموقع."
+      },
+      "viewDialog": {
+        "title": "تفاصيل المقال",
+        "close": "إغلاق",
+        "image": "الصورة",
+        "imageAlt": "صورة المقال",
+        "titleAr": "العنوان (عربي)",
+        "titleEn": "العنوان (إنجليزي)",
+        "slug": "المسار",
+        "status": "الحالة",
+        "publishedAt": "تاريخ النشر",
+        "contentAr": "المحتوى (عربي)",
+        "contentEn": "المحتوى (إنجليزي)",
+        "createdAt": "تاريخ الإنشاء",
+        "updatedAt": "آخر تحديث"
+      },
+      "formDialog": {
+        "createTitle": "إضافة مقال",
+        "editTitle": "تعديل المقال",
+        "close": "إغلاق",
+        "titleArLabel": "العنوان (عربي)",
+        "titleEnLabel": "العنوان (إنجليزي)",
+        "titleArPlaceholder": "مثال: دليل تجديد العقود",
+        "titleEnPlaceholder": "مثال: Complete Guide to Contract Renewal",
+        "contentArLabel": "المحتوى (عربي)",
+        "contentEnLabel": "المحتوى (إنجليزي)",
+        "contentArPlaceholder": "اكتب محتوى المقال بالعربية...",
+        "contentEnPlaceholder": "اكتب محتوى المقال بالإنجليزية...",
+        "slugLabel": "المسار",
+        "slugPlaceholder": "يُنشأ تلقائيًا من العنوان الإنجليزي",
+        "statusLabel": "الحالة",
+        "statusPlaceholder": "اختر الحالة",
+        "status": {
+          "active": "نشطه",
+          "inactive": "غير نشطه"
+        },
+        "publishedAtLabel": "تاريخ النشر",
+        "imageLabel": "صورة المقال",
+        "imageUploadTitle": "رفع صورة المقال",
+        "imageUploadHint": "JPG أو PNG أو WEBP أو GIF",
+        "imageLoadError": "تعذر تحميل هذه الصورة. اختر ملفًا آخر.",
+        "imagePreviewAlt": "معاينة صورة المقال",
+        "changeImage": "تغيير الصورة",
+        "removeImage": "إزالة الصورة",
+        "create": "إضافة المقال",
+        "save": "حفظ التغييرات",
+        "cancel": "تراجع وإلغاء",
+        "toastCreated": "تم إنشاء المقال بنجاح",
+        "toastUpdated": "تم تحديث المقال بنجاح",
+        "errorToast": "تعذر حفظ المقال. حاول مرة أخرى.",
+        "validation": {
+          "titleArRequired": "العنوان بالعربية مطلوب",
+          "titleEnRequired": "العنوان بالإنجليزية مطلوب",
+          "contentArRequired": "المحتوى بالعربية مطلوب",
+          "contentEnRequired": "المحتوى بالإنجليزية مطلوب",
+          "slugRequired": "المسار مطلوب",
+          "statusRequired": "الحالة مطلوبة",
+          "publishedAtRequired": "تاريخ النشر مطلوب"
+        }
+      },
+      "deleteDialog": {
+        "title": "حذف المقال",
+        "close": "إغلاق",
+        "heading": "حذف مقال المدونة!",
+        "description": "هل أنت متأكد من حذف هذا المقال؟ لا يمكن التراجع عن هذا الإجراء.",
+        "itemLabel": "المقال",
+        "confirm": "تأكيد الحذف",
+        "cancel": "تراجع وإلغاء",
+        "toastSuccess": "تم حذف المقال بنجاح",
+        "errorToast": "تعذر حذف المقال. حاول مرة أخرى."
+      }
+    },
+    "support": {
+      "title": "صفحات الدعم",
+      "description": "عدّل محتوى صفحات الدعم ومركز المساعدة بالعربية والإنجليزية.",
+      "back": "رجوع",
+      "tabs": {
+        "header": "العنوان",
+        "cards": "البطاقات",
+        "inquiryType": "نوع الاستفسار",
+        "submissions": "الطلبات"
+      },
+      "formTitle": "عنوان الدعم",
+      "formHeader": {
+        "formTitle": "عنوان النموذج",
+        "titleArPlaceholder": "مثال: أرسل استفسارك",
+        "titleEnPlaceholder": "مثال: Send your inquiry",
+        "descriptionArPlaceholder": "مثال: املأ النموذج وسنتواصل معك",
+        "descriptionEnPlaceholder": "مثال: Fill the form and we will contact you",
+        "save": "حفظ عنوان النموذج",
+        "toastSaved": "تم حفظ عنوان النموذج بنجاح",
+        "errorToast": "تعذر حفظ عنوان النموذج. حاول مرة أخرى.",
+        "loadError": "تعذر تحميل عنوان النموذج."
+      },
+      "contentArLabel": "المحتوى التمهيدي (عربي)",
+      "contentEnLabel": "المحتوى التمهيدي (إنجليزي)",
+      "contentArPlaceholder": "اكتب المحتوى التمهيدي بالعربية...",
+      "contentEnPlaceholder": "اكتب المحتوى التمهيدي بالإنجليزية...",
+      "titleArLabel": "العنوان (عربي)",
+      "titleEnLabel": "العنوان (إنجليزي)",
+      "titleArPlaceholder": "اكتب عنوان الصفحة بالعربية...",
+      "titleEnPlaceholder": "اكتب عنوان الصفحة بالإنجليزية...",
+      "descriptionArLabel": "الوصف (عربي)",
+      "descriptionEnLabel": "الوصف (إنجليزي)",
+      "descriptionArPlaceholder": "اكتب وصف الصفحة بالعربية...",
+      "descriptionEnPlaceholder": "اكتب وصف الصفحة بالإنجليزية...",
+      "save": "حفظ العنوان",
+      "toastSaved": "تم حفظ عنوان الدعم بنجاح",
+      "errorToast": "تعذر حفظ عنوان الدعم. حاول مرة أخرى.",
+      "loadError": "تعذر تحميل عنوان الدعم.",
+      "retry": "إعادة المحاولة",
+      "validation": {
+        "contentArRequired": "المحتوى التمهيدي بالعربية مطلوب",
+        "contentEnRequired": "المحتوى التمهيدي بالإنجليزية مطلوب",
+        "titleArRequired": "العنوان بالعربية مطلوب",
+        "titleEnRequired": "العنوان بالإنجليزية مطلوب",
+        "descriptionArRequired": "الوصف بالعربية مطلوب",
+        "descriptionEnRequired": "الوصف بالإنجليزية مطلوب"
+      },
+      "cards": {
+        "phoneTitle": "بطاقة الهاتف",
+        "emailTitle": "بطاقة البريد",
+        "cardNumber": "البطاقة {number}",
+        "buttonTypePhone": "هاتف",
+        "buttonTypeEmail": "بريد",
+        "imageLabel": "صورة البطاقة",
+        "imageUploadTitle": "رفع صورة البطاقة",
+        "imageUploadHint": "JPG أو PNG أو WEBP أو GIF",
+        "imageLoadError": "تعذر تحميل هذه الصورة. اختر ملفًا آخر.",
+        "imagePreviewAlt": "معاينة صورة بطاقة الدعم",
+        "changeImage": "تغيير الصورة",
+        "removeImage": "إزالة الصورة",
+        "titleArLabel": "العنوان (عربي)",
+        "titleEnLabel": "العنوان (إنجليزي)",
+        "titleArPlaceholder": "مثال: اتصل بنا",
+        "titleEnPlaceholder": "مثال: Call Us",
+        "descriptionArLabel": "الوصف (عربي)",
+        "descriptionEnLabel": "الوصف (إنجليزي)",
+        "descriptionArPlaceholder": "مثال: تواصل معنا عبر الهاتف",
+        "descriptionEnPlaceholder": "مثال: Reach us by phone",
+        "phoneValueLabel": "رقم الهاتف",
+        "emailValueLabel": "البريد الإلكتروني",
+        "phoneValuePlaceholder": "مثال: +966500000000",
+        "emailValuePlaceholder": "مثال: support@hala.com",
+        "buttonLabelArLabel": "نص الزر (عربي)",
+        "buttonLabelEnLabel": "نص الزر (إنجليزي)",
+        "buttonLabelArPlaceholder": "مثال: اتصال",
+        "buttonLabelEnPlaceholder": "مثال: Call",
+        "save": "حفظ البطاقة",
+        "toastSaved": "تم حفظ بطاقة الدعم بنجاح",
+        "errorToast": "تعذر حفظ بطاقة الدعم. حاول مرة أخرى.",
+        "loadError": "تعذر تحميل بطاقات الدعم.",
+        "retry": "إعادة المحاولة",
+        "validation": {
+          "titleArRequired": "العنوان بالعربية مطلوب",
+          "titleEnRequired": "العنوان بالإنجليزية مطلوب",
+          "descriptionArRequired": "الوصف بالعربية مطلوب",
+          "descriptionEnRequired": "الوصف بالإنجليزية مطلوب",
+          "buttonValueRequired": "قيمة الزر مطلوبة",
+          "buttonLabelArRequired": "نص الزر بالعربية مطلوب",
+          "buttonLabelEnRequired": "نص الزر بالإنجليزية مطلوب"
+        }
+      },
+      "inquiryTypes": {
+        "listTitle": "أنواع الاستفسار",
+        "addItem": "إضافة نوع استفسار",
+        "table": {
+          "name": "الاسم",
+          "sortOrder": "ترتيب العرض",
+          "status": "الحالة",
+          "statusActive": "نشط",
+          "statusInactive": "غير نشط",
+          "updatedAt": "آخر تحديث",
+          "action": "الإجراء",
+          "edit": "تعديل {name}",
+          "delete": "حذف {name}"
+        },
+        "empty": {
+          "title": "لا توجد أنواع استفسار",
+          "description": "أضف نوع استفسار ليظهر في نموذج الدعم."
+        },
+        "formDialog": {
+          "createTitle": "إضافة نوع استفسار",
+          "editTitle": "تعديل نوع الاستفسار",
+          "close": "إغلاق",
+          "nameArLabel": "الاسم (عربي)",
+          "nameEnLabel": "الاسم (إنجليزي)",
+          "nameArPlaceholder": "مثال: استفسار عام",
+          "nameEnPlaceholder": "مثال: General Inquiry",
+          "sortOrderLabel": "ترتيب العرض",
+          "sortOrderPlaceholder": "مثال: 1",
+          "statusLabel": "الحالة",
+          "statusPlaceholder": "اختر الحالة",
+          "status": {
+            "active": "نشط",
+            "inactive": "غير نشط"
+          },
+          "create": "إضافة النوع",
+          "save": "حفظ التغييرات",
+          "cancel": "تراجع وإلغاء",
+          "toastCreated": "تم إنشاء نوع الاستفسار بنجاح",
+          "toastUpdated": "تم تحديث نوع الاستفسار بنجاح",
+          "errorToast": "تعذر حفظ نوع الاستفسار. حاول مرة أخرى.",
+          "validation": {
+            "nameArRequired": "الاسم بالعربية مطلوب",
+            "nameEnRequired": "الاسم بالإنجليزية مطلوب",
+            "sortOrderRequired": "ترتيب العرض مطلوب",
+            "sortOrderInvalid": "ترتيب العرض يجب أن يكون رقمًا صالحًا",
+            "statusRequired": "الحالة مطلوبة"
+          }
+        },
+        "deleteDialog": {
+          "title": "حذف نوع الاستفسار",
+          "close": "إغلاق",
+          "heading": "حذف نوع الاستفسار!",
+          "description": "هل أنت متأكد من حذف نوع الاستفسار؟ لا يمكن التراجع عن هذا الإجراء.",
+          "itemLabel": "النوع",
+          "confirm": "تأكيد الحذف",
+          "cancel": "تراجع وإلغاء",
+          "toastSuccess": "تم حذف نوع الاستفسار بنجاح",
+          "errorToast": "تعذر حذف نوع الاستفسار. حاول مرة أخرى."
+        }
+      },
+      "submissions": {
+        "listTitle": "الطلبات",
+        "table": {
+          "name": "الاسم",
+          "phone": "الجوال",
+          "orderNumber": "رقم الطلب",
+          "inquiryType": "نوع الاستفسار",
+          "message": "الرسالة",
+          "status": "الحالة",
+          "statusNew": "جديد",
+          "statusRead": "مقروء",
+          "createdAt": "تاريخ الإرسال",
+          "action": "الإجراء",
+          "view": "عرض {name}",
+          "markRead": "تعليم {name} كمقروء",
+          "delete": "حذف {name}",
+          "toastMarkedRead": "تم تعليم الطلب كمقروء",
+          "errorMarkRead": "تعذر تعليم الطلب كمقروء. حاول مرة أخرى."
+        },
+        "empty": {
+          "title": "لا توجد طلبات",
+          "description": "ستظهر طلبات نموذج الدعم هنا."
+        },
+        "viewDialog": {
+          "title": "تفاصيل الطلب",
+          "close": "إغلاق",
+          "firstName": "الاسم الأول",
+          "lastName": "اسم العائلة",
+          "phone": "الجوال",
+          "orderNumber": "رقم الطلب",
+          "inquiryType": "نوع الاستفسار",
+          "status": "الحالة",
+          "message": "الرسالة",
+          "createdAt": "تاريخ الإرسال",
+          "updatedAt": "آخر تحديث"
+        },
+        "deleteDialog": {
+          "title": "حذف الطلب",
+          "close": "إغلاق",
+          "heading": "حذف الطلب!",
+          "description": "هل أنت متأكد من حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
+          "itemLabel": "الطلب",
+          "confirm": "تأكيد الحذف",
+          "cancel": "تراجع وإلغاء",
+          "toastSuccess": "تم حذف الطلب بنجاح",
+          "errorToast": "تعذر حذف الطلب. حاول مرة أخرى."
+        }
+      },
+      "panels": {
+        "header": {
+          "emptyTitle": "لا يوجد محتوى للعنوان بعد",
+          "emptyDescription": "اربط واجهة عنوان الدعم لتعديل هذا القسم."
+        },
+        "cards": {
+          "emptyTitle": "لا توجد بطاقات دعم بعد",
+          "emptyDescription": "اربط واجهة بطاقات الدعم لإدارتها من هنا."
+        },
+        "inquiryType": {
+          "emptyTitle": "لا توجد أنواع استفسار بعد",
+          "emptyDescription": "اربط واجهة أنواع الاستفسار لإدارتها من هنا."
+        },
+        "submissions": {
+          "emptyTitle": "لا توجد طلبات بعد",
+          "emptyDescription": "اربط واجهة الطلبات لمراجعة الاستفسارات من هنا."
+        }
       }
     }
   },

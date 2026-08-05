@@ -49,7 +49,7 @@ const SECTIONS: SectionCardConfig[] = [
   },
   {
     id: "blog",
-    href: null,
+    href: "/content-management/blog",
     iconSrc: "/svg/firstline.svg",
     bgClassName: "bg-brand-background",
   },
@@ -58,6 +58,12 @@ const SECTIONS: SectionCardConfig[] = [
     href: "/content-management/legal",
     iconSrc: "/svg/lamp-charge.svg",
     bgClassName: "bg-brand-background",
+  },
+  {
+    id: "support",
+    href: "/content-management/support",
+    iconSrc: "/svg/phone.svg",
+    bgClassName: "bg-brand-light-yellow",
   },
 ];
 

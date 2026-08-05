@@ -134,7 +134,14 @@ export type ContentSectionId =
   | "workSteps"
   | "faqs"
   | "blog"
-  | "legal";
+  | "legal"
+  | "support";
+
+export type SupportTabId =
+  | "header"
+  | "cards"
+  | "inquiryType"
+  | "submissions";
 
 export type HeroStatus = "active" | "inactive";
 
@@ -575,7 +582,7 @@ export type StepsItemsListResult = {
   items: StepItemRow[];
 };
 
-export type LegalPageKind = "terms" | "privacy";
+export type LegalPageKind = "terms" | "privacy" | "support";
 
 export type LegalHeaderStatus = "active" | "inactive";
 
@@ -609,6 +616,241 @@ export type LegalHeaderFormValues = {
   titleEn: string;
   descriptionAr: string;
   descriptionEn: string;
+};
+
+export type SupportFormHeaderApiItem = {
+  id: number;
+  title: LocalizedText;
+  description: LocalizedText;
+  status: LegalHeaderStatus | string;
+  statusLabel?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type SupportFormHeaderShowResponse = {
+  success: boolean;
+  message: string;
+  data: SupportFormHeaderApiItem | null;
+};
+
+export type SupportFormHeaderMutationResponse = {
+  success: boolean;
+  message: string;
+  data: SupportFormHeaderApiItem;
+};
+
+export type SupportFormHeaderFormValues = {
+  titleAr: string;
+  titleEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+};
+
+export type SupportCardButtonType = "phone" | "email";
+
+export type SupportCardNumber = 1 | 2;
+
+export type SupportCardApiItem = {
+  id?: number;
+  cardNumber?: number;
+  card_number?: number;
+  title: LocalizedText;
+  description: LocalizedText;
+  buttonType?: SupportCardButtonType | string;
+  button_type?: SupportCardButtonType | string;
+  buttonValue?: string;
+  button_value?: string;
+  buttonLabel?: LocalizedText;
+  button_label?: LocalizedText;
+  status: string;
+  statusLabel?: string;
+  image?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type SupportCardsListResponse = {
+  success: boolean;
+  message: string;
+  data: SupportCardApiItem[] | { data: SupportCardApiItem[] };
+};
+
+export type SupportCardMutationResponse = {
+  success: boolean;
+  message: string;
+  data?: SupportCardApiItem | null;
+};
+
+export type SupportCardFormValues = {
+  titleAr: string;
+  titleEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+  buttonType: SupportCardButtonType;
+  buttonValue: string;
+  buttonLabelAr: string;
+  buttonLabelEn: string;
+};
+
+export type SupportCardRow = {
+  id: number | null;
+  cardNumber: SupportCardNumber;
+  titleAr: string;
+  titleEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+  buttonType: SupportCardButtonType;
+  buttonValue: string;
+  buttonLabelAr: string;
+  buttonLabelEn: string;
+  status: string;
+  image: string | null;
+};
+
+export type InquiryTypeStatus = "active" | "inactive";
+
+export type InquiryTypeApiItem = {
+  id: number;
+  name: LocalizedText;
+  sortOrder?: number;
+  sort_order?: number;
+  status: InquiryTypeStatus | string;
+  statusLabel?: string;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
+export type InquiryTypesListPage = {
+  data: InquiryTypeApiItem[];
+  meta?: {
+    total?: number;
+    per_page?: number;
+    current_page?: number;
+    last_page?: number;
+  };
+};
+
+export type InquiryTypesListResponse = {
+  success: boolean;
+  message: string;
+  data: InquiryTypesListPage | InquiryTypeApiItem[];
+};
+
+export type InquiryTypeMutationResponse = {
+  success: boolean;
+  message: string;
+  data?: InquiryTypeApiItem | null;
+};
+
+export type InquiryTypeFormValues = {
+  nameAr: string;
+  nameEn: string;
+  sortOrder: string;
+  status: InquiryTypeStatus;
+};
+
+export type InquiryTypeRow = {
+  id: number;
+  nameAr: string;
+  nameEn: string;
+  sortOrder: number;
+  status: string;
+  statusLabel: string;
+  createdAt: string;
+  updatedAt: string;
+  createdDate: string;
+  createdTime: string;
+  updatedDate: string;
+  updatedTime: string;
+};
+
+export type InquiryTypesListResult = {
+  items: InquiryTypeRow[];
+  currentPage: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
+};
+
+export type SupportSubmissionStatus = "new" | "read" | string;
+
+export type SupportSubmissionApiItem = {
+  id: number;
+  firstName?: string;
+  first_name?: string;
+  lastName?: string;
+  last_name?: string;
+  phone: string;
+  orderNumber?: string | null;
+  order_number?: string | null;
+  inquiryTypeId?: number;
+  inquiry_type_id?: number;
+  inquiryType?: InquiryTypeApiItem | null;
+  inquiry_type?: InquiryTypeApiItem | null;
+  message: string;
+  status: SupportSubmissionStatus;
+  statusLabel?: string;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
+export type SupportSubmissionsListPage = {
+  data: SupportSubmissionApiItem[];
+  meta?: {
+    total?: number;
+    per_page?: number;
+    current_page?: number;
+    last_page?: number;
+  };
+  links?: {
+    next?: string | null;
+  };
+};
+
+export type SupportSubmissionsListResponse = {
+  success: boolean;
+  message: string;
+  data: SupportSubmissionsListPage | SupportSubmissionApiItem[];
+};
+
+export type SupportSubmissionMutationResponse = {
+  success: boolean;
+  message: string;
+  data?: SupportSubmissionApiItem | null;
+};
+
+export type SupportSubmissionRow = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  phone: string;
+  orderNumber: string;
+  inquiryTypeId: number | null;
+  inquiryTypeNameAr: string;
+  inquiryTypeNameEn: string;
+  message: string;
+  status: string;
+  statusLabel: string;
+  createdAt: string;
+  updatedAt: string;
+  createdDate: string;
+  createdTime: string;
+  updatedDate: string;
+  updatedTime: string;
+};
+
+export type SupportSubmissionsListResult = {
+  items: SupportSubmissionRow[];
+  currentPage: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
 };
 
 export type LegalSectionApiItem = {
@@ -679,6 +921,97 @@ export type LegalSectionRow = {
 
 export type LegalSectionsListResult = {
   items: LegalSectionRow[];
+  currentPage: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
+};
+
+export type BlogStatus = "active" | "inactive";
+
+export type BlogFilterValues = {
+  search: string;
+  status: "all" | BlogStatus;
+};
+
+export type BlogApiItem = {
+  id: number;
+  title?: LocalizedText;
+  titleAr?: string;
+  titleEn?: string;
+  content?: LocalizedText;
+  contentAr?: string;
+  contentEn?: string;
+  slug: string;
+  status: BlogStatus | string;
+  statusLabel?: string;
+  publishedAt?: string;
+  published_at?: string;
+  image?: string | null;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
+};
+
+export type BlogsListPage = {
+  data: BlogApiItem[];
+  meta?: {
+    total?: number;
+    per_page?: number;
+    current_page?: number;
+    last_page?: number;
+  };
+  links?: {
+    next?: string | null;
+  };
+};
+
+export type BlogsListResponse = {
+  success: boolean;
+  message: string;
+  data: BlogsListPage | BlogApiItem[];
+};
+
+export type BlogMutationResponse = {
+  success: boolean;
+  message: string;
+  data?: BlogApiItem | null;
+};
+
+export type BlogFormValues = {
+  titleAr: string;
+  titleEn: string;
+  contentAr: string;
+  contentEn: string;
+  slug: string;
+  status: BlogStatus;
+  publishedAt: string;
+};
+
+export type BlogRow = {
+  id: number;
+  titleAr: string;
+  titleEn: string;
+  contentAr: string;
+  contentEn: string;
+  slug: string;
+  status: string;
+  statusLabel: string;
+  publishedAt: string;
+  image: string | null;
+  createdAt: string;
+  updatedAt: string;
+  createdDate: string;
+  createdTime: string;
+  updatedDate: string;
+  updatedTime: string;
+  publishedDate: string;
+  publishedTime: string;
+};
+
+export type BlogsListResult = {
+  items: BlogRow[];
   currentPage: number;
   lastPage: number;
   perPage: number;
