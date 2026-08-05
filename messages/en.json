@@ -1672,6 +1672,10 @@
       "legal": {
         "title": "Legal Pages",
         "description": "Edit privacy policy, terms, and other legal pages."
+      },
+      "support": {
+        "title": "Support Pages",
+        "description": "Edit support and help center page content."
       }
     },
     "hero": {
@@ -2395,7 +2399,36 @@
       "invalidLegalSectionForm": "Invalid legal section form data.",
       "invalidLegalSectionId": "Invalid legal section id.",
       "legalSectionRequired": "Title, content, description, and display order are required in Arabic and English.",
-      "legalSectionSortOrderInvalid": "Display order must be a valid number."
+      "legalSectionSortOrderInvalid": "Display order must be a valid number.",
+      "unableToFetchBlogs": "Unable to load blog articles. Please try again.",
+      "unableToSaveBlog": "Unable to save the blog article. Please try again.",
+      "unableToDeleteBlog": "Unable to delete the blog article. Please try again.",
+      "invalidBlogForm": "Invalid blog article form data.",
+      "invalidBlogId": "Invalid blog article id.",
+      "blogRequired": "Title, content, slug, and published date are required in Arabic and English.",
+      "blogStatusInvalid": "Status must be active or inactive.",
+      "blogPublishedAtInvalid": "Published date is invalid.",
+      "unableToFetchSupportFormHeader": "Unable to load the support form header. Please try again.",
+      "unableToSaveSupportFormHeader": "Unable to save the support form header. Please try again.",
+      "invalidSupportFormHeaderForm": "Invalid support form header data.",
+      "supportFormHeaderRequired": "Title and description are required in Arabic and English.",
+      "unableToFetchSupportCards": "Unable to load support cards. Please try again.",
+      "unableToSaveSupportCard": "Unable to save the support card. Please try again.",
+      "invalidSupportCardForm": "Invalid support card form data.",
+      "supportCardRequired": "Title, description, button value, and button labels are required in Arabic and English.",
+      "supportCardNumberInvalid": "Card number must be 1 or 2.",
+      "supportCardButtonTypeInvalid": "Button type must be phone or email.",
+      "unableToFetchInquiryTypes": "Unable to load inquiry types. Please try again.",
+      "unableToSaveInquiryType": "Unable to save the inquiry type. Please try again.",
+      "unableToDeleteInquiryType": "Unable to delete the inquiry type. Please try again.",
+      "invalidInquiryTypeForm": "Invalid inquiry type form data.",
+      "invalidInquiryTypeId": "Invalid inquiry type id.",
+      "inquiryTypeRequired": "Name and display order are required in Arabic and English.",
+      "inquiryTypeSortOrderInvalid": "Display order must be a valid number.",
+      "unableToFetchSupportSubmissions": "Unable to load support submissions. Please try again.",
+      "unableToDeleteSupportSubmission": "Unable to delete the support submission. Please try again.",
+      "unableToMarkSupportSubmissionRead": "Unable to mark the submission as read. Please try again.",
+      "invalidSupportSubmissionId": "Invalid support submission id."
     },
     "addFaqDialog": {
       "title": "Add FAQ",
@@ -2546,6 +2579,328 @@
         "endDateRequired": "End date is required",
         "endDateAfterStart": "End date must be on or after the start date",
         "statusRequired": "Status is required"
+      }
+    },
+    "blog": {
+      "title": "Blog",
+      "description": "Create and update blog articles and related content.",
+      "back": "Back",
+      "listTitle": "Blog Articles",
+      "addItem": "Add Article",
+      "filters": {
+        "searchLabel": "Search",
+        "searchPlaceholder": "Search by title or slug...",
+        "status": "Status",
+        "statusAll": "All",
+        "statusActive": "Active",
+        "statusInactive": "Inactive",
+        "apply": "Apply Filter"
+      },
+      "table": {
+        "image": "Image",
+        "title": "Title",
+        "slug": "Slug",
+        "status": "Status",
+        "statusActive": "Active",
+        "statusInactive": "Inactive",
+        "publishedAt": "Published At",
+        "updatedAt": "Last Update",
+        "action": "Action",
+        "view": "View {name}",
+        "edit": "Edit {name}",
+        "delete": "Delete {name}"
+      },
+      "empty": {
+        "title": "No blog articles",
+        "description": "Add an article to show blog content on the website."
+      },
+      "viewDialog": {
+        "title": "Article Details",
+        "close": "Close",
+        "image": "Image",
+        "imageAlt": "Article image",
+        "titleAr": "Title (Arabic)",
+        "titleEn": "Title (English)",
+        "slug": "Slug",
+        "status": "Status",
+        "publishedAt": "Published At",
+        "contentAr": "Content (Arabic)",
+        "contentEn": "Content (English)",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At"
+      },
+      "formDialog": {
+        "createTitle": "Add Article",
+        "editTitle": "Edit Article",
+        "close": "Close",
+        "titleArLabel": "Title (Arabic)",
+        "titleEnLabel": "Title (English)",
+        "titleArPlaceholder": "Example: دليل تجديد العقود",
+        "titleEnPlaceholder": "Example: Complete Guide to Contract Renewal",
+        "contentArLabel": "Content (Arabic)",
+        "contentEnLabel": "Content (English)",
+        "contentArPlaceholder": "Write the article content in Arabic...",
+        "contentEnPlaceholder": "Write the article content in English...",
+        "slugLabel": "Slug",
+        "slugPlaceholder": "Auto-generated from English title",
+        "statusLabel": "Status",
+        "statusPlaceholder": "Select status",
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "publishedAtLabel": "Published At",
+        "imageLabel": "Article Image",
+        "imageUploadTitle": "Upload article image",
+        "imageUploadHint": "JPG, PNG, WEBP or GIF",
+        "imageLoadError": "Could not load this image. Choose another file.",
+        "imagePreviewAlt": "Article image preview",
+        "changeImage": "Change image",
+        "removeImage": "Remove image",
+        "create": "Add Article",
+        "save": "Save Changes",
+        "cancel": "Back and Cancel",
+        "toastCreated": "Article created successfully",
+        "toastUpdated": "Article updated successfully",
+        "errorToast": "Unable to save the article. Please try again.",
+        "validation": {
+          "titleArRequired": "Arabic title is required",
+          "titleEnRequired": "English title is required",
+          "contentArRequired": "Arabic content is required",
+          "contentEnRequired": "English content is required",
+          "slugRequired": "Slug is required",
+          "statusRequired": "Status is required",
+          "publishedAtRequired": "Published date is required"
+        }
+      },
+      "deleteDialog": {
+        "title": "Delete Article",
+        "close": "Close",
+        "heading": "Delete Blog Article!",
+        "description": "Are you sure you want to delete this article? This action cannot be undone.",
+        "itemLabel": "Article",
+        "confirm": "Confirm Delete",
+        "cancel": "Back and Cancel",
+        "toastSuccess": "Article deleted successfully",
+        "errorToast": "Unable to delete the article. Please try again."
+      }
+    },
+    "support": {
+      "title": "Support Pages",
+      "description": "Edit support and help center page content in Arabic and English.",
+      "back": "Back",
+      "tabs": {
+        "header": "Header",
+        "cards": "Cards",
+        "inquiryType": "Inquiry Type",
+        "submissions": "Submissions"
+      },
+      "formTitle": "Support Header",
+      "formHeader": {
+        "formTitle": "Form Header",
+        "titleArPlaceholder": "Example: أرسل استفسارك",
+        "titleEnPlaceholder": "Example: Send your inquiry",
+        "descriptionArPlaceholder": "Example: املأ النموذج وسنتواصل معك",
+        "descriptionEnPlaceholder": "Example: Fill the form and we will contact you",
+        "save": "Save Form Header",
+        "toastSaved": "Form header saved successfully",
+        "errorToast": "Unable to save the form header. Please try again.",
+        "loadError": "Unable to load the form header."
+      },
+      "contentArLabel": "Intro Content (Arabic)",
+      "contentEnLabel": "Intro Content (English)",
+      "contentArPlaceholder": "Write the intro content in Arabic...",
+      "contentEnPlaceholder": "Write the intro content in English...",
+      "titleArLabel": "Title (Arabic)",
+      "titleEnLabel": "Title (English)",
+      "titleArPlaceholder": "Write the page title in Arabic...",
+      "titleEnPlaceholder": "Write the page title in English...",
+      "descriptionArLabel": "Description (Arabic)",
+      "descriptionEnLabel": "Description (English)",
+      "descriptionArPlaceholder": "Write the page description in Arabic...",
+      "descriptionEnPlaceholder": "Write the page description in English...",
+      "save": "Save Header",
+      "toastSaved": "Support header saved successfully",
+      "errorToast": "Unable to save the support header. Please try again.",
+      "loadError": "Unable to load the support header.",
+      "retry": "Retry",
+      "validation": {
+        "contentArRequired": "Arabic intro content is required",
+        "contentEnRequired": "English intro content is required",
+        "titleArRequired": "Arabic title is required",
+        "titleEnRequired": "English title is required",
+        "descriptionArRequired": "Arabic description is required",
+        "descriptionEnRequired": "English description is required"
+      },
+      "cards": {
+        "phoneTitle": "Phone Card",
+        "emailTitle": "Email Card",
+        "cardNumber": "Card {number}",
+        "buttonTypePhone": "Phone",
+        "buttonTypeEmail": "Email",
+        "imageLabel": "Card Image",
+        "imageUploadTitle": "Upload card image",
+        "imageUploadHint": "JPG, PNG, WEBP or GIF",
+        "imageLoadError": "Could not load this image. Choose another file.",
+        "imagePreviewAlt": "Support card image preview",
+        "changeImage": "Change image",
+        "removeImage": "Remove image",
+        "titleArLabel": "Title (Arabic)",
+        "titleEnLabel": "Title (English)",
+        "titleArPlaceholder": "Example: اتصل بنا",
+        "titleEnPlaceholder": "Example: Call Us",
+        "descriptionArLabel": "Description (Arabic)",
+        "descriptionEnLabel": "Description (English)",
+        "descriptionArPlaceholder": "Example: تواصل معنا عبر الهاتف",
+        "descriptionEnPlaceholder": "Example: Reach us by phone",
+        "phoneValueLabel": "Phone Number",
+        "emailValueLabel": "Email Address",
+        "phoneValuePlaceholder": "Example: +966500000000",
+        "emailValuePlaceholder": "Example: support@hala.com",
+        "buttonLabelArLabel": "Button Label (Arabic)",
+        "buttonLabelEnLabel": "Button Label (English)",
+        "buttonLabelArPlaceholder": "Example: اتصال",
+        "buttonLabelEnPlaceholder": "Example: Call",
+        "save": "Save Card",
+        "toastSaved": "Support card saved successfully",
+        "errorToast": "Unable to save the support card. Please try again.",
+        "loadError": "Unable to load support cards.",
+        "retry": "Retry",
+        "validation": {
+          "titleArRequired": "Arabic title is required",
+          "titleEnRequired": "English title is required",
+          "descriptionArRequired": "Arabic description is required",
+          "descriptionEnRequired": "English description is required",
+          "buttonValueRequired": "Button value is required",
+          "buttonLabelArRequired": "Arabic button label is required",
+          "buttonLabelEnRequired": "English button label is required"
+        }
+      },
+      "inquiryTypes": {
+        "listTitle": "Inquiry Types",
+        "addItem": "Add Inquiry Type",
+        "table": {
+          "name": "Name",
+          "sortOrder": "Display Order",
+          "status": "Status",
+          "statusActive": "Active",
+          "statusInactive": "Inactive",
+          "updatedAt": "Last Update",
+          "action": "Action",
+          "edit": "Edit {name}",
+          "delete": "Delete {name}"
+        },
+        "empty": {
+          "title": "No inquiry types",
+          "description": "Add an inquiry type to show it in the support form."
+        },
+        "formDialog": {
+          "createTitle": "Add Inquiry Type",
+          "editTitle": "Edit Inquiry Type",
+          "close": "Close",
+          "nameArLabel": "Name (Arabic)",
+          "nameEnLabel": "Name (English)",
+          "nameArPlaceholder": "Example: استفسار عام",
+          "nameEnPlaceholder": "Example: General Inquiry",
+          "sortOrderLabel": "Display Order",
+          "sortOrderPlaceholder": "Example: 1",
+          "statusLabel": "Status",
+          "statusPlaceholder": "Select status",
+          "status": {
+            "active": "Active",
+            "inactive": "Inactive"
+          },
+          "create": "Add Type",
+          "save": "Save Changes",
+          "cancel": "Back and Cancel",
+          "toastCreated": "Inquiry type created successfully",
+          "toastUpdated": "Inquiry type updated successfully",
+          "errorToast": "Unable to save the inquiry type. Please try again.",
+          "validation": {
+            "nameArRequired": "Arabic name is required",
+            "nameEnRequired": "English name is required",
+            "sortOrderRequired": "Display order is required",
+            "sortOrderInvalid": "Display order must be a valid number",
+            "statusRequired": "Status is required"
+          }
+        },
+        "deleteDialog": {
+          "title": "Delete Inquiry Type",
+          "close": "Close",
+          "heading": "Delete Inquiry Type!",
+          "description": "Are you sure you want to delete this inquiry type? This action cannot be undone.",
+          "itemLabel": "Type",
+          "confirm": "Confirm Delete",
+          "cancel": "Back and Cancel",
+          "toastSuccess": "Inquiry type deleted successfully",
+          "errorToast": "Unable to delete the inquiry type. Please try again."
+        }
+      },
+      "submissions": {
+        "listTitle": "Submissions",
+        "table": {
+          "name": "Name",
+          "phone": "Phone",
+          "orderNumber": "Order Number",
+          "inquiryType": "Inquiry Type",
+          "message": "Message",
+          "status": "Status",
+          "statusNew": "New",
+          "statusRead": "Read",
+          "createdAt": "Submitted At",
+          "action": "Action",
+          "view": "View {name}",
+          "markRead": "Mark {name} as read",
+          "delete": "Delete {name}",
+          "toastMarkedRead": "Submission marked as read",
+          "errorMarkRead": "Unable to mark submission as read. Please try again."
+        },
+        "empty": {
+          "title": "No submissions",
+          "description": "Support form submissions will appear here."
+        },
+        "viewDialog": {
+          "title": "Submission Details",
+          "close": "Close",
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "phone": "Phone",
+          "orderNumber": "Order Number",
+          "inquiryType": "Inquiry Type",
+          "status": "Status",
+          "message": "Message",
+          "createdAt": "Submitted At",
+          "updatedAt": "Updated At"
+        },
+        "deleteDialog": {
+          "title": "Delete Submission",
+          "close": "Close",
+          "heading": "Delete Submission!",
+          "description": "Are you sure you want to delete this submission? This action cannot be undone.",
+          "itemLabel": "Submission",
+          "confirm": "Confirm Delete",
+          "cancel": "Back and Cancel",
+          "toastSuccess": "Submission deleted successfully",
+          "errorToast": "Unable to delete the submission. Please try again."
+        }
+      },
+      "panels": {
+        "header": {
+          "emptyTitle": "No header content yet",
+          "emptyDescription": "Connect the support header API to edit this section."
+        },
+        "cards": {
+          "emptyTitle": "No support cards yet",
+          "emptyDescription": "Connect the support cards API to manage cards here."
+        },
+        "inquiryType": {
+          "emptyTitle": "No inquiry types yet",
+          "emptyDescription": "Connect the inquiry types API to manage types here."
+        },
+        "submissions": {
+          "emptyTitle": "No submissions yet",
+          "emptyDescription": "Connect the submissions API to review inquiries here."
+        }
       }
     }
   },

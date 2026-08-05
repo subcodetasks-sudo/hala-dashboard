@@ -1,4 +1,5 @@
 import type {
+  BlogFilterValues,
   ContentCategory,
   ContentFilterValues,
 } from "@/features/content-management/types";
@@ -31,12 +32,12 @@ export const contentManagementKeys = {
   faqsItems: () => [...contentManagementKeys.all, "faqs-items"] as const,
   faqsItemsList: (page: number, perPage: number) =>
     [...contentManagementKeys.faqsItems(), { page, perPage }] as const,
-  legalHeader: (page: "terms" | "privacy") =>
+  legalHeader: (page: "terms" | "privacy" | "support") =>
     [...contentManagementKeys.all, "legal-header", page] as const,
-  legalSections: (page: "terms" | "privacy") =>
+  legalSections: (page: "terms" | "privacy" | "support") =>
     [...contentManagementKeys.all, "legal-sections", page] as const,
   legalSectionsList: (
-    page: "terms" | "privacy",
+    page: "terms" | "privacy" | "support",
     listPage: number,
     perPage: number,
   ) =>
@@ -44,4 +45,22 @@ export const contentManagementKeys = {
       ...contentManagementKeys.legalSections(page),
       { page: listPage, perPage },
     ] as const,
+  supportFormHeader: () =>
+    [...contentManagementKeys.all, "support-form-header"] as const,
+  supportCards: () =>
+    [...contentManagementKeys.all, "support-cards"] as const,
+  inquiryTypes: () =>
+    [...contentManagementKeys.all, "inquiry-types"] as const,
+  inquiryTypesList: (page: number, perPage: number) =>
+    [...contentManagementKeys.inquiryTypes(), { page, perPage }] as const,
+  supportSubmissions: () =>
+    [...contentManagementKeys.all, "support-submissions"] as const,
+  supportSubmissionsList: (page: number, perPage: number) =>
+    [
+      ...contentManagementKeys.supportSubmissions(),
+      { page, perPage },
+    ] as const,
+  blogs: () => [...contentManagementKeys.all, "blogs"] as const,
+  blogsList: (page: number, perPage: number, filters: BlogFilterValues) =>
+    [...contentManagementKeys.blogs(), { page, perPage, filters }] as const,
 };
