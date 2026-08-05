@@ -119,7 +119,7 @@ export default function PackagesSection() {
           />
           <span>{t("listTitle")}</span>
         </h2>
-
+{/* 
         <Button
           type="button"
           variant="outline"
@@ -128,7 +128,7 @@ export default function PackagesSection() {
         >
           <Plus className="size-4" strokeWidth={2} />
           <span>{t("addItem")}</span>
-        </Button>
+        </Button> */}
       </div>
 
       <PackageFormDialog open={createOpen} onOpenChange={setCreateOpen} />
