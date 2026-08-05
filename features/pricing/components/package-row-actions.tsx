@@ -47,7 +47,7 @@ export default function PackageRowActions({ item }: PackageRowActionsProps) {
         >
           <CustomIcon src="/svg/edit.svg" size={16} className="text-current" />
         </Button>
-        <Button
+        {/* <Button
           type="button"
           variant="ghost"
           aria-label={t("delete", { name: displayName })}
@@ -55,7 +55,7 @@ export default function PackageRowActions({ item }: PackageRowActionsProps) {
           className="size-9 rounded-xl border border-brand-accent/30 bg-brand-accent/10 p-0 text-brand-accent hover:bg-brand-accent/15 hover:text-brand-accent"
         >
           <CustomIcon src="/svg/trash.svg" size={16} className="text-current" />
-        </Button>
+        </Button> */}
       </div>
 
       <ViewPackageDialog
