@@ -221,7 +221,7 @@
       "nationalIdPlaceholder": "أدخل رقم الهوية الوطنية هنا...",
       "name": "اسم الموظف",
       "phone": "رقم الجوال",
-      "phonePlaceholder": "05XXXXXXXX",
+      "phonePlaceholder": "5XXXXXXXX",
       "email": "البريد الإلكتروني",
       "role": "الدور الوظيفي",
       "rolePlaceholder": "اختر الدور الوظيفي",
@@ -458,7 +458,7 @@
           "nationalId": "رقم الهوية الوطنية",
           "nationalIdPlaceholder": "مثال: 1234567890",
           "phone": "رقم التواصل (رقم الجوال للكفيل)",
-          "phonePlaceholder": "05XXXXXXXX",
+          "phonePlaceholder": "5XXXXXXXX",
           "employerNameAr": "اسم صاحب العمل بالعربية (الكفيل)",
           "employerNameArPlaceholder": "أدخل الاسم الكامل بالعربية هنا ...",
           "employerNameEn": "اسم صاحب العمل بالإنجليزية (الكفيل)",
@@ -472,7 +472,23 @@
           "historyEmployee": "الموظف",
           "historyAction": "نوع الإجراء",
           "historyDateTime": "التاريخ والوقت",
-          "actionStartReview": "بدء المراجعة"
+          "actionStartReview": "بدء المراجعة",
+          "successToast": "تم تحديث بيانات صاحب العمل بنجاح",
+          "errorToast": "تعذر تحديث بيانات صاحب العمل. يرجى المحاولة مرة أخرى.",
+          "loadingToast": "جاري تحديث بيانات صاحب العمل...",
+          "route": {
+            "unauthorized": "غير مصرح",
+            "invalidId": "معرّف طلب التجديد مطلوب",
+            "invalidJson": "محتوى الطلب غير صالح",
+            "nationalIdRequired": "رقم الهوية الوطنية مطلوب",
+            "nationalIdInvalid": "يجب أن يتكون رقم الهوية من 10 أرقام ويبدأ بـ 1 أو 2",
+            "phoneInvalid": "يجب أن يكون رقم التواصل رقم جوال سعودي صالحًا",
+            "employerNameArRequired": "اسم صاحب العمل بالعربية مطلوب",
+            "employerNameEnRequired": "اسم صاحب العمل بالإنجليزية مطلوب",
+            "cityRequired": "المدينة مطلوبة",
+            "passportIssuePlaceRequired": "مكان الإصدار مطلوب",
+            "unableToComplete": "تعذر تحديث بيانات صاحب العمل. يرجى المحاولة مرة أخرى."
+          }
         },
         "worker": {
           "sectionTitle": "بيانات العامل (المكفول)",
@@ -484,7 +500,7 @@
           "workerNameEn": "اسم العامل بالإنجليزية (المكفول)",
           "workerNameEnPlaceholder": "أدخل الاسم الكامل بالإنجليزية هنا ...",
           "workerPhone": "رقم التواصل (رقم الجوال للمكفول)",
-          "phonePlaceholder": "05XXXXXXXX",
+          "phonePlaceholder": "5XXXXXXXX",
           "birthDate": "تاريخ الميلاد",
           "homeAddress": "العنوان في الفلبين",
           "homeAddressPlaceholder": "أدخل العنوان في الفلبين هنا ...",
@@ -494,7 +510,27 @@
           "passportNumber": "رقم جواز السفر بالعربي",
           "passportNumberPlaceholder": "أدخل رقم جواز السفر هنا ...",
           "passportIssueDate": "تاريخ إصدار الجواز",
-          "passportExpiryDate": "تاريخ انتهاء الجواز"
+          "passportExpiryDate": "تاريخ انتهاء الجواز",
+          "successToast": "تم حفظ بيانات العامل بنجاح",
+          "errorToast": "تعذر حفظ بيانات العامل. يرجى المحاولة مرة أخرى.",
+          "loadingToast": "جاري حفظ بيانات العامل...",
+          "salaryMissingToast": "الراتب غير متوفر. يرجى تحديث الراتب قبل حفظ بيانات العامل.",
+          "route": {
+            "unauthorized": "غير مصرح",
+            "invalidId": "معرّف طلب التجديد مطلوب",
+            "invalidJson": "محتوى الطلب غير صالح",
+            "workerNameArRequired": "اسم العامل بالعربية مطلوب",
+            "workerNameEnRequired": "اسم العامل بالإنجليزية مطلوب",
+            "workerPhoneRequired": "رقم جوال العامل مطلوب",
+            "birthDateRequired": "تاريخ الميلاد مطلوب",
+            "homeAddressRequired": "العنوان في الفلبين مطلوب",
+            "passportIssuePlaceRequired": "مكان إصدار الجواز مطلوب",
+            "passportNumberRequired": "رقم جواز السفر مطلوب",
+            "passportIssueDateRequired": "تاريخ إصدار الجواز مطلوب",
+            "passportExpiryDateRequired": "تاريخ انتهاء الجواز مطلوب",
+            "salaryRequired": "الراتب مطلوب",
+            "unableToComplete": "تعذر حفظ بيانات العامل. يرجى المحاولة مرة أخرى."
+          }
         },
         "documents": {
           "sectionTitle": "المستندات",
@@ -523,8 +559,10 @@
           "createdAt": "تاريخ الإنشاء",
           "assignee": "الموظف",
           "status": "الحالة",
+          "plan": "باقة التجديد",
+          "planPrice": "سعر الباقة",
           "statusNew": "جديد",
-          "sourceEform": "E-form",
+          "sourceEform": "نموذج إلكتروني",
           "sourceManual": "يدوي",
           "relativeAgo": "منذ {time}",
           "copy": "نسخ",
@@ -623,6 +661,7 @@
         "close": "إغلاق",
         "successToast": "تم استبدال المستند بنجاح",
         "errorToast": "تعذر استبدال هذا المستند. يرجى المحاولة مرة أخرى.",
+        "loadingToast": "جاري استبدال المستند...",
         "route": {
           "unauthorized": "غير مصرح",
           "invalidId": "معرّف طلب التجديد مطلوب",
@@ -658,7 +697,7 @@
       "manualOrder": "إدخال طلب يدوي",
       "indicators": {
         "total": "إجمالي الطلبات المعالجة",
-        "eform": "طلبات من E-form",
+        "eform": "طلبات من النموذج الإلكتروني",
         "manual": "طلبات إدخال يدوي / واتساب"
       },
       "filters": {
@@ -669,7 +708,7 @@
         "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
         "orderType": "نوع الطلب",
         "typeAll": "الكل",
-        "typeEform": "E-form",
+        "typeEform": "نموذج إلكتروني",
         "typeManual": "يدوي",
         "apply": "تطبيق التصفية",
         "pickDate": "اختر التاريخ"
@@ -682,7 +721,7 @@
         "createdAt": "تاريخ الإنشاء",
         "approvedAt": "تاريخ الاعتماد",
         "type": "النوع",
-        "typeEform": "E-form",
+        "typeEform": "نموذج إلكتروني",
         "typeManual": "يدوي",
         "reviewer": "موظف المراجعة",
         "status": "حالة الطلب",
@@ -814,7 +853,7 @@
         "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
         "orderType": "نوع الطلب",
         "typeAll": "الكل",
-        "typeEform": "E-form",
+        "typeEform": "نموذج إلكتروني",
         "typeManual": "يدوي",
         "deliveryStatus": "حالة التوصيل",
         "deliveryAll": "الكل",
@@ -831,7 +870,7 @@
         "processedAt": "تاريخ المعالجة",
         "contractUploadedAt": "تاريخ رفع العقد النهائي",
         "type": "النوع",
-        "typeEform": "E-form",
+        "typeEform": "نموذج إلكتروني",
         "typeManual": "يدوي",
         "dueFees": "الرسوم المستحقة",
         "deliveryStatus": "حالة التوصيل",
@@ -888,7 +927,7 @@
         "searchPlaceholder": "البحث برقم الطلب أو اسم صاحب العمل...",
         "orderType": "نوع الطلب",
         "typeAll": "الكل",
-        "typeEform": "E-form",
+        "typeEform": "نموذج إلكتروني",
         "typeManual": "يدوي",
         "deliveryStatus": "حالة التوصيل",
         "deliveryAll": "الكل",
@@ -940,7 +979,7 @@
         "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
         "orderType": "النوع",
         "typeAll": "الكل",
-        "typeEform": "E-form",
+        "typeEform": "نموذج إلكتروني",
         "typeManual": "يدوي",
         "cancellationSource": "مصدر الإلغاء",
         "sourceAll": "الكل",
@@ -959,7 +998,7 @@
         "worker": "اسم العامل",
         "cancelledAt": "تاريخ الإلغاء",
         "type": "نوع الطلب",
-        "typeEform": "E-form",
+        "typeEform": "نموذج إلكتروني",
         "typeManual": "يدوي",
         "cancellationReason": "سبب الإلغاء",
         "by": "بواسطة",
@@ -995,7 +1034,7 @@
         "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
         "orderType": "نوع الطلب",
         "typeAll": "الكل",
-        "typeEform": "E-form",
+        "typeEform": "نموذج إلكتروني",
         "typeManual": "يدوي",
         "refundStatus": "الحالة",
         "statusAll": "الكل",
@@ -1010,7 +1049,7 @@
         "worker": "اسم العامل",
         "requestedAt": "تاريخ طلب الاسترداد",
         "type": "نوع الطلب",
-        "typeEform": "E-form",
+        "typeEform": "نموذج إلكتروني",
         "typeManual": "يدوي",
         "refundReason": "سبب الاسترداد",
         "refundMethod": "طريقة الاسترداد",
@@ -1029,6 +1068,62 @@
       "empty": {
         "title": "لا توجد طلبات استرداد",
         "description": "لم يتم تسجيل أي طلبات استرداد حتى الآن - وهذا مؤشر جيد!"
+      }
+    },
+    "Manual": {
+      "title": "إدخال طلب يدوي",
+      "subtitle": "يرجى تعبئة البيانات بشكل صحيح",
+      "stepLabel": "خطوة {number}",
+      "steps": {
+        "employer": "بيانات صاحب العمل",
+        "worker": "بيانات العامل",
+        "documents": "المستندات",
+        "review": "المراجعة والإرسال"
+      },
+      "next": "التالي",
+      "back": "السابق",
+      "submitOrder": "إرسال الطلب للتجديد",
+      "stepPlaceholder": "خطوة \"{step}\" قيد التطوير.",
+      "cityNotFound": "يرجى اختيار المدينة من القائمة",
+      "passportIssuePlaceNotFound": "يرجى اختيار مكان الإصدار من القائمة",
+      "documents": {
+        "sectionTitle": "رفع المستندات",
+        "workerId": "صورة هوية العامل (الإقامة)",
+        "passportCombined": "صورة الجواز (الصفحة الأولى + التأشيرة)",
+        "passportCombinedHint": "يرجى رفع صورة تجمع الصفحة الأولى من الجواز مع صفحة التأشيرة في ملف واحد.",
+        "uploadFormats": "* png, pdf",
+        "salary": "الراتب",
+        "salaryPlaceholder": "0.00",
+        "signatureLink": "رابط توقيع العامل وصاحب العمل",
+        "signatureLinkLabel": "رابط التوقيع",
+        "refreshSignatureLink": "تحديث رابط التوقيع",
+        "copySignatureLink": "نسخ رابط التوقيع",
+        "copied": "تم النسخ!",
+        "validation": {
+          "nationalIdImageRequired": "صورة الهوية الوطنية مطلوبة",
+          "workerIdImageRequired": "صورة هوية العامل مطلوبة",
+          "passportImageRequired": "صورة الجواز مطلوبة",
+          "exitReentryVisaRequired": "تأشيرة الخروج والعودة مطلوبة",
+          "salaryRequired": "الراتب مطلوب",
+          "salaryFormat": "أدخل مبلغ راتب صالح أكبر من صفر",
+          "fileTypeInvalid": "يُسمح فقط بملفات PNG أو PDF"
+        }
+      },
+      "review": {
+        "title": "مراجعة الطلب",
+        "subtitle": "تأكد من صحة جميع البيانات قبل إرسال الطلب",
+        "employerSection": "بيانات صاحب العمل",
+        "workerSection": "بيانات العامل",
+        "documentsSection": "المستندات المرفوعة",
+        "employerName": "اسم صاحب العمل",
+        "workerName": "اسم العامل",
+        "contactNumber": "رقم التواصل",
+        "currency": "ريال",
+        "acknowledgment": "أقر بأن جميع البيانات المدخلة صحيحة، وأوافق على إرسال الطلب للتجديد.",
+        "acknowledgmentRequired": "يرجى تأكيد صحة البيانات قبل الإرسال",
+        "incompleteDraft": "بيانات الطلب غير مكتملة. يرجى العودة وإكمال جميع الخطوات.",
+        "submit": "إرسال طلب التجديد",
+        "successToast": "تم إرسال طلب التجديد بنجاح"
       }
     }
   },
@@ -1053,7 +1148,7 @@
       "searchPlaceholder": "ابحث برقم الطلب أو اسم صاحب العمل...",
       "orderType": "نوع الطلب",
       "typeAll": "الكل",
-      "typeEform": "E-form",
+      "typeEform": "نموذج إلكتروني",
       "typeManual": "يدوي",
       "paymentMethod": "حالة الدفع",
       "paymentAll": "الكل",
@@ -1669,7 +1764,8 @@
       "apply": "تطبيق الفلترة",
       "all": "الكل",
       "statusAvailable": "متاح",
-      "statusUsed": "مستخدم"
+      "statusUsed": "مستخدم",
+      "statusDisabled": "معطل"
     },
     "table": {
       "trackingNumber": "رقم التتبع",
@@ -1679,7 +1775,9 @@
       "orderNumber": "رقم الطلب",
       "customer": "اسم العميل / الجوال",
       "usageDate": "تاريخ الاستخدام",
-      "action": "إجراء"
+      "action": "إجراء",
+      "viewOrder": "عرض تفاصيل الطلب",
+      "disableTracking": "تعطيل رقم التتبع"
     },
     "empty": {
       "title": "لا توجد أرقام تتبع",

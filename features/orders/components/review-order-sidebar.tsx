@@ -1,7 +1,13 @@
 "use client";
 
-import { AlertTriangle, Check, CircleCheck, Copy } from "lucide-react";
-import { useTranslations } from "next-intl";
+import {
+  AlertTriangle,
+  Check,
+  CircleCheck,
+  Copy,
+  SaudiRiyal,
+} from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 
 import CustomIcon from "@/components/custom-svg";
@@ -42,6 +48,7 @@ export default function ReviewOrderSidebar({
 }: ReviewOrderSidebarProps) {
   const t = useTranslations("Orders.New.Review.sidebar");
   const tStatus = useTranslations("Orders.New.Review.statuses");
+  const locale = useLocale() === "en" ? "en" : "ar";
   const { data: order } = useOrder(orderId);
   const { checklist, toggleChecklistItem, canCompleteReview } =
     useReviewChecklist(orderId);
@@ -172,7 +179,7 @@ export default function ReviewOrderSidebar({
                   ? "bg-brand-accent/10 text-brand-accent"
                   : isCompleted
                     ? "bg-brand-success-light text-brand-success"
-                    : "bg-[#E8913A]/15 text-[#E8913A]"
+                    : "bg-brand-warning/15 text-brand-warning"
               )}
             >
               <span
@@ -182,13 +189,42 @@ export default function ReviewOrderSidebar({
                     ? "bg-brand-accent"
                     : isCompleted
                       ? "bg-brand-success"
-                      : "bg-[#E8913A]"
+                      : "bg-brand-warning"
                 )}
                 aria-hidden
               />
               {statusLabel}
             </Badge>
           </InfoRow>
+
+          {isCompleted && order.plan ? (
+            <>
+              <InfoRow iconSrc="/svg/receipt-item.svg" label={t("plan")}>
+                <span className="font-semibold text-brand-black">
+                  {locale === "ar" ? order.plan.title_ar : order.plan.title_en}
+                </span>
+              </InfoRow>
+
+              <InfoRow
+                icon={<SaudiRiyal className="size-4" strokeWidth={1.75} />}
+                label={t("planPrice")}
+              >
+                <span
+                  dir="ltr"
+                  className="font-clash inline-flex items-center gap-1 font-semibold text-brand-black"
+                >
+                  <span>
+                    {new Intl.NumberFormat("en-US").format(order.plan.price)}
+                  </span>
+                  <SaudiRiyal
+                    className="size-4 shrink-0"
+                    strokeWidth={1.75}
+                    aria-hidden
+                  />
+                </span>
+              </InfoRow>
+            </>
+          ) : null}
         </dl>
       </section>
 
@@ -266,7 +302,7 @@ export default function ReviewOrderSidebar({
               <Button
                 type="button"
                 onClick={() => setPendOrderOpen(true)}
-                className="h-12 gap-2 rounded-full border-none bg-[#E8913A] px-4 font-semibold text-brand-white shadow-sm hover:bg-[#E8913A]/90"
+                className="h-12 gap-2 rounded-full border-none bg-brand-warning px-4 font-semibold text-brand-white shadow-sm hover:bg-brand-warning/90"
               >
                 <AlertTriangle className="size-5" strokeWidth={2} />
                 {t("suspend")}
@@ -391,21 +427,27 @@ function SectionTitle({
 
 function InfoRow({
   iconSrc,
+  icon,
   label,
   children,
 }: {
-  iconSrc: string;
+  iconSrc?: string;
+  icon?: ReactNode;
   label: string;
   children: ReactNode;
 }) {
   return (
     <div className="flex items-center justify-between gap-3 py-3">
       <dt className="flex min-w-0 items-center gap-2 text-sm text-brand-gris">
-        <CustomIcon
-          src={iconSrc}
-          size={15}
-          className="shrink-0 text-brand-gris"
-        />
+        {iconSrc ? (
+          <CustomIcon
+            src={iconSrc}
+            size={15}
+            className="shrink-0 text-brand-gris"
+          />
+        ) : (
+          <span className="shrink-0 text-brand-gris">{icon}</span>
+        )}
         <span>{label}</span>
       </dt>
       <dd className="min-w-0 shrink-0 text-sm">{children}</dd>

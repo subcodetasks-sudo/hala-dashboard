@@ -12,6 +12,7 @@ import ReviewFormTextField from "@/components/text-field";
 import ReviewFormSectionHeader from "@/features/orders/components/section-header";
 import {
   getPassportIssuePlaceLabel,
+  findPassportIssuePlaceId,
   usePassportIssuePlaces,
 } from "@/features/orders/queries/use-passport-issue-places";
 import type { OrderReviewDetail } from "@/features/orders/types";
@@ -26,7 +27,11 @@ type WorkerDataPanelProps = {
   /** When false, form stays read-only and edit controls are hidden. */
   canEdit?: boolean;
   onEditingChange: (editing: boolean) => void;
-  onSaved?: (values: WorkerFormValues) => void;
+  onSaved?: (
+    values: WorkerFormValues,
+    meta: { passportIssuePlaceId: number },
+  ) => void;
+  isSaving?: boolean;
 };
 
 function displayOrEmpty(value: string): string {
@@ -39,6 +44,7 @@ export default function WorkerDataPanel({
   canEdit = true,
   onEditingChange,
   onSaved,
+  isSaving = false,
 }: WorkerDataPanelProps) {
   const t = useTranslations("Orders.New.Review.worker");
   const tValidation = useTranslations("Orders.New.Review.validation");
@@ -86,6 +92,7 @@ export default function WorkerDataPanel({
     handleSubmit,
     reset,
     watch,
+    setError,
     formState: { errors },
   } = useForm<WorkerFormValues>({
     resolver: zodResolver(schema),
@@ -121,7 +128,23 @@ export default function WorkerDataPanel({
 
   const onSubmit = (values: WorkerFormValues) => {
     if (!canEdit) return;
-    onSaved?.(values);
+
+    const passportIssuePlaceId = findPassportIssuePlaceId(
+      values.passportIssuePlace,
+      issuePlaces,
+      locale,
+      order.workerPassportIssuePlaceId,
+    );
+
+    if (!passportIssuePlaceId) {
+      setError("passportIssuePlace", {
+        type: "manual",
+        message: tValidation("passportIssuePlaceRequired"),
+      });
+      return;
+    }
+
+    onSaved?.(values, { passportIssuePlaceId });
     onEditingChange(false);
   };
 
@@ -143,6 +166,7 @@ export default function WorkerDataPanel({
         onEdit={() => onEditingChange(true)}
         onSave={handleSubmit(onSubmit)}
         onCancel={handleCancel}
+        isSaving={isSaving}
       />
 
       <form

@@ -39,6 +39,14 @@ function buildSearchParams(filters: RenewalRequestsFilters): URLSearchParams {
     params.set("filter[hold_reason]", filters.holdReason);
   }
 
+  if (filters.deliveryRequired != null) {
+    params.set("filter[delivery_required]", String(filters.deliveryRequired));
+  }
+
+  if (filters.paymentType) {
+    params.set("filter[payment_type]", filters.paymentType);
+  }
+
   const search = filters.search?.trim();
   if (search) {
     params.set("search", search);
@@ -50,6 +58,14 @@ function buildSearchParams(filters: RenewalRequestsFilters): URLSearchParams {
 
   if (filters.createdTo) {
     params.set("created_to", filters.createdTo);
+  }
+
+  if (filters.paidFrom) {
+    params.set("paid_from", filters.paidFrom);
+  }
+
+  if (filters.paidTo) {
+    params.set("paid_to", filters.paidTo);
   }
 
   if (filters.expectedCompletionDate) {

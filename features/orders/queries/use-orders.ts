@@ -12,16 +12,14 @@ import type {
   OrderReviewDetail,
   OrdersFilterValues,
 } from "../types";
-import type { EmployerFormValues } from "@/features/orders/schemas/employer-schema";
-import type { WorkerFormValues } from "@/features/orders/schemas/worker-schema";
 import { orderKeys } from "@/features/orders/query-keys";
 import { mapOrderDetailToReview } from "@/features/orders/utils/map-order-detail";
+import { setSeededOrderDetail } from "@/features/orders/queries/order-detail-store";
 
 export { orderKeys };
 
 // In-memory store for list mutations (dialogs still use mock list updates)
 let ordersStore: NewOrderRow[] = [...NEW_ORDERS];
-const orderDetailsStore: Record<string, OrderReviewDetail> = {};
 
 export async function fetchOrders(filters?: OrdersFilterValues): Promise<NewOrderRow[]> {
   await new Promise((resolve) => setTimeout(resolve, 200));
@@ -44,7 +42,7 @@ function mapMockOrderDetail(
     // Keep the unique string mock id used in list links / the URL.
     id,
   };
-  orderDetailsStore[id] = detail;
+  setSeededOrderDetail(id, detail);
   return detail;
 }
 
@@ -89,7 +87,7 @@ export async function fetchOrderById(
 
   const appLocale = locale.startsWith("en") ? "en" : "ar";
   const detail = mapOrderDetailToReview(payload.data, appLocale);
-  orderDetailsStore[id] = detail;
+  setSeededOrderDetail(id, detail);
   return detail;
 }
 
@@ -119,72 +117,11 @@ export async function updateOrder(id: string, updates: Partial<NewOrderRow>): Pr
   return updatedOrder;
 }
 
-function ensureOrderDetail(id: string): OrderReviewDetail {
-  if (orderDetailsStore[id]) {
-    return orderDetailsStore[id];
-  }
-  throw new Error(`Order detail with ID ${id} not loaded`);
-}
-
-export async function updateOrderReviewDetail(
-  id: string,
-  updates: Partial<OrderReviewDetail>
-): Promise<OrderReviewDetail> {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  const current = ensureOrderDetail(id);
-  const updated = { ...current, ...updates };
-  orderDetailsStore[id] = updated;
-  return updated;
-}
-
-export async function updateOrderEmployer(
-  id: string,
-  values: EmployerFormValues,
-  locale: "ar" | "en" = "ar"
-): Promise<OrderReviewDetail> {
-  return updateOrderReviewDetail(id, {
-    employerNameAr: values.employerNameAr,
-    employerNameEn: values.employerNameEn,
-    employerName:
-      locale === "en"
-        ? values.employerNameEn || values.employerNameAr
-        : values.employerNameAr || values.employerNameEn,
-    nationalId: values.nationalId,
-    phoneLocal: values.phoneLocal,
-    city: values.city,
-    passportIssuePlace: values.passportIssuePlace || "—",
-  });
-}
-
-export async function updateOrderWorker(
-  id: string,
-  values: WorkerFormValues,
-  locale: "ar" | "en" = "ar"
-): Promise<OrderReviewDetail> {
-  return updateOrderReviewDetail(id, {
-    workerNameAr: values.workerNameAr,
-    workerNameEn: values.workerNameEn,
-    workerName:
-      locale === "en"
-        ? values.workerNameEn || values.workerNameAr
-        : values.workerNameAr || values.workerNameEn,
-    workerPhoneLocal: values.workerPhoneLocal,
-    workerBirthDate: values.birthDate,
-    workerHomeAddress: values.homeAddress,
-    workerPassportIssuePlace: values.passportIssuePlace,
-    workerPassportNumber: values.passportNumber,
-    workerPassportIssueDate: values.passportIssueDate,
-    workerPassportExpiryDate: values.passportExpiryDate,
-  });
-}
-
 /**
  * Seeds the in-memory detail store (e.g. from server-rendered initial data)
  * so employer/worker edits can update the cache before a client refetch.
  */
-export function seedOrderDetail(order: OrderReviewDetail) {
-  orderDetailsStore[order.id] = order;
-}
+export { seedOrderDetail } from "@/features/orders/queries/order-detail-store";
 
 export function useOrders(filters?: OrdersFilterValues) {
   return useQuery({
@@ -230,30 +167,3 @@ export function useUpdateOrder() {
   });
 }
 
-export function useUpdateOrderEmployer() {
-  const queryClient = useQueryClient();
-  const locale = useLocale();
-
-  return useMutation({
-    mutationFn: ({ id, values }: { id: string; values: EmployerFormValues }) =>
-      updateOrderEmployer(id, values, locale.startsWith("en") ? "en" : "ar"),
-    onSuccess: (data) => {
-      queryClient.setQueryData([...orderKeys.detail(data.id), locale], data);
-      queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
-    },
-  });
-}
-
-export function useUpdateOrderWorker() {
-  const queryClient = useQueryClient();
-  const locale = useLocale();
-
-  return useMutation({
-    mutationFn: ({ id, values }: { id: string; values: WorkerFormValues }) =>
-      updateOrderWorker(id, values, locale.startsWith("en") ? "en" : "ar"),
-    onSuccess: (data) => {
-      queryClient.setQueryData([...orderKeys.detail(data.id), locale], data);
-      queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
-    },
-  });
-}

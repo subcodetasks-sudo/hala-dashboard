@@ -268,7 +268,7 @@ await api.post<UploadResponse>("/upload", { locale, body: formData });
 ## React Query integration
 
 When fetching data for display (not form submissions), use React Query
-hooks in `features/<domain>/<slice>/queries/`:
+hooks under a `queries/` folder:
 
 ```ts
 // features/<domain>/<slice>/queries/use-items.ts
@@ -290,9 +290,64 @@ export function useItems(filters: ItemFilters) {
 For authenticated queries, pass the token via a route handler the same
 way — or call `api.get` from a server component and pass data as props.
 
+### Where the hook file lives
+
+Pick the folder from the **feature slice that owns the hook**, never from
+the endpoint URL. Hooks hitting the same backend path routinely land in
+different folders, and one folder holds hooks for many endpoints.
+
+```
+features/<domain>/queries/            # shared across the whole domain
+features/<domain>/<slice>/queries/    # owned by a single slice
+```
+
+Put it in `features/<domain>/<slice>/queries/` when it only concerns that
+slice:
+
+| Hook | Folder |
+|---|---|
+| That slice's list or stats card data | `pending/queries/use-renewal-request-held-stats.ts` |
+| A lookup only that slice's filters or badges read | `cancelled/queries/use-cancellation-reasons.ts` |
+| A mutation only that slice's UI can trigger | `verification/queries/use-upload-final-contract.ts` |
+
+Keep it in `features/<domain>/queries/` when:
+
+- Two or more slices call it — e.g. `use-process-renewal-request.ts` is
+  triggered from both `new` and `pending`.
+- It feeds the shared detail view or shared components — `use-orders.ts`,
+  `use-update-renewal-request-worker.ts`.
+- It is a domain-wide lookup — `use-cities.ts`, `use-order-statuses.ts`,
+  `use-passport-issue-places.ts`.
+- It is the generic list each slice filters differently —
+  `use-renewal-requests.ts`.
+
+Two rules that survive the move:
+
+1. **Query keys stay shared.** `features/<domain>/query-keys.ts` keeps
+   every key (`orderKeys.renewalRequestHeldStats()`) even when the hook
+   sits in a slice, so any slice can invalidate another slice's cache
+   after a state transition.
+2. **Re-export from the domain barrel.** `features/<domain>/queries/index.ts`
+   re-exports slice hooks so cross-domain consumers import one path:
+
+```ts
+// features/orders/queries/index.ts
+export * from "./use-renewal-requests";
+export * from "../pending/queries/use-renewal-request-held-stats";
+export * from "../verification/queries/use-upload-final-contract";
+```
+
+Name the file after the hook it exports (`use-hold-reasons.ts`), not after
+the route it calls.
+
 ## Checklist
 
 - [ ] Types created in `features/<domain>/types/index.ts`
+- [ ] Hook placed by owning slice, not by endpoint URL — slice-only hooks
+      in `features/<domain>/<slice>/queries/`, shared ones in
+      `features/<domain>/queries/`
+- [ ] Slice hooks re-exported from `features/<domain>/queries/index.ts`
+      and their keys kept in `features/<domain>/query-keys.ts`
 - [ ] Route handler at `app/api/<domain>/<action>/route.ts`
 - [ ] Route handler uses `api.*` from `@/lib/api` (not raw `fetch`)
 - [ ] Route handler passes `locale` from `Accept-Language`

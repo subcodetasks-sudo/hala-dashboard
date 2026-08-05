@@ -50,6 +50,19 @@ export type OrderNamedRef = {
   name_en?: string | null;
 };
 
+/**
+ * Nested plan on list/detail order payloads.
+ * Populated only for `completed` orders; otherwise `null`.
+ * `type` is an open string (e.g. `"plan_renewal"`) — no closed union in the codebase yet.
+ */
+export type OrderPlan = {
+  id: number;
+  title_ar: string;
+  title_en: string;
+  price: number;
+  type: string;
+};
+
 export type OrderCity = {
   id: number;
   name_ar: string;
@@ -214,7 +227,10 @@ export type OrderListItem = {
   delivery_status_label: string;
   service_fee: string | null;
   delivery_fee: string | null;
+  tax_fee: string | null;
   total_fee: string | null;
+  plan_id: number | null;
+  plan: OrderPlan | null;
   payment_type: OrderPaymentType | null;
   payment_type_label: string | null;
   paid_at: string | null;
@@ -223,6 +239,12 @@ export type OrderListItem = {
   processed_at: string | null;
   sent_for_authentication_at: string | null;
   final_contract_uploaded_at: string | null;
+  /** List-view aliases surfaced for the completed-orders table. */
+  contract_uploaded_at: string | null;
+  payment_date: string | null;
+  payment_method: OrderPaymentType | null;
+  payment_method_label: string | null;
+  fees_due: string | null;
   has_final_contract: boolean;
   final_contract_url: string | null;
   payment_proof_url: string | null;
@@ -284,6 +306,8 @@ export type OrderDetail = {
   service_fee: string | null;
   delivery_fee: string | null;
   total_fee: string | null;
+  plan_id: number | null;
+  plan: OrderPlan | null;
   payment_type: OrderPaymentType | null;
   payment_type_label: string | null;
   paid_at: string | null;
@@ -333,9 +357,13 @@ export type OrderListQueryParams = {
   "filter[status]"?: OrderStatus;
   "filter[source]"?: OrderApiSource;
   "filter[hold_reason]"?: HoldReasonValue;
+  "filter[delivery_required]"?: boolean;
+  "filter[payment_type]"?: OrderPaymentType;
   search?: string;
   created_from?: string;
   created_to?: string;
+  paid_from?: string;
+  paid_to?: string;
   expected_completion_date?: string;
   per_page?: number;
   page?: number;
@@ -363,9 +391,13 @@ export type RenewalRequestsFilters = {
   status?: OrderStatus;
   source?: OrderApiSource | "all";
   holdReason?: HoldReasonValue;
+  deliveryRequired?: boolean;
+  paymentType?: OrderPaymentType;
   search?: string;
   createdFrom?: string;
   createdTo?: string;
+  paidFrom?: string;
+  paidTo?: string;
   expectedCompletionDate?: string;
   perPage?: number;
   page?: number;
@@ -402,6 +434,22 @@ export type HoldRenewalRequestBody = {
 
 export type HoldRenewalRequestResponse = OrderDetailResponse;
 
+/** `PUT /admin/renewal-requests/:id/worker` */
+export type UpdateRenewalRequestWorkerBody = {
+  worker_name_ar: string;
+  worker_name_en: string;
+  worker_phone: string;
+  birth_date: string;
+  philippines_address: string;
+  worker_passport_issue_place_id: number;
+  passport_number: string;
+  passport_issue_date: string;
+  passport_expiry_date: string;
+  salary: number;
+};
+
+export type UpdateRenewalRequestWorkerResponse = OrderDetailResponse;
+
 /** Form-data `collection` values for `POST .../documents`. */
 export type DocumentCollection =
   | "national_id_image"
@@ -413,6 +461,18 @@ export type DocumentCollection =
 
 /** `POST /admin/renewal-requests/:id/documents` (multipart) */
 export type UploadRenewalDocumentResponse = OrderDetailResponse;
+
+/** `PUT /admin/renewal-requests/:id/employer` */
+export type UpdateRenewalEmployerBody = {
+  national_id: string;
+  phone: string;
+  employer_name_ar: string;
+  employer_name_en: string;
+  city_id: number;
+  passport_issue_place_id: number;
+};
+
+export type UpdateRenewalEmployerResponse = OrderDetailResponse;
 
 export type NewOrderRow = MockOrder & {
   createdAtIso: string;
@@ -691,27 +751,6 @@ export type PaymentOrdersFilterValues = {
 
 export type PaymentMethod = "online" | "manual";
 
-export type CompletedOrderRow = {
-  id: string;
-  orderNumber: string;
-  employerName: string;
-  employerPhone: string;
-  workerName: string;
-  createdDate: string;
-  createdTime: string;
-  createdAtIso: string;
-  contractUploadedDate: string;
-  contractUploadedTime: string;
-  contractUploadedAtIso: string;
-  paidDate: string;
-  paidTime: string;
-  paidAtIso: string;
-  paymentMethod: PaymentMethod;
-  dueFees: number;
-  deliveryStatus: DeliveryStatus;
-  source: OrderSource;
-};
-
 export type CompletedOrdersFilterValues = {
   fromDate: Date | undefined;
   toDate: Date | undefined;
@@ -848,8 +887,10 @@ export type OrderReviewDetail = {
   nationalId: string;
   phoneLocal: string;
   city: string;
+  cityId: number | null;
   /** Employer passport / ID place of issue (optional on website form). */
   passportIssuePlace: string;
+  passportIssuePlaceId: number | null;
   /** Locale-resolved display name (sidebar / summary). */
   workerName: string;
   workerNameAr: string;
@@ -859,6 +900,9 @@ export type OrderReviewDetail = {
   workerHomeAddress: string;
   /** Passport issue place in English (website form). */
   workerPassportIssuePlace: string;
+  workerPassportIssuePlaceId: number | null;
+  /** Contract salary from `documents.salary` — sent on worker update. */
+  salary: number | null;
   workerPassportNumber: string;
   workerPassportIssueDate: string;
   workerPassportExpiryDate: string;
@@ -876,6 +920,8 @@ export type OrderReviewDetail = {
   cancellation: OrderCancellationInfo | null;
   /** True when the order has an active/linked refund request. */
   linkedToRefund: boolean;
+  planId: number | null;
+  plan: OrderPlan | null;
   changeHistory: ChangeHistoryRow[];
   documents: OrderDocument[];
 };

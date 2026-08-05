@@ -36,9 +36,12 @@ app/[locale]/(dashboard)/<domain>/<slice>/
 features/<domain>/
   types/index.ts           # add Row + FilterValues (+ status unions)
   query-keys.ts            # add <slice>Keys (list, indicators, …)
+  queries/                 # hooks shared by two or more slices
+    index.ts               # barrel — also re-exports slice hooks
   <slice>/
     mock-data.ts           # DEFAULT filters, rows, filterFn — NO UI fields
-    queries/use-<slice>.ts # fetch + useQuery / useMutation
+    queries/               # hooks only this slice uses
+      use-<slice>.ts       # fetch + useQuery / useMutation
     components/
       <slice>-view.tsx
       <slice>-filters.tsx
@@ -82,12 +85,31 @@ const INDICATOR_CARDS = [
 ## React Query pattern
 
 - Query keys: nest under domain keys, e.g. `verificationOrderKeys.list(filters)`.
+  Keys live in the shared `features/<domain>/query-keys.ts` even for
+  slice-only hooks, so one slice can invalidate another after a transition.
 - In-memory store + simulated delay is fine until a real API exists (see
   `use-orders.ts` / `use-verification-orders.ts`).
 - Hooks to expose: list (`useX(filters)`), indicators (`useXIndicators()`),
   mutations that `invalidateQueries` for lists + indicators.
 - View: draft filters vs applied filters; only pass **applied** into
   `useQuery`.
+
+### Which `queries/` folder
+
+Choose by the slice that owns the hook, not by the endpoint it calls.
+
+| Hook | Goes in |
+|---|---|
+| This slice's list / stats cards | `<slice>/queries/` |
+| Lookup only this slice's filters or badges read | `<slice>/queries/` |
+| Mutation only this slice's UI can trigger | `<slice>/queries/` |
+| Called by two or more slices | `features/<domain>/queries/` |
+| Feeds the shared detail view or shared components | `features/<domain>/queries/` |
+| Domain-wide lookup or the generic list every slice filters | `features/<domain>/queries/` |
+
+Re-export new slice hooks from `features/<domain>/queries/index.ts` so
+other domains keep importing a single path. See `api-endpoint-wiring` for
+the full rule and worked examples.
 
 ## Reuse `@/components` first
 
@@ -192,6 +214,8 @@ Under the feature namespace include at least:
 - [ ] Types + query keys updated
 - [ ] `mock-data` has data only (no icon/bg/period UI)
 - [ ] React Query list + indicators (+ mutations if needed)
+- [ ] Slice-only hooks in `<slice>/queries/`, shared ones in
+      `features/<domain>/queries/` and re-exported from its barrel
 - [ ] View owns indicator UI config and columns
 - [ ] Filters / actions / badge reuse shared components
 - [ ] Related date filters use `minDate` / `maxDate` (and `filterFn` bounds)

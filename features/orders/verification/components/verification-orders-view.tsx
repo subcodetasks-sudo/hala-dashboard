@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import ManualOrderButton from "@/components/manual-order-button";
 import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
 import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
-import { useRenewalRequestAuthenticationSentStats } from "@/features/orders/queries/use-renewal-request-authentication-sent-stats";
+import { useRenewalRequestAuthenticationSentStats } from "@/features/orders/verification/queries/use-renewal-request-authentication-sent-stats";
 import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
 import type {
   OrderListItem,

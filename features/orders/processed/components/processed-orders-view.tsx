@@ -16,7 +16,7 @@ import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone
 import ProcessedOrderActions from "@/features/orders/processed/components/processed-order-actions";
 import ProcessedOrdersFilters from "@/features/orders/processed/components/processed-orders-filters";
 import { DEFAULT_PROCESSED_ORDERS_FILTERS } from "@/features/orders/processed/mock-data";
-import { useRenewalRequestProcessedStats } from "@/features/orders/queries/use-renewal-request-processed-stats";
+import { useRenewalRequestProcessedStats } from "@/features/orders/processed/queries/use-renewal-request-processed-stats";
 import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
 import type { OrderListItem } from "@/features/orders/types";
 import {

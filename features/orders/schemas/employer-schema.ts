@@ -8,8 +8,12 @@ export type EmployerFormValues = {
   employerNameAr: string;
   employerNameEn: string;
   city: string;
-  /** Optional — matches website form. */
   passportIssuePlace: string;
+};
+
+export type UpdateEmployerInput = EmployerFormValues & {
+  cityId: number;
+  passportIssuePlaceId: number;
 };
 
 export type EmployerValidationMessages = {
@@ -20,6 +24,7 @@ export type EmployerValidationMessages = {
   phoneRequired: string;
   phoneFormat: string;
   cityRequired: string;
+  passportIssuePlaceRequired: string;
 };
 
 export function createEmployerSchema(messages: EmployerValidationMessages) {
@@ -40,6 +45,9 @@ export function createEmployerSchema(messages: EmployerValidationMessages) {
     employerNameAr: z.string().trim().min(1, messages.employerNameArRequired),
     employerNameEn: z.string().trim().min(1, messages.employerNameEnRequired),
     city: z.string().trim().min(1, messages.cityRequired),
-    passportIssuePlace: z.string().trim(),
+    passportIssuePlace: z
+      .string()
+      .trim()
+      .min(1, messages.passportIssuePlaceRequired),
   });
 }

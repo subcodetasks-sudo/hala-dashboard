@@ -22,6 +22,11 @@ const STATUS_STYLES: Record<
       "border border-brand-blue/25 bg-brand-blue/10 rounded-xl px-4 py-3 text-brand-blue font-bold",
     icon: "text-brand-blue font-bold",
   },
+  disabled: {
+    badge:
+      "border border-destructive/25 bg-destructive/10 rounded-xl px-4 py-3 text-destructive font-bold",
+    icon: "text-destructive font-bold",
+  },
 };
 
 type TrackingStatusBadgeProps = {
@@ -35,7 +40,48 @@ export default function TrackingStatusBadge({
 }: TrackingStatusBadgeProps) {
   const t = useTranslations("Tracking.filters");
   const styles = STATUS_STYLES[status];
-  const isAvailable = status === "available";
+
+  const renderContent = () => {
+    if (status === "available") {
+      return (
+        <>
+          <CircleCheck
+            className={cn("shrink-0", styles.icon)}
+            strokeWidth={2}
+            size={16}
+            aria-hidden
+          />
+          <span>{t("statusAvailable")}</span>
+        </>
+      );
+    }
+
+    if (status === "disabled") {
+      return (
+        <>
+          <CustomIcon
+            src="/svg/disabled.svg"
+            size={16}
+            className={cn("shrink-0", styles.icon)}
+            aria-hidden
+          />
+          <span>{t("statusDisabled")}</span>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <CustomIcon
+          src="/svg/mouse-circle.svg"
+          size={16}
+          className={cn("shrink-0", styles.icon)}
+          aria-hidden
+        />
+        <span>{t("statusUsed")}</span>
+      </>
+    );
+  };
 
   return (
     <Badge
@@ -46,21 +92,7 @@ export default function TrackingStatusBadge({
         className,
       )}
     >
-      {isAvailable ? (
-        <CircleCheck
-          className={cn("size-3.5 shrink-0", styles.icon)}
-          strokeWidth={2}
-          aria-hidden
-        />
-      ) : (
-        <CustomIcon
-          src="/svg/mouse-circle.svg"
-          size={14}
-          className={cn("shrink-0", styles.icon)}
-          aria-hidden
-        />
-      )}
-      <span>{isAvailable ? t("statusAvailable") : t("statusUsed")}</span>
+      {renderContent()}
     </Badge>
   );
 }

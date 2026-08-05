@@ -51,6 +51,15 @@ function pickRefName(locale: AppLocale, ref: OrderNamedRef | null | undefined) {
   );
 }
 
+function parseSalary(value: string | null | undefined): number | null {
+  if (value == null || !value.trim()) {
+    return null;
+  }
+
+  const parsed = Number(value.replace(/,/g, "").trim());
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 function toLocalPhoneDigits(phone: string | null | undefined) {
   const digits = (phone ?? "").replace(/\D/g, "");
   if (digits.startsWith("966") && digits.length >= 12) {
@@ -175,7 +184,12 @@ export function mapOrderDetailToReview(
     nationalId: detail.employer.national_id ?? "—",
     phoneLocal: toLocalPhoneDigits(detail.employer.phone),
     city: cityName,
+    cityId: detail.employer.city_id ?? detail.employer.city?.id ?? null,
     passportIssuePlace: employerPassportIssuePlace,
+    passportIssuePlaceId:
+      detail.employer.passport_issue_place_id ??
+      detail.employer.passport_issue_place?.id ??
+      null,
     workerName: pickLocalizedName(
       locale,
       detail.worker.worker_name_en,
@@ -187,6 +201,11 @@ export function mapOrderDetailToReview(
     workerBirthDate: detail.worker.birth_date ?? "",
     workerHomeAddress: detail.worker.philippines_address ?? "—",
     workerPassportIssuePlace,
+    workerPassportIssuePlaceId:
+      detail.worker.passport_issue_place_id ??
+      detail.worker.passport_issue_place?.id ??
+      null,
+    salary: parseSalary(detail.documents.salary),
     workerPassportNumber: detail.worker.passport_number ?? "—",
     workerPassportIssueDate: detail.worker.passport_issue_date ?? "",
     workerPassportExpiryDate: detail.worker.passport_expiry_date ?? "",
@@ -205,6 +224,8 @@ export function mapOrderDetailToReview(
     hold: mapHoldInfo(detail, locale),
     cancellation: mapCancellationInfo(detail, locale),
     linkedToRefund: detail.linked_to_refund,
+    planId: detail.plan_id,
+    plan: detail.plan,
     changeHistory: detail.activities.map((activity) => ({
       id: String(activity.id),
       employee: pickRefName(locale, activity.admin ?? activity.performed_by),

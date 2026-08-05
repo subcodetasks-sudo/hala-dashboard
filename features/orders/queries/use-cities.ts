@@ -261,3 +261,27 @@ export function getCityLabel(city: City, locale: string): string {
 
   return nameEn || fallback || nameAr || String(city.id);
 }
+
+/** Resolves a combobox label back to a city id (matches ar/en labels). */
+export function findCityIdByLabel(
+  cities: City[],
+  label: string,
+  locale: string,
+): number | null {
+  const normalized = label.trim();
+  if (!normalized || normalized === "—") {
+    return null;
+  }
+
+  for (const city of cities) {
+    if (
+      getCityLabel(city, locale) === normalized ||
+      getCityLabel(city, "ar") === normalized ||
+      getCityLabel(city, "en") === normalized
+    ) {
+      return city.id;
+    }
+  }
+
+  return null;
+}

@@ -290,28 +290,26 @@ function DocumentUploadControl({
   const handleConfirm = () => {
     if (!pendingFile || isPending) return;
 
-    uploadDocument.mutate(
-      {
+    const promise = uploadDocument
+      .mutateAsync({
         renewalRequestId: orderId,
         collection,
         file: pendingFile,
-      },
-      {
-        onSuccess: () => {
-          toast.success(t("successToast"));
-          setConfirmOpen(false);
-          setPendingFile(null);
-          router.refresh();
-        },
-        onError: (error) => {
-          toast.error(
-            error instanceof Error && error.message
-              ? error.message
-              : t("errorToast"),
-          );
-        },
-      },
-    );
+      })
+      .then(() => {
+        setConfirmOpen(false);
+        setPendingFile(null);
+        router.refresh();
+      });
+
+    toast.promise(promise, {
+      loading: t("loadingToast"),
+      success: t("successToast"),
+      error: (error) =>
+        error instanceof Error && error.message
+          ? error.message
+          : t("errorToast"),
+    });
   };
 
   return (

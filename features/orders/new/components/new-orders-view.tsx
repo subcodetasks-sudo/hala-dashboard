@@ -15,7 +15,7 @@ import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone
 import OrdersFilters from "@/features/orders/components/orders-filters";
 import StartReviewAction from "@/features/orders/new/components/start-review-action";
 import { useRenewalRequests } from "@/features/orders/queries/use-renewal-requests";
-import { useRenewalRequestStats } from "@/features/orders/queries/use-renewal-request-stats";
+import { useRenewalRequestStats } from "@/features/orders/new/queries/use-renewal-request-stats";
 import { DEFAULT_ORDERS_FILTERS } from "@/features/orders/mock-data";
 import type { OrderListItem } from "@/features/orders/types";
 import {

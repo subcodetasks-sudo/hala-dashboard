@@ -8,9 +8,11 @@ import EmptyTableState from "@/components/empty-table-state";
 import InfoCard from "@/components/info-card";
 import DataTable, { type DataTableColumn } from "@/components/table";
 import TablePagination from "@/components/table-pagination";
-import { Button } from "@/components/ui/button";
+import { CopyableOrderNumber } from "@/features/orders/components/copyable-order-number";
+import { CopyablePhoneNumber } from "@/features/orders/components/copyable-phone-number";
 import AddTrackingModal from "@/features/tracking/components/add-tracking-dialog";
 import TrackingFilters from "@/features/tracking/components/tracking-filters";
+import TrackingRowActions from "@/features/tracking/components/tracking-row-actions";
 import TrackingStatusBadge from "@/features/tracking/components/tracking-status-badge";
 import {
   DEFAULT_TRACKING_FILTERS,
@@ -24,7 +26,7 @@ import type { TrackingNumberRow } from "@/features/tracking/types";
 import {
   parseTrackingFilters,
   serializeTrackingFilters,
-} from "@/features/tracking/utils/filter-query-params";
+} from "@/lib/filter-query-params";
 import { useUrlFilters } from "@/hooks/use-url-filters";
 import {
   formatIsoDateWithClockTime,
@@ -72,10 +74,10 @@ function TrackingDateCell({
   return (
     <div className="flex flex-col gap-0.5 whitespace-nowrap">
       <span className="text-brand-black">{formatted.dateLabel}</span>
-      <span className="text-xs text-brand-gris">{formatted.timeLabel}</span>
-      {relative ? (
-        <span className="text-xs text-brand-gris">{relative}</span>
-      ) : null}
+      <span className="text-xs text-brand-gris">
+        {formatted.timeLabel}
+        {relative ? ` • ${relative}` : null}
+      </span>
     </div>
   );
 }
@@ -125,7 +127,10 @@ export default function TrackingView() {
       id: "trackingNumber",
       header: t("table.trackingNumber"),
       cell: (row) => (
-        <span className="font-bold text-brand-black">{row.trackingNumber}</span>
+        <CopyableOrderNumber
+          orderNumber={row.trackingNumber}
+          className="font-bold text-brand-black"
+        />
       ),
     },
     {
@@ -156,11 +161,15 @@ export default function TrackingView() {
     {
       id: "orderNumber",
       header: t("table.orderNumber"),
-      cell: (row) => (
-        <span className="font-semibold text-brand-black">
-          {row.orderNumber || "--"}
-        </span>
-      ),
+      cell: (row) =>
+        row.orderNumber ? (
+          <CopyableOrderNumber
+            orderNumber={row.orderNumber}
+            className="font-semibold text-brand-black"
+          />
+        ) : (
+          <span className="text-brand-gris">--</span>
+        ),
     },
     {
       id: "customer",
@@ -170,7 +179,7 @@ export default function TrackingView() {
           <div className="flex flex-col gap-0.5">
             <p className="font-medium text-brand-black">{row.customerName}</p>
             {row.customerPhone ? (
-              <p className="text-xs text-brand-gris">{row.customerPhone}</p>
+              <CopyablePhoneNumber phone={row.customerPhone} />
             ) : null}
           </div>
         ) : (
@@ -194,11 +203,7 @@ export default function TrackingView() {
     {
       id: "action",
       header: t("table.action"),
-      cell: () => (
-        <Button variant="ghost" size="sm" className="h-8 px-2">
-          -
-        </Button>
-      ),
+      cell: (row) => <TrackingRowActions row={row} />,
     },
   ];
 

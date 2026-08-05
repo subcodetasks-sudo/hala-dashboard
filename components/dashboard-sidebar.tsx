@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/sidebar";
 import { useCan } from "@/features/auth/lib/use-can";
 import { useClearProfile } from "@/features/profile/queries/use-profile";
-import { useRenewalRequestStats } from "@/features/orders/queries/use-renewal-request-stats";
-import { useRenewalRequestHeldStats } from "@/features/orders/queries/use-renewal-request-held-stats";
-import { useRenewalRequestProcessedStats } from "@/features/orders/queries/use-renewal-request-processed-stats";
+import { useRenewalRequestStats } from "@/features/orders/new/queries/use-renewal-request-stats";
+import { useRenewalRequestHeldStats } from "@/features/orders/pending/queries/use-renewal-request-held-stats";
+import { useRenewalRequestProcessedStats } from "@/features/orders/processed/queries/use-renewal-request-processed-stats";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";

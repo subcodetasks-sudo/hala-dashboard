@@ -36,7 +36,7 @@ export {
   setEnumParam,
   setSearchParam,
   toIsoDate,
-} from "./filter-query-params";
+} from "@/lib/filter-query-params";
 export {
   getOrderAssigneeName,
   getOrderCancelledAtDisplay,

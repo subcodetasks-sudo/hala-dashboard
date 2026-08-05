@@ -458,7 +458,7 @@
           "nationalId": "National ID Number",
           "nationalIdPlaceholder": "Example: 1234567890",
           "phone": "Contact Number (Sponsor Mobile)",
-          "phonePlaceholder": "05XXXXXXXX",
+          "phonePlaceholder": "5XXXXXXXX",
           "employerNameAr": "Employer Name in Arabic (Sponsor)",
           "employerNameArPlaceholder": "Enter the full name in Arabic...",
           "employerNameEn": "Employer Name in English (Sponsor)",
@@ -472,7 +472,23 @@
           "historyEmployee": "Employee",
           "historyAction": "Action Type",
           "historyDateTime": "Date and Time",
-          "actionStartReview": "Start Review"
+          "actionStartReview": "Start Review",
+          "successToast": "Employer data updated successfully",
+          "errorToast": "Unable to update employer data. Please try again.",
+          "loadingToast": "Updating employer data...",
+          "route": {
+            "unauthorized": "Unauthorized",
+            "invalidId": "Renewal request ID is required",
+            "invalidJson": "Invalid request body",
+            "nationalIdRequired": "National ID is required",
+            "nationalIdInvalid": "National ID must be 10 digits starting with 1 or 2",
+            "phoneInvalid": "Contact number must be a valid Saudi mobile number",
+            "employerNameArRequired": "Employer name in Arabic is required",
+            "employerNameEnRequired": "Employer name in English is required",
+            "cityRequired": "City is required",
+            "passportIssuePlaceRequired": "Place of issue is required",
+            "unableToComplete": "Unable to update employer data. Please try again."
+          }
         },
         "worker": {
           "sectionTitle": "Worker Data (Sponsored)",
@@ -484,7 +500,7 @@
           "workerNameEn": "Worker Name in English (Sponsored)",
           "workerNameEnPlaceholder": "Enter the full name in English...",
           "workerPhone": "Contact Number (Sponsored Mobile)",
-          "phonePlaceholder": "05XXXXXXXX",
+          "phonePlaceholder": "5XXXXXXXX",
           "birthDate": "Date of Birth",
           "homeAddress": "Address in the Philippines",
           "homeAddressPlaceholder": "Enter the address in the Philippines...",
@@ -494,7 +510,27 @@
           "passportNumber": "Passport Number in Arabic",
           "passportNumberPlaceholder": "Enter the passport number here...",
           "passportIssueDate": "Passport Issue Date",
-          "passportExpiryDate": "Passport Expiry Date"
+          "passportExpiryDate": "Passport Expiry Date",
+          "successToast": "Worker data saved successfully",
+          "errorToast": "Unable to save worker data. Please try again.",
+          "loadingToast": "Saving worker data...",
+          "salaryMissingToast": "Contract salary is missing. Update salary before saving worker data.",
+          "route": {
+            "unauthorized": "Unauthorized",
+            "invalidId": "Renewal request ID is required",
+            "invalidJson": "Invalid request body",
+            "workerNameArRequired": "Worker name in Arabic is required",
+            "workerNameEnRequired": "Worker name in English is required",
+            "workerPhoneRequired": "Worker mobile number is required",
+            "birthDateRequired": "Date of birth is required",
+            "homeAddressRequired": "Address in the Philippines is required",
+            "passportIssuePlaceRequired": "Passport issue place is required",
+            "passportNumberRequired": "Passport number is required",
+            "passportIssueDateRequired": "Passport issue date is required",
+            "passportExpiryDateRequired": "Passport expiry date is required",
+            "salaryRequired": "Salary is required",
+            "unableToComplete": "Unable to save worker data. Please try again."
+          }
         },
         "documents": {
           "sectionTitle": "Documents",
@@ -523,6 +559,8 @@
           "createdAt": "Creation Date",
           "assignee": "Employee",
           "status": "Status",
+          "plan": "Renewal Plan",
+          "planPrice": "Plan Price",
           "statusNew": "New",
           "sourceEform": "E-form",
           "sourceManual": "Manual",
@@ -623,6 +661,7 @@
         "close": "Close",
         "successToast": "Document replaced successfully",
         "errorToast": "Unable to replace this document. Please try again.",
+        "loadingToast": "Replacing document...",
         "route": {
           "unauthorized": "Unauthorized",
           "invalidId": "Renewal request ID is required",
@@ -1029,6 +1068,62 @@
       "empty": {
         "title": "No refund requests",
         "description": "No refund requests have been registered yet — and that is a good sign!"
+      }
+    },
+    "Manual": {
+      "title": "Manual Order Entry",
+      "subtitle": "Please fill in the data correctly",
+      "stepLabel": "Step {number}",
+      "steps": {
+        "employer": "Employer Data",
+        "worker": "Worker Data",
+        "documents": "Documents",
+        "review": "Review and Submit"
+      },
+      "next": "Next",
+      "back": "Back",
+      "submitOrder": "Submit Renewal Request",
+      "stepPlaceholder": "The \"{step}\" step is under development.",
+      "cityNotFound": "Please select a city from the list",
+      "passportIssuePlaceNotFound": "Please select a place of issue from the list",
+      "documents": {
+        "sectionTitle": "Upload Documents",
+        "workerId": "Worker ID Photo (Iqama)",
+        "passportCombined": "Passport Photo (First Page + Visa)",
+        "passportCombinedHint": "Please upload a single file that includes the passport first page and the visa page.",
+        "uploadFormats": "* png, pdf",
+        "salary": "Salary",
+        "salaryPlaceholder": "0.00",
+        "signatureLink": "Worker and Employer Signature Link",
+        "signatureLinkLabel": "Signature link",
+        "refreshSignatureLink": "Refresh signature link",
+        "copySignatureLink": "Copy signature link",
+        "copied": "Copied!",
+        "validation": {
+          "nationalIdImageRequired": "National ID photo is required",
+          "workerIdImageRequired": "Worker ID photo is required",
+          "passportImageRequired": "Passport photo is required",
+          "exitReentryVisaRequired": "Exit and re-entry visa is required",
+          "salaryRequired": "Salary is required",
+          "salaryFormat": "Enter a valid salary greater than zero",
+          "fileTypeInvalid": "Only PNG or PDF files are allowed"
+        }
+      },
+      "review": {
+        "title": "Order Review",
+        "subtitle": "Ensure all data is correct before sending the order",
+        "employerSection": "Employer Data",
+        "workerSection": "Worker Data",
+        "documentsSection": "Uploaded Documents",
+        "employerName": "Employer Name",
+        "workerName": "Worker Name",
+        "contactNumber": "Contact Number",
+        "currency": "SAR",
+        "acknowledgment": "I acknowledge that all entered data is correct, and I agree to submit the renewal request.",
+        "acknowledgmentRequired": "Please confirm the data is correct before submitting",
+        "incompleteDraft": "Order data is incomplete. Please go back and finish all steps.",
+        "submit": "Send Renewal Request",
+        "successToast": "Renewal request submitted successfully"
       }
     }
   },
@@ -1669,7 +1764,8 @@
       "apply": "Apply Filter",
       "all": "All",
       "statusAvailable": "Available",
-      "statusUsed": "Used"
+      "statusUsed": "Used",
+      "statusDisabled": "Disabled"
     },
     "table": {
       "trackingNumber": "Tracking Number",
@@ -1679,7 +1775,9 @@
       "orderNumber": "Order Number",
       "customer": "Customer Name / Phone",
       "usageDate": "Usage Date",
-      "action": "Action"
+      "action": "Action",
+      "viewOrder": "View Order Details",
+      "disableTracking": "Disable Tracking Number"
     },
     "empty": {
       "title": "No tracking numbers found",
