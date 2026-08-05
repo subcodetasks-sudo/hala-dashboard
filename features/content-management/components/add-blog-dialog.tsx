@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import BlogContentEditor from "@/features/content-management/components/blog-content-editor";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { useAddBlog } from "@/features/content-management/queries/use-add-blog";
 import { createAddBlogSchema } from "@/features/content-management/schemas/add-blog-schema";
 import type { AddBlogFormValues } from "@/features/content-management/types";
@@ -349,7 +349,7 @@ export default function AddBlogDialog({
                   control={control}
                   name="content"
                   render={({ field }) => (
-                    <BlogContentEditor
+                    <RichTextEditor
                       id="blog-content"
                       value={field.value}
                       onChange={field.onChange}
