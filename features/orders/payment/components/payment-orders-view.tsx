@@ -50,12 +50,21 @@ function formatIndicatorValue(value: number) {
 export default function PaymentOrdersView() {
   const t = useTranslations("Orders.Payment");
   const locale = useLocale() === "en" ? "en" : "ar";
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_PAYMENT_ORDERS_FILTERS,
-      serialize: serializePaymentOrdersFilters,
-      parse: parsePaymentOrdersFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_PAYMENT_ORDERS_FILTERS,
+    serialize: serializePaymentOrdersFilters,
+    parse: parsePaymentOrdersFilters,
+  });
+
+  const handleClearFilters = () => {
+    clearFilters();
+  };
 
   const { data: rows = [], isLoading } = usePaymentOrders(appliedFilters);
   const { data: indicators } = usePaymentIndicators();
@@ -225,6 +234,7 @@ export default function PaymentOrdersView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={applyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

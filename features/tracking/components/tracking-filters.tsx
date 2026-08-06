@@ -3,7 +3,7 @@
 import { CircleCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
+import FilterActionButtons from "@/components/filter-action-buttons";
 import CustomIcon from "@/components/custom-svg";
 import DateField from "@/components/date-field";
 import SearchBar from "@/components/search-bar";
@@ -22,6 +22,7 @@ type TrackingFiltersProps = {
   value: TrackingFilterValues;
   onChange: (next: TrackingFilterValues) => void;
   onApply: () => void;
+  onClear: () => void;
 };
 
 const STATUS_ITEM_CLASS =
@@ -31,6 +32,7 @@ export default function TrackingFilters({
   value,
   onChange,
   onApply,
+  onClear,
 }: TrackingFiltersProps) {
   const t = useTranslations("Tracking.filters");
 
@@ -177,10 +179,12 @@ export default function TrackingFilters({
         />
       </div>
 
-      {/* Apply Filter Button */}
-      <div className="w-full sm:w-auto">
-        <ConfirmFilterButton label={t("apply")} onClick={onApply} />
-      </div>
+      <FilterActionButtons
+        applyLabel={t("apply")}
+        onApply={onApply}
+        onClear={onClear}
+        className="w-full sm:w-auto"
+      />
     </div>
   );
 }

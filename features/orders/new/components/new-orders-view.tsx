@@ -67,16 +67,25 @@ export default function NewOrdersView() {
     manualChangePercent,
     isLoading: isStatsLoading,
   } = useRenewalRequestStats();
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_ORDERS_FILTERS,
-      serialize: serializeOrdersFilters,
-      parse: parseOrdersFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_ORDERS_FILTERS,
+    serialize: serializeOrdersFilters,
+    parse: parseOrdersFilters,
+  });
   const [page, setPage] = useState(1);
   const handleApplyFilters = () => {
     setPage(1);
     applyFilters();
+  };
+  const handleClearFilters = () => {
+    setPage(1);
+    clearFilters();
   };
 
   const { data, isLoading, isError, error } = useRenewalRequests({
@@ -172,15 +181,7 @@ export default function NewOrdersView() {
         </span>
       ),
     },
-    {
-      id: "status",
-      header: t("table.status"),
-      cell: (row) => (
-        <Badge className="rounded-full border-transparent bg-[#E8913A]/15 px-3 py-1 text-[#E8913A]">
-          {row.status_label || t("table.statusNew")}
-        </Badge>
-      ),
-    },
+
     {
       id: "action",
       header: t("table.action"),
@@ -255,6 +256,7 @@ export default function NewOrdersView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={handleApplyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

@@ -1,11 +1,12 @@
 "use client";
 
 import { ArrowLeft, ChevronRight, SaudiRiyal, X } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
+import DocumentPreviewDialog from "@/components/document-preview-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import ManualSignatureLinkCard from "@/features/orders/manual/components/manual-signature-link-card";
@@ -39,13 +40,13 @@ type DocumentChip = {
   isMissing?: boolean;
 };
 
-function formatSalary(value: string, locale: string): string {
+function formatSalary(value: string): string {
   const amount = Number(value.replace(/,/g, ""));
   if (!Number.isFinite(amount)) {
     return value;
   }
 
-  return new Intl.NumberFormat(locale === "ar" ? "ar-SA" : "en-US", {
+  return new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 2,
   }).format(amount);
 }
@@ -66,42 +67,65 @@ function ReviewSection({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-col gap-4 rounded-2xl border border-brand-primary/10 bg-brand-background/30 p-4 sm:p-5">
-      <h3 className="flex items-center gap-2 text-sm font-bold text-brand-black">
-        <span className="inline-flex rounded-xl bg-brand-primary/10 p-2.5 text-brand-primary">
-          <CustomIcon src={iconSrc} size={18} />
-        </span>
-        <span>{title}</span>
-      </h3>
+    <section className="flex flex-col gap-4">
+      <div className="relative flex items-center justify-start">
+        <div className="absolute inset-0 flex items-center" aria-hidden>
+          <div className="w-full border-t border-brand-accent/15" />
+        </div>
+        <div className="relative flex items-center gap-1.5 bg-white pe-3 text-sm font-bold text-brand-accent">
+          <CustomIcon src={iconSrc} size={18} className="text-brand-accent" />
+          <span>{title}</span>
+        </div>
+      </div>
       {children}
     </section>
   );
 }
 
-function ReviewFieldGrid({ fields }: { fields: ReviewField[] }) {
+function ReviewFieldGrid({
+  fields,
+  columnsCount = 5,
+}: {
+  fields: ReviewField[];
+  columnsCount?: number;
+}) {
+  const gridColsClass =
+    columnsCount === 3
+      ? "sm:grid-cols-3 lg:grid-cols-3"
+      : columnsCount === 4
+        ? "sm:grid-cols-2 lg:grid-cols-4"
+        : "sm:grid-cols-3 lg:grid-cols-5";
+
   return (
-    <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {fields.map((field) => (
-        <li key={field.label} className="flex min-w-0 items-start gap-2.5">
+    <ul className={cn("grid grid-cols-1 gap-x-6 gap-y-6", gridColsClass)}>
+      {fields.map((field, index) => (
+        <li
+          key={field.label}
+          className="relative flex min-w-0 flex-col items-center justify-center text-center"
+        >
+          {index < fields.length - 1 && (
+            <div
+              className="absolute end-0 top-2 bottom-2 hidden w-px bg-black/10 sm:block"
+              aria-hidden
+            />
+          )}
           <CustomIcon
             src={field.iconSrc}
-            size={16}
-            className="mt-0.5 shrink-0 text-brand-gris"
+            size={20}
+            className="mb-1.5 text-brand-gris/70"
           />
-          <div className="min-w-0">
-            <p className="text-xs text-brand-gris">{field.label}</p>
-            <p
-              className={cn(
-                "mt-0.5 flex min-w-0 items-center gap-1 text-sm font-semibold text-brand-black",
-                field.valueClassName
-              )}
-              dir={field.dir}
-              title={field.value}
-            >
-              <span className="truncate">{field.value || "—"}</span>
-              {field.valueSuffix}
-            </p>
-          </div>
+          <p className="text-xs text-brand-gris">{field.label}</p>
+          <p
+            className={cn(
+              "mt-2 flex min-w-0 items-center justify-center gap-1 text-sm text-brand-black",
+              field.valueClassName ? field.valueClassName : "font-bold"
+            )}
+            dir={field.dir}
+            title={field.value}
+          >
+            <span className="truncate">{field.value || "—"}</span>
+            {field.valueSuffix}
+          </p>
         </li>
       ))}
     </ul>
@@ -109,6 +133,8 @@ function ReviewFieldGrid({ fields }: { fields: ReviewField[] }) {
 }
 
 function DocumentPreviewChip({ chip }: { chip: DocumentChip }) {
+  const [open, setOpen] = useState(false);
+
   const objectUrl = useMemo(() => {
     if (!chip.file) return null;
     return URL.createObjectURL(chip.file);
@@ -141,7 +167,7 @@ function DocumentPreviewChip({ chip }: { chip: DocumentChip }) {
     </>
   );
 
-  if (!objectUrl) {
+  if (!objectUrl || !chip.file) {
     return (
       <span
         className={cn(chipClassName, "bg-brand-primary/10 text-brand-primary")}
@@ -152,17 +178,27 @@ function DocumentPreviewChip({ chip }: { chip: DocumentChip }) {
   }
 
   return (
-    <a
-      href={objectUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(
-        chipClassName,
-        "bg-brand-primary/10 text-brand-primary transition-colors hover:bg-brand-primary/15"
-      )}
-    >
-      {content}
-    </a>
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className={cn(
+          chipClassName,
+          "bg-brand-primary/10 text-brand-primary transition-colors hover:bg-brand-primary/15"
+        )}
+      >
+        {content}
+      </button>
+
+      <DocumentPreviewDialog
+        open={open}
+        onOpenChange={setOpen}
+        title={chip.label}
+        src={objectUrl}
+        fileName={chip.file.name}
+        mimeType={chip.file.type}
+      />
+    </>
   );
 }
 
@@ -178,7 +214,6 @@ export default function ManualReviewStep({
   const tDocs = useTranslations("Orders.New.Review.documents");
   const tManualDocs = useTranslations("Orders.Manual.documents");
   const tManual = useTranslations("Orders.Manual");
-  const locale = useLocale();
 
   const [acknowledged, setAcknowledged] = useState(false);
   const [ackError, setAckError] = useState(false);
@@ -191,9 +226,8 @@ export default function ManualReviewStep({
     [draft.orderId]
   );
 
-  const employerFields: ReviewField[] = useMemo(() => {
+  const employerRow1: ReviewField[] = useMemo(() => {
     if (!employer) return [];
-
     return [
       {
         iconSrc: "/svg/person.svg",
@@ -205,15 +239,21 @@ export default function ManualReviewStep({
         label: tEmployer("nationalId"),
         value: employer.nationalId,
         dir: "ltr",
-        valueClassName: "font-clash",
+        valueClassName: "font-clash font-semibold",
       },
       {
         iconSrc: "/svg/phone.svg",
         label: t("contactNumber"),
         value: toSaudiPhoneInternational(employer.phoneLocal),
         dir: "ltr",
-        valueClassName: "font-clash",
+        valueClassName: "font-clash font-semibold",
       },
+    ];
+  }, [employer, t, tEmployer]);
+
+  const employerRow2: ReviewField[] = useMemo(() => {
+    if (!employer) return [];
+    return [
       {
         iconSrc: "/svg/target.svg",
         label: tEmployer("city"),
@@ -225,13 +265,10 @@ export default function ManualReviewStep({
         value: employer.passportIssuePlace,
       },
     ];
-  }, [employer, t, tEmployer]);
+  }, [employer, tEmployer]);
 
-  const workerFields: ReviewField[] = useMemo(() => {
+  const workerRow1: ReviewField[] = useMemo(() => {
     if (!worker) return [];
-
-    const salary = documents?.salary?.trim();
-
     return [
       {
         iconSrc: "/svg/person.svg",
@@ -243,35 +280,43 @@ export default function ManualReviewStep({
         label: t("contactNumber"),
         value: toSaudiPhoneInternational(worker.workerPhoneLocal),
         dir: "ltr",
-        valueClassName: "font-clash",
+        valueClassName: "font-clash font-semibold",
       },
       {
         iconSrc: "/svg/ticket.svg",
         label: tWorker("passportNumber"),
         value: worker.passportNumber,
         dir: "ltr",
-        valueClassName: "font-clash",
+        valueClassName: "font-clash font-semibold",
       },
       {
         iconSrc: "/svg/calendar.svg",
         label: tWorker("passportIssueDate"),
         value: worker.passportIssueDate,
         dir: "ltr",
-        valueClassName: "font-clash",
+        valueClassName: "font-clash font-semibold",
       },
       {
         iconSrc: "/svg/calendar.svg",
         label: tWorker("passportExpiryDate"),
         value: worker.passportExpiryDate,
         dir: "ltr",
-        valueClassName: "font-clash",
+        valueClassName: "font-clash font-semibold",
       },
+    ];
+  }, [t, tWorker, worker]);
+
+  const workerRow2: ReviewField[] = useMemo(() => {
+    if (!worker) return [];
+    const salary = documents?.salary?.trim();
+
+    return [
       {
         iconSrc: "/svg/calendar.svg",
         label: tWorker("birthDate"),
         value: worker.birthDate,
         dir: "ltr",
-        valueClassName: "font-clash",
+        valueClassName: "font-clash font-semibold",
       },
       {
         iconSrc: "/svg/home.svg",
@@ -279,16 +324,16 @@ export default function ManualReviewStep({
         value: worker.homeAddress,
       },
       {
-        iconSrc: "/svg/home.svg",
+        iconSrc: "/svg/location.svg",
         label: tWorker("passportIssuePlace"),
         value: worker.passportIssuePlace,
       },
       {
         iconSrc: "/svg/money-recive.svg",
         label: tManualDocs("salary"),
-        value: salary ? formatSalary(salary, locale) : "—",
+        value: salary ? formatSalary(salary) : "—",
         dir: "ltr",
-        valueClassName: "font-clash",
+        valueClassName: "font-clash font-semibold",
         valueSuffix: salary ? (
           <>
             <SaudiRiyal
@@ -301,7 +346,7 @@ export default function ManualReviewStep({
         ) : undefined,
       },
     ];
-  }, [documents, locale, t, tManualDocs, tWorker, worker]);
+  }, [documents, t, tManualDocs, tWorker, worker]);
 
   const documentChips: DocumentChip[] = useMemo(() => {
     if (!documents) return [];
@@ -361,18 +406,24 @@ export default function ManualReviewStep({
 
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit} noValidate>
-      <div>
+      <div className="flex flex-col gap-1 text-start">
         <h2 className="text-lg font-bold text-brand-black">{t("title")}</h2>
-        <p className="mt-1 text-sm text-brand-gris">{t("subtitle")}</p>
+        <p className="text-xs text-brand-gris">{t("subtitle")}</p>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-8">
         <ReviewSection title={t("employerSection")} iconSrc="/svg/person.svg">
-          <ReviewFieldGrid fields={employerFields} />
+          <div className="flex flex-col gap-6">
+            <ReviewFieldGrid fields={employerRow1} columnsCount={3} />
+            <ReviewFieldGrid fields={employerRow2} columnsCount={3} />
+          </div>
         </ReviewSection>
 
         <ReviewSection title={t("workerSection")} iconSrc="/svg/worker.svg">
-          <ReviewFieldGrid fields={workerFields} />
+          <div className="flex flex-col gap-6">
+            <ReviewFieldGrid fields={workerRow1} columnsCount={5} />
+            <ReviewFieldGrid fields={workerRow2} columnsCount={4} />
+          </div>
         </ReviewSection>
 
         <ReviewSection
@@ -405,8 +456,8 @@ export default function ManualReviewStep({
             setAcknowledged(checked === true);
             if (checked === true) setAckError(false);
           }}
-          className="mt-0.5 size-5 rounded-md border-brand-primary data-checked:border-brand-primary data-checked:bg-brand-primary"
-          aria-invalid={ackError && !acknowledged ? true : undefined}
+          className="mt-0.5 size-5 rounded-md border-brand-primary data-checked:border-brand-success data-checked:bg-brand-success"
+         aria-invalid={ackError && !acknowledged ? true : undefined}
         />
         <span className="text-sm font-medium leading-relaxed text-brand-black">
           {t("acknowledgment")}

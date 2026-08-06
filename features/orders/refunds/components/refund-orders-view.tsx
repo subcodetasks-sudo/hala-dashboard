@@ -60,12 +60,21 @@ const INDICATOR_CARDS = [
 export default function RefundOrdersView() {
   const t = useTranslations("Orders.Refunds");
   const locale = useLocale() === "en" ? "en" : "ar";
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_REFUND_ORDERS_FILTERS,
-      serialize: serializeRefundOrdersFilters,
-      parse: parseRefundOrdersFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_REFUND_ORDERS_FILTERS,
+    serialize: serializeRefundOrdersFilters,
+    parse: parseRefundOrdersFilters,
+  });
+
+  const handleClearFilters = () => {
+    clearFilters();
+  };
 
   const { data: rows = [], isLoading } = useRefundOrders(appliedFilters);
   const { data: indicators } = useRefundIndicators();
@@ -156,11 +165,7 @@ export default function RefundOrdersView() {
         </span>
       ),
     },
-    {
-      id: "status",
-      header: t("table.status"),
-      cell: (row) => <RefundStatusBadge status={row.status} />,
-    },
+
     {
       id: "action",
       header: t("table.action"),
@@ -217,6 +222,7 @@ export default function RefundOrdersView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={applyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

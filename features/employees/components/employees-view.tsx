@@ -74,16 +74,26 @@ export default function EmployeesView() {
   const locale = useLocale() === "en" ? "en" : "ar";
   const [isCreateOpen, setCreateOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_EMPLOYEES_FILTERS,
-      serialize: serializeEmployeesFilters,
-      parse: parseEmployeesFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_EMPLOYEES_FILTERS,
+    serialize: serializeEmployeesFilters,
+    parse: parseEmployeesFilters,
+  });
 
   const handleApplyFilters = () => {
     setPage(1);
     applyFilters();
+  };
+
+  const handleClearFilters = () => {
+    setPage(1);
+    clearFilters();
   };
 
   const {
@@ -251,6 +261,7 @@ export default function EmployeesView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={handleApplyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

@@ -28,7 +28,7 @@ import ReviewOrderSidebar from "@/features/orders/components/review-order-sideba
 import WorkerDataPanel from "@/features/orders/components/worker-data-panel";
 import type { UpdateEmployerInput } from "@/features/orders/schemas/employer-schema";
 import type { WorkerFormValues } from "@/features/orders/schemas/worker-schema";
-import type { HoldReasonValue } from "@/features/orders/types";
+import type { HoldReasonValue, OrderReviewDetail } from "@/features/orders/types";
 import {
   seedOrderDetail,
   useOrder,
@@ -78,6 +78,55 @@ function parseReviewTab(value: string | null): ReviewTabId {
     return value;
   }
   return "employer";
+}
+
+function getOrderHeaderContent(
+  order: OrderReviewDetail,
+  t: ReturnType<typeof useTranslations<"Orders.New.Review">>,
+): { title: string; subtitle: string } {
+  switch (order.status) {
+    case "held":
+      return {
+        title: t("headers.held.title"),
+        subtitle: order.hold
+          ? t("headers.held.subtitle", {
+              heldByName: order.hold.heldByName,
+              heldAtDate: order.hold.heldAtDateLabel,
+              heldAtTime: order.hold.heldAtTimeLabel,
+            })
+          : t("headers.held.subtitleFallback"),
+      };
+    case "processed":
+      return {
+        title: t("headers.processed.title"),
+        subtitle: t("headers.processed.subtitle"),
+      };
+    case "sent_for_authentication":
+      return {
+        title: t("headers.sentForAuthentication.title"),
+        subtitle: t("headers.sentForAuthentication.subtitle"),
+      };
+    case "awaiting_payment":
+      return {
+        title: t("headers.awaitingPayment.title"),
+        subtitle: t("headers.awaitingPayment.subtitle"),
+      };
+    case "completed":
+      return {
+        title: t("headers.completed.title"),
+        subtitle: t("headers.completed.subtitle"),
+      };
+    case "cancelled":
+      return {
+        title: t("headers.cancelled.title"),
+        subtitle: t("headers.cancelled.subtitle"),
+      };
+    default:
+      return {
+        title: t("title"),
+        subtitle: t("subtitle"),
+      };
+  }
 }
 
 type OrderViewProps = {
@@ -165,6 +214,7 @@ export default function OrderView({ orderId }: OrderViewProps) {
     ? HOLD_REASON_TAB[order.hold.reason]
     : undefined;
   const statusLabel = tStatus(ORDER_STATUS_LABEL_KEYS[order.status]);
+  const headerContent = getOrderHeaderContent(order, t);
 
   const handleTabChange = (value: string) => {
     setEditingTab(null);
@@ -288,10 +338,10 @@ export default function OrderView({ orderId }: OrderViewProps) {
         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-brand-black md:text-3xl">
-              {isCancelled ? t("titleCancelled") : t("title")}
+              {headerContent.title}
             </h1>
             <p className="mt-1 text-sm text-brand-gris">
-              {isCancelled ? t("subtitleCancelled") : t("subtitle")}
+              {headerContent.subtitle}
             </p>
           </div>
           <div className="flex items-center gap-2 self-start sm:self-auto">

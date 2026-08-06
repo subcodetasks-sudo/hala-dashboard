@@ -73,16 +73,25 @@ export default function ProcessedOrdersView() {
     manualChangePercent,
     isLoading: isStatsLoading,
   } = useRenewalRequestProcessedStats();
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_PROCESSED_ORDERS_FILTERS,
-      serialize: serializeProcessedOrdersFilters,
-      parse: parseProcessedOrdersFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_PROCESSED_ORDERS_FILTERS,
+    serialize: serializeProcessedOrdersFilters,
+    parse: parseProcessedOrdersFilters,
+  });
   const [page, setPage] = useState(1);
   const handleApplyFilters = () => {
     setPage(1);
     applyFilters();
+  };
+  const handleClearFilters = () => {
+    setPage(1);
+    clearFilters();
   };
 
   const { data, isLoading, isError, error } = useRenewalRequests({
@@ -208,19 +217,7 @@ export default function ProcessedOrdersView() {
         );
       },
     },
-    {
-      id: "status",
-      header: t("table.status"),
-      cell: (row) => (
-        <Badge className="inline-flex items-center gap-1.5 rounded-xl border-transparent bg-brand-success/15 p-5 text-xs font-medium text-brand-success">
-          <span
-            className="size-1.5 shrink-0 rounded-full bg-brand-success"
-            aria-hidden
-          />
-          <span>{row.status_label || t("table.statusProcessed")}</span>
-        </Badge>
-      ),
-    },
+
     {
       id: "action",
       header: t("table.action"),
@@ -294,6 +291,7 @@ export default function ProcessedOrdersView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={handleApplyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

@@ -8,6 +8,7 @@ import { useId, useRef, useState, type ChangeEvent } from "react";
 import { toast } from "sonner";
 
 import CustomIcon from "@/components/custom-svg";
+import DocumentPreviewDialog from "@/components/document-preview-dialog";
 import { Button } from "@/components/ui/button";
 import ReplaceDocumentDialog from "@/features/orders/pending/components/replace-document-dialog";
 import { useUploadRenewalDocument } from "@/features/orders/queries/use-upload-renewal-document";
@@ -92,18 +93,11 @@ export default function DocumentDataPanel({ order }: DocumentDataPanelProps) {
       <ul className="flex flex-col">
         {order.documents.map((doc, index) => {
           const date = formatUploadedAt(doc.uploadedAtIso, locale);
-          const hasIssue = doc.issue === "unclear";
-          const meta = hasIssue
-            ? t("metaIssue", {
-                issue: t("issueUnclear"),
-                date,
-                format: doc.format,
-              })
-            : t("meta", {
-                date,
-                size: doc.sizeLabel,
-                format: doc.format,
-              });
+          const meta = t("meta", {
+            date,
+            size: doc.sizeLabel,
+            format: doc.format,
+          });
 
           return (
             <li key={doc.id}>
@@ -112,7 +106,6 @@ export default function DocumentDataPanel({ order }: DocumentDataPanelProps) {
                 document={doc}
                 title={t(`types.${doc.type}`)}
                 meta={meta}
-                metaTone={hasIssue ? "warning" : "muted"}
                 viewLabel={t("view")}
                 downloadLabel={t("download")}
                 uploadLabel={t("uploadLabel")}
@@ -136,7 +129,6 @@ function DocumentRow({
   document,
   title,
   meta,
-  metaTone,
   viewLabel,
   downloadLabel,
   uploadLabel,
@@ -149,7 +141,6 @@ function DocumentRow({
   document: OrderDocument;
   title: string;
   meta: string;
-  metaTone: "muted" | "warning";
   viewLabel: string;
   downloadLabel: string;
   uploadLabel: string;
@@ -159,15 +150,16 @@ function DocumentRow({
   isLast: boolean;
 }) {
   const visual = DOCUMENT_VISUALS[document.type];
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between lg:gap-4",
+        "flex flex-col gap-4 py-4 min-[1330px]:flex-row min-[1330px]:items-start min-[1330px]:justify-between min-[1330px]:gap-4",
         !isLast && "border-b border-black/5"
       )}
     >
-      <div className="flex min-w-0 flex-1 items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-start gap-3">
         <span
           className={cn(
             "inline-flex size-11 shrink-0 items-center justify-center rounded-xl",
@@ -177,41 +169,40 @@ function DocumentRow({
         >
           <CustomIcon src={visual.iconSrc} size={20} />
         </span>
-        <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-brand-black">{title}</p>
-          <p
-            className={cn(
-              "mt-0.5 truncate text-xs font-medium",
-              metaTone === "warning" ? "text-brand-warning" : "text-brand-gris"
-            )}
-          >
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-bold wrap-break-word text-brand-black">
+            {title}
+          </p>
+          <p className="mt-0.5 text-xs font-medium wrap-break-word text-brand-gris">
             {meta}
           </p>
         </div>
       </div>
 
-      <div className="flex shrink-0 flex-wrap items-center gap-2.5 lg:justify-end">
-        <Button
-          variant="ghost"
-          asChild
-          // Soft purple — not a brand token
-          className="h-10 gap-1.5 rounded-full bg-[#F3E8FF] px-4 font-semibold text-[#7C3AED] shadow-none hover:bg-[#EDE0FF] hover:text-[#7C3AED]"
-        >
-          <a href={document.url} target="_blank" rel="noopener noreferrer">
+      <div className="flex min-w-0 flex-col gap-2.5 min-[1330px]:shrink-0 min-[1330px]:flex-row min-[1330px]:flex-wrap min-[1330px]:items-center min-[1330px]:justify-end min-[1330px]:gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5 min-[1330px]:contents">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setPreviewOpen(true)}
+            // Soft purple — not a brand token
+            className="h-10 gap-1.5 rounded-full bg-[#F3E8FF] px-4 font-semibold text-[#7C3AED] shadow-none hover:bg-[#EDE0FF] hover:text-[#7C3AED]"
+          >
             <Eye className="size-4" strokeWidth={1.75} />
             {viewLabel}
-          </a>
-        </Button>
-        <Button
-          variant="ghost"
-          asChild
-          className="h-10 gap-1.5 rounded-full bg-brand-success/10 px-4 font-semibold text-brand-success shadow-none hover:bg-brand-success/15 hover:text-brand-success"
-        >
-          <a href={document.url} download>
-            <Download className="size-4" strokeWidth={1.75} />
-            {downloadLabel}
-          </a>
-        </Button>
+          </Button>
+          <Button
+            variant="ghost"
+            asChild
+            className="h-10 gap-1.5 rounded-full bg-brand-success/10 px-4 font-semibold text-brand-success shadow-none hover:bg-brand-success/15 hover:text-brand-success"
+          >
+            <a href={document.url} download>
+              <Download className="size-4" strokeWidth={1.75} />
+              {downloadLabel}
+            </a>
+          </Button>
+        </div>
+
         {showUpload ? (
           <DocumentUploadControl
             orderId={orderId}
@@ -228,6 +219,14 @@ function DocumentRow({
           />
         ) : null}
       </div>
+
+      <DocumentPreviewDialog
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+        title={title}
+        src={document.url}
+        format={document.format}
+      />
     </div>
   );
 }
@@ -328,10 +327,10 @@ function DocumentUploadControl({
         aria-label={ariaLabel}
         disabled={isPending}
         onClick={() => inputRef.current?.click()}
-        className="inline-flex h-11 min-w-52 items-center gap-3 rounded-full border border-black/10 bg-[#F7F7F7] ps-4 pe-1.5 text-start transition-colors hover:border-brand-primary/30 hover:bg-brand-background/70 disabled:pointer-events-none disabled:opacity-60"
+        className="flex h-11 w-full min-w-0 items-center gap-3 rounded-full border border-black/10 bg-[#F7F7F7] ps-4 pe-1.5 text-start transition-colors hover:border-brand-primary/30 hover:bg-brand-background/70 disabled:pointer-events-none disabled:opacity-60 min-[1330px]:inline-flex min-[1330px]:w-auto min-[1330px]:min-w-52"
       >
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-xs font-semibold leading-tight text-brand-black">
+          <span className="block text-xs font-semibold leading-tight wrap-break-word text-brand-black">
             {fileName ?? label}
           </span>
           <span className="mt-1 block text-[0.625rem] leading-tight text-brand-gris">

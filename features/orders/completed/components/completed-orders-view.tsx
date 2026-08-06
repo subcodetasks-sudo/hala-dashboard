@@ -81,16 +81,25 @@ export default function CompletedOrdersView() {
   const locale = useLocale() === "en" ? "en" : "ar";
   const { data: stats, isLoading: isStatsLoading } =
     useRenewalRequestCompletedStats();
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_COMPLETED_ORDERS_FILTERS,
-      serialize: serializeCompletedOrdersFilters,
-      parse: parseCompletedOrdersFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_COMPLETED_ORDERS_FILTERS,
+    serialize: serializeCompletedOrdersFilters,
+    parse: parseCompletedOrdersFilters,
+  });
   const [page, setPage] = useState(1);
   const handleApplyFilters = () => {
     setPage(1);
     applyFilters();
+  };
+  const handleClearFilters = () => {
+    setPage(1);
+    clearFilters();
   };
 
   const { data, isLoading, isError, error } = useRenewalRequests({
@@ -287,6 +296,7 @@ export default function CompletedOrdersView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={handleApplyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

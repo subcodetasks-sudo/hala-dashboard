@@ -103,12 +103,17 @@ export default function TrackingView() {
   const locale = useLocale() as AppLocale;
   const [page, setPage] = useState(1);
 
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_TRACKING_FILTERS,
-      serialize: serializeTrackingFilters,
-      parse: parseTrackingFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_TRACKING_FILTERS,
+    serialize: serializeTrackingFilters,
+    parse: parseTrackingFilters,
+  });
 
   const {
     data: rows = [],
@@ -120,6 +125,11 @@ export default function TrackingView() {
   const handleApplyFilters = () => {
     setPage(1);
     applyFilters();
+  };
+
+  const handleClearFilters = () => {
+    setPage(1);
+    clearFilters();
   };
 
   const columns: DataTableColumn<TrackingNumberRow>[] = [
@@ -259,6 +269,7 @@ export default function TrackingView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={handleApplyFilters}
+          onClear={handleClearFilters}
         />
 
         {/* Data Table or Empty State */}

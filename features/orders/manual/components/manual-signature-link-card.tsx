@@ -108,7 +108,10 @@ export default function ManualSignatureLinkCard({
             {t("signatureLinkLabel")}
           </p>
           <div className="flex min-w-0 items-center gap-1.5">
-            <p className="truncate text-sm font-semibold text-brand-black">
+            <p
+              className="truncate text-sm font-semibold text-brand-black"
+              dir="ltr"
+            >
               {link}
             </p>
             <CopySignatureLinkButton

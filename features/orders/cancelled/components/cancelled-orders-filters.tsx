@@ -4,7 +4,7 @@ import { ChevronLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
+import FilterActionButtons from "@/components/filter-action-buttons";
 import DateField from "@/components/date-field";
 import SearchBar from "@/components/search-bar";
 import {
@@ -26,6 +26,7 @@ type CancelledOrdersFiltersProps = {
   value: CancelledOrdersFilterValues;
   onChange: (next: CancelledOrdersFilterValues) => void;
   onApply: () => void;
+  onClear: () => void;
 };
 
 const SELECT_ITEM_CLASS =
@@ -64,6 +65,7 @@ export default function CancelledOrdersFilters({
   value,
   onChange,
   onApply,
+  onClear,
 }: CancelledOrdersFiltersProps) {
   const t = useTranslations("Orders.Cancelled");
   const {
@@ -214,7 +216,11 @@ export default function CancelledOrdersFilters({
         </Select>
       </div>
 
-      <ConfirmFilterButton label={t("filters.apply")} onClick={onApply} />
+      <FilterActionButtons
+        applyLabel={t("filters.apply")}
+        onApply={onApply}
+        onClear={onClear}
+      />
     </div>
   );
 }

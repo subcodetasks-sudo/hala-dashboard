@@ -27,7 +27,7 @@ export const EMPTY_DOCUMENTS_VALUES: ManualDocumentsFormValues = {
   workerIdImage: null,
   passportImage: null,
   exitReentryVisa: null,
-  salary: "0.00",
+  salary: "",
 };
 
 type ManualDocumentsStepProps = {

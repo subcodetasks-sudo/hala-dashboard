@@ -3,7 +3,7 @@
 import { ChevronLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
+import FilterActionButtons from "@/components/filter-action-buttons";
 import DateField from "@/components/date-field";
 import SearchBar from "@/components/search-bar";
 import {
@@ -25,6 +25,7 @@ type InvoicesFiltersProps = {
   value: InvoicesFilterValues;
   onChange: (next: InvoicesFilterValues) => void;
   onApply: () => void;
+  onClear: () => void;
 };
 
 const SELECT_ITEM_CLASS =
@@ -82,6 +83,7 @@ export default function InvoicesFilters({
   value,
   onChange,
   onApply,
+  onClear,
 }: InvoicesFiltersProps) {
   const t = useTranslations("Invoices");
 
@@ -218,7 +220,11 @@ export default function InvoicesFilters({
         </Select>
       </div>
 
-      <ConfirmFilterButton label={t("filters.apply")} onClick={onApply} />
+      <FilterActionButtons
+        applyLabel={t("filters.apply")}
+        onApply={onApply}
+        onClear={onClear}
+      />
     </div>
   );
 }

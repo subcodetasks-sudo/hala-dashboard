@@ -20,7 +20,7 @@ import type { UpdateEmployerInput } from "@/features/orders/schemas/employer-sch
 export default function ManualOrderView() {
   const t = useTranslations("Orders.Manual");
   const tReview = useTranslations("Orders.Manual.review");
-  const [stepIndex, setStepIndex] = useState(0);
+  const [stepIndex, setStepIndex] = useState(3);
   const [furthestStepIndex, setFurthestStepIndex] = useState(0);
   const [draft, setDraft] = useState<ManualOrderDraft>({});
   const [isSubmitting, setIsSubmitting] = useState(false);

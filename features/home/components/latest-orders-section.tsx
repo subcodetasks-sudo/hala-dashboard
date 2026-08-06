@@ -1,8 +1,10 @@
 "use client";
 
+import { ChevronLeft } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
+import ClearFilterButton from "@/components/clear-filter-button";
 import ConfirmFilterButton from "@/components/confirm-filter-button";
 import CustomIcon from "@/components/custom-svg";
 import SearchBar from "@/components/search-bar";
@@ -36,6 +38,26 @@ import {
 } from "@/features/orders/utils";
 import { useProfile } from "@/features/profile/queries/use-profile";
 import { useUrlFilters } from "@/hooks/use-url-filters";
+import { cn } from "@/lib/utils";
+
+const STATUS_ITEM_CLASS =
+  "relative h-auto w-full cursor-pointer rounded-full border-none px-4 py-2.5 font-bold text-brand-black outline-none focus:text-brand-black data-highlighted:text-brand-black [&>span:first-child]:hidden [&>span:last-child]:flex [&>span:last-child]:w-full bg-[#F5F5F5] focus:bg-[#EBEBEB] data-highlighted:bg-[#EBEBEB]";
+
+const STATUS_SELECT_CONTENT_CLASS =
+  "min-w-[14rem] rounded-3xl border border-brand-primary/25 bg-white p-3 shadow-[0_0_0_1px_rgba(14,165,180,0.12),0_8px_24px_rgba(14,165,180,0.08)] ring-0";
+
+function StatusSelectOption({ label }: { label: string }) {
+  return (
+    <span className="flex w-full items-center justify-between gap-3">
+      <span className="text-brand-black">{label}</span>
+      <ChevronLeft
+        className="size-4 shrink-0 text-brand-black ltr:rotate-180 [[data-slot=select-value]_&]:hidden"
+        strokeWidth={1.75}
+        aria-hidden
+      />
+    </span>
+  );
+}
 
 /** Under-review order still assigned to the signed-in employee. */
 function isMyUnderReviewAssignment(
@@ -80,13 +102,23 @@ export default function LatestOrdersSection() {
     isLoading: isStatusesLoading,
   } = useOrderStatuses();
 
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_HOME_ORDERS_FILTERS,
-      serialize: serializeOrdersFilters,
-      parse: parseOrdersFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_HOME_ORDERS_FILTERS,
+    serialize: serializeOrdersFilters,
+    parse: parseOrdersFilters,
+  });
   const [page, setPage] = useState(1);
+
+  const handleClearFilters = () => {
+    setPage(1);
+    clearFilters();
+  };
 
   useEffect(() => {
     setPage(1);
@@ -331,23 +363,37 @@ export default function LatestOrdersSection() {
               }
               disabled={isStatusesLoading}
             >
-              <SelectTrigger className="!h-11 w-full rounded-full border-black/5 bg-[#F5F5F5] px-4 text-sm sm:w-44">
+              <SelectTrigger className="h-11! w-full rounded-full border-black/5 bg-[#F5F5F5] px-4 text-sm font-semibold text-brand-black sm:w-44">
                 <SelectValue placeholder={t("filters.status")} />
               </SelectTrigger>
-              <SelectContent position="popper" side="bottom" align="start">
-                {allStatuses.map((status) => (
-                  <SelectItem key={status.value} value={status.value}>
-                    {status.label}
-                  </SelectItem>
-                ))}
+              <SelectContent
+                position="popper"
+                side="bottom"
+                align="center"
+                className={STATUS_SELECT_CONTENT_CLASS}
+              >
+                <div className="flex flex-col gap-2">
+                  {allStatuses.map((status) => (
+                    <SelectItem
+                      key={status.value}
+                      value={status.value}
+                      className={cn(STATUS_ITEM_CLASS)}
+                    >
+                      <StatusSelectOption label={status.label} />
+                    </SelectItem>
+                  ))}
+                </div>
               </SelectContent>
             </Select>
           </div>
 
-          <ConfirmFilterButton
-            label={t("filters.apply")}
-            onClick={applyFilters}
-          />
+          <div className="flex items-end gap-2">
+            <ConfirmFilterButton
+              label={t("filters.apply")}
+              onClick={applyFilters}
+            />
+            <ClearFilterButton onClick={handleClearFilters} />
+          </div>
         </div>
       </div>
 

@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
+import FilterActionButtons from "@/components/filter-action-buttons";
 import CustomIcon from "@/components/custom-svg";
 import DateField from "@/components/date-field";
 import SearchBar from "@/components/search-bar";
@@ -24,6 +24,7 @@ type PaymentOrdersFiltersProps = {
   value: PaymentOrdersFilterValues;
   onChange: (next: PaymentOrdersFilterValues) => void;
   onApply: () => void;
+  onClear: () => void;
 };
 
 const DELIVERY_ITEM_CLASS =
@@ -91,6 +92,7 @@ export default function PaymentOrdersFilters({
   value,
   onChange,
   onApply,
+  onClear,
 }: PaymentOrdersFiltersProps) {
   const t = useTranslations("Orders.Payment");
 
@@ -199,7 +201,11 @@ export default function PaymentOrdersFilters({
         </Select>
       </div>
 
-      <ConfirmFilterButton label={t("filters.apply")} onClick={onApply} />
+      <FilterActionButtons
+        applyLabel={t("filters.apply")}
+        onApply={onApply}
+        onClear={onClear}
+      />
     </div>
   );
 }

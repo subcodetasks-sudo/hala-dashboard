@@ -107,6 +107,12 @@ export default function CitiesView() {
     setAppliedFilters(draftFilters);
   };
 
+  const handleClearFilters = () => {
+    setPage(1);
+    setDraftFilters(DEFAULT_CITY_FILTERS);
+    setAppliedFilters(DEFAULT_CITY_FILTERS);
+  };
+
   const columns: DataTableColumn<CityRow>[] = [
     {
       id: "nameAr",
@@ -256,6 +262,7 @@ export default function CitiesView() {
                 value={draftFilters}
                 onChange={setDraftFilters}
                 onApply={handleApplyFilters}
+                onClear={handleClearFilters}
               />
             </div>
 

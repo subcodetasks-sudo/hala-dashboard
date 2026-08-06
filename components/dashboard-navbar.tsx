@@ -78,7 +78,7 @@ export default function DashboardNavbar() {
                   <CustomIcon src="/svg/search.svg" size={20} className="text-white" />
                 </Button>
               </div>
-            ) : (
+            ) : pathname.startsWith("/orders/manual") ? null : (
               <Button
                 type="button"
                 onClick={() => window.location.reload()}

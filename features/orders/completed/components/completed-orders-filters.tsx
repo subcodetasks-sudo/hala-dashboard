@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
+import FilterActionButtons from "@/components/filter-action-buttons";
 import CustomIcon from "@/components/custom-svg";
 import DateField from "@/components/date-field";
 import SearchBar from "@/components/search-bar";
@@ -25,6 +25,7 @@ type CompletedOrdersFiltersProps = {
   value: CompletedOrdersFilterValues;
   onChange: (next: CompletedOrdersFilterValues) => void;
   onApply: () => void;
+  onClear: () => void;
 };
 
 const DELIVERY_ITEM_CLASS =
@@ -111,6 +112,7 @@ export default function CompletedOrdersFilters({
   value,
   onChange,
   onApply,
+  onClear,
 }: CompletedOrdersFiltersProps) {
   const t = useTranslations("Orders.Completed");
 
@@ -263,7 +265,11 @@ export default function CompletedOrdersFilters({
         </Select>
       </div>
 
-      <ConfirmFilterButton label={t("filters.apply")} onClick={onApply} />
+      <FilterActionButtons
+        applyLabel={t("filters.apply")}
+        onApply={onApply}
+        onClear={onClear}
+      />
     </div>
   );
 }

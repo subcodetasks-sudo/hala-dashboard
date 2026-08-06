@@ -43,6 +43,17 @@ export default function BlogsSection() {
     appliedFilters,
   );
 
+  const handleApplyFilters = () => {
+    setAppliedFilters(draftFilters);
+    setPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setPage(1);
+    setDraftFilters({ ...DEFAULT_BLOG_FILTERS });
+    setAppliedFilters({ ...DEFAULT_BLOG_FILTERS });
+  };
+
   const rows = data?.items ?? [];
 
   const columns: DataTableColumn<BlogRow>[] = [
@@ -157,10 +168,8 @@ export default function BlogsSection() {
           <BlogsFilters
             value={draftFilters}
             onChange={setDraftFilters}
-            onApply={() => {
-              setAppliedFilters(draftFilters);
-              setPage(1);
-            }}
+            onApply={handleApplyFilters}
+            onClear={handleClearFilters}
           />
 
           <Button

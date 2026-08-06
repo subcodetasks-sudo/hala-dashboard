@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
+import FilterActionButtons from "@/components/filter-action-buttons";
 import SearchBar from "@/components/search-bar";
 import {
   Select,
@@ -18,6 +18,7 @@ type CancelStatusesFiltersProps = {
   value: CancelStatusFilterValues;
   onChange: (next: CancelStatusFilterValues) => void;
   onApply: () => void;
+  onClear: () => void;
 };
 
 const STATUS_OPTIONS: {
@@ -48,6 +49,7 @@ export default function CancelStatusesFilters({
   value,
   onChange,
   onApply,
+  onClear,
 }: CancelStatusesFiltersProps) {
   const t = useTranslations("CancelStatuses");
 
@@ -109,10 +111,11 @@ export default function CancelStatusesFilters({
         </div>
       </div>
 
-      <ConfirmFilterButton
-        label={t("filters.apply")}
-        onClick={onApply}
-        className="w-full sm:w-auto"
+      <FilterActionButtons
+        applyLabel={t("filters.apply")}
+        onApply={onApply}
+        onClear={onClear}
+        applyClassName="w-full sm:w-auto"
       />
     </div>
   );

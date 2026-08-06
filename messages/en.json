@@ -398,7 +398,34 @@
         "title": "Review Order",
         "subtitle": "Review order details and attachments before approval for processing or suspending.",
         "titleCancelled": "Cancelled Order Data",
-        "subtitleCancelled": "The order path is frozen after cancellation — no further actions are available.",
+        "subtitleCancelled": "The order path is frozen after cancellation — no further processing actions are available.",
+        "headers": {
+          "held": {
+            "title": "Held Order Data",
+            "subtitle": "This order was suspended by: {heldByName} — {heldAtDate}, {heldAtTime}",
+            "subtitleFallback": "This order is currently suspended."
+          },
+          "processed": {
+            "title": "Processed Order Details",
+            "subtitle": "Review order details and attachments before sending for authentication."
+          },
+          "sentForAuthentication": {
+            "title": "Order Data",
+            "subtitle": "Review order details and attachments before final upload."
+          },
+          "awaitingPayment": {
+            "title": "Order Data",
+            "subtitle": "Review order details and attachments."
+          },
+          "completed": {
+            "title": "Order Data",
+            "subtitle": "Review order details and attachments."
+          },
+          "cancelled": {
+            "title": "Cancelled Order Data",
+            "subtitle": "The order path is frozen after cancellation — no further processing actions are available."
+          }
+        },
         "orderStatus": "Order Status:",
         "statusNew": "New",
         "refreshData": "Refresh Data",
@@ -1122,7 +1149,7 @@
         "acknowledgment": "I acknowledge that all entered data is correct, and I agree to submit the renewal request.",
         "acknowledgmentRequired": "Please confirm the data is correct before submitting",
         "incompleteDraft": "Order data is incomplete. Please go back and finish all steps.",
-        "submit": "Send Renewal Request",
+        "submit": "Send Request for Review",
         "successToast": "Renewal request submitted successfully"
       }
     }
@@ -1236,6 +1263,9 @@
     "previousPage": "Go Back"
   },
   "Common": {
+    "Filters": {
+      "clearFilter": "Clear filters"
+    },
     "Pagination": {
       "previous": "Previous",
       "next": "Next",
@@ -1281,6 +1311,15 @@
         "image": "Enter image URL",
         "youtube": "Enter YouTube URL"
       }
+    },
+    "DocumentPreview": {
+      "viewDocument": "View document",
+      "close": "Close",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "resetZoom": "Reset zoom",
+      "download": "Download",
+      "print": "Print"
     }
   },
   "Cities": {

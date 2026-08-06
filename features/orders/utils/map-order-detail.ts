@@ -135,8 +135,7 @@ export function mapOrderDetailToReview(
 
     const isUnclearPassport =
       detail.status === "held" &&
-      (detail.hold_reason === "missing_document" ||
-        detail.hold_reason === "unclear_document") &&
+      detail.hold_reason === "unclear_document" &&
       type === "passportFirstPage";
 
     return [

@@ -77,16 +77,25 @@ export default function CancelledOrdersView() {
     cancelledByAdminChangePercent,
     isLoading: isStatsLoading,
   } = useRenewalRequestCancelledStats();
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_CANCELLED_ORDERS_FILTERS,
-      serialize: serializeCancelledOrdersFilters,
-      parse: parseCancelledOrdersFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_CANCELLED_ORDERS_FILTERS,
+    serialize: serializeCancelledOrdersFilters,
+    parse: parseCancelledOrdersFilters,
+  });
   const [page, setPage] = useState(1);
   const handleApplyFilters = () => {
     setPage(1);
     applyFilters();
+  };
+  const handleClearFilters = () => {
+    setPage(1);
+    clearFilters();
   };
 
   const { data, isLoading, isError, error } = useRenewalRequests({
@@ -205,11 +214,7 @@ export default function CancelledOrdersView() {
         />
       ),
     },
-    {
-      id: "status",
-      header: t("table.status"),
-      cell: (row) => <CancelledStatusBadge label={row.status_label} />,
-    },
+
     {
       id: "action",
       header: t("table.action"),
@@ -283,6 +288,7 @@ export default function CancelledOrdersView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={handleApplyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

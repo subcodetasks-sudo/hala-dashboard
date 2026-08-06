@@ -63,12 +63,21 @@ function formatAmount(value: number): string {
 export default function InvoicesView() {
   const t = useTranslations("Invoices");
   const locale = useLocale() === "en" ? "en" : "ar";
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_INVOICES_FILTERS,
-      serialize: serializeInvoicesFilters,
-      parse: parseInvoicesFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_INVOICES_FILTERS,
+    serialize: serializeInvoicesFilters,
+    parse: parseInvoicesFilters,
+  });
+
+  const handleClearFilters = () => {
+    clearFilters();
+  };
 
   const { data: rows = [], isLoading } = useInvoices(appliedFilters);
   const { data: indicators } = useInvoiceIndicators();
@@ -224,6 +233,7 @@ export default function InvoicesView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={applyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

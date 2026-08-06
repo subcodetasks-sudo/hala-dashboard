@@ -78,16 +78,25 @@ export default function VerificationOrdersView() {
     finalContractsUploadedChangePercent,
     isLoading: isStatsLoading,
   } = useRenewalRequestAuthenticationSentStats();
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_VERIFICATION_ORDERS_FILTERS,
-      serialize: serializeVerificationOrdersFilters,
-      parse: parseVerificationOrdersFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_VERIFICATION_ORDERS_FILTERS,
+    serialize: serializeVerificationOrdersFilters,
+    parse: parseVerificationOrdersFilters,
+  });
   const [page, setPage] = useState(1);
   const handleApplyFilters = () => {
     setPage(1);
     applyFilters();
+  };
+  const handleClearFilters = () => {
+    setPage(1);
+    clearFilters();
   };
 
   const { data, isLoading, isError, error } = useRenewalRequests({
@@ -180,13 +189,7 @@ export default function VerificationOrdersView() {
         );
       },
     },
-    {
-      id: "status",
-      header: t("table.status"),
-      cell: (row) => (
-        <VerificationStatusBadge status={getVerificationUiStatus(row)} />
-      ),
-    },
+
     {
       id: "action",
       header: t("table.action"),
@@ -265,6 +268,7 @@ export default function VerificationOrdersView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={handleApplyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

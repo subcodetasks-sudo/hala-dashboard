@@ -107,6 +107,12 @@ export default function IssuePlacesPanel({
     setAppliedFilters(draftFilters);
   };
 
+  const handleClearFilters = () => {
+    setPage(1);
+    setDraftFilters(DEFAULT_ISSUE_PLACE_FILTERS);
+    setAppliedFilters(DEFAULT_ISSUE_PLACE_FILTERS);
+  };
+
   const columns: DataTableColumn<IssuePlaceRow>[] = [
     {
       id: "nameAr",
@@ -235,6 +241,7 @@ export default function IssuePlacesPanel({
             value={draftFilters}
             onChange={setDraftFilters}
             onApply={handleApplyFilters}
+            onClear={handleClearFilters}
           />
         </div>
 

@@ -9,7 +9,7 @@ import {
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
+import FilterActionButtons from "@/components/filter-action-buttons";
 import DateField from "@/components/date-field";
 import SearchBar from "@/components/search-bar";
 import {
@@ -30,6 +30,7 @@ type PendingOrdersFiltersProps = {
   value: PendingOrdersFilterValues;
   onChange: (next: PendingOrdersFilterValues) => void;
   onApply: () => void;
+  onClear: () => void;
 };
 
 const REASON_STYLE: Record<
@@ -98,6 +99,7 @@ export default function PendingOrdersFilters({
   value,
   onChange,
   onApply,
+  onClear,
 }: PendingOrdersFiltersProps) {
   const t = useTranslations("Orders.Pending");
   const { data: holdReasons = [], isLoading } = useHoldReasons();
@@ -198,7 +200,11 @@ export default function PendingOrdersFilters({
         </Select>
       </div>
 
-      <ConfirmFilterButton label={t("filters.apply")} onClick={onApply} />
+      <FilterActionButtons
+        applyLabel={t("filters.apply")}
+        onApply={onApply}
+        onClear={onClear}
+      />
     </div>
   );
 }

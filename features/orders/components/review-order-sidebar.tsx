@@ -51,7 +51,10 @@ export default function ReviewOrderSidebar({
   const locale = useLocale() === "en" ? "en" : "ar";
   const { data: order } = useOrder(orderId);
   const { checklist, toggleChecklistItem, canCompleteReview } =
-    useReviewChecklist(orderId);
+    useReviewChecklist(orderId, {
+      isHeld: order?.status === "held",
+      holdReason: order?.hold?.reason,
+    });
   const [copied, setCopied] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isApproveProcessOpen, setApproveProcessOpen] = useState(false);

@@ -22,6 +22,7 @@ type UseUrlFiltersResult<T> = {
   setDraftFilters: Dispatch<SetStateAction<T>>;
   appliedFilters: T;
   applyFilters: () => void;
+  clearFilters: () => void;
 };
 
 /**
@@ -66,10 +67,17 @@ export function useUrlFilters<T>({
     router.push(nextQuery ? `${pathname}?${nextQuery}` : pathname);
   }
 
+  function clearFilters(): void {
+    setDraftFilters(defaultsRef.current);
+    setAppliedFilters(defaultsRef.current);
+    router.push(pathname);
+  }
+
   return {
     draftFilters,
     setDraftFilters,
     appliedFilters,
     applyFilters,
+    clearFilters,
   };
 }

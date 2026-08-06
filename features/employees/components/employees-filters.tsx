@@ -3,7 +3,7 @@
 import { ChevronLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
+import FilterActionButtons from "@/components/filter-action-buttons";
 import DateField from "@/components/date-field";
 import SearchBar from "@/components/search-bar";
 import {
@@ -24,6 +24,7 @@ type EmployeesFiltersProps = {
   value: EmployeesFilterValues;
   onChange: (next: EmployeesFilterValues) => void;
   onApply: () => void;
+  onClear: () => void;
 };
 
 const SELECT_ITEM_CLASS =
@@ -62,6 +63,7 @@ export default function EmployeesFilters({
   value,
   onChange,
   onApply,
+  onClear,
 }: EmployeesFiltersProps) {
   const t = useTranslations("Employees");
 
@@ -175,7 +177,11 @@ export default function EmployeesFilters({
         </Select>
       </div>
 
-      <ConfirmFilterButton label={t("filters.apply")} onClick={onApply} />
+      <FilterActionButtons
+        applyLabel={t("filters.apply")}
+        onApply={onApply}
+        onClear={onClear}
+      />
     </div>
   );
 }

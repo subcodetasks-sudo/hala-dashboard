@@ -71,16 +71,25 @@ export default function PendingOrdersView() {
     missingDocumentsChangePercent,
     isLoading: isStatsLoading,
   } = useRenewalRequestHeldStats();
-  const { draftFilters, setDraftFilters, appliedFilters, applyFilters } =
-    useUrlFilters({
-      defaults: DEFAULT_PENDING_ORDERS_FILTERS,
-      serialize: serializePendingOrdersFilters,
-      parse: parsePendingOrdersFilters,
-    });
+  const {
+    draftFilters,
+    setDraftFilters,
+    appliedFilters,
+    applyFilters,
+    clearFilters,
+  } = useUrlFilters({
+    defaults: DEFAULT_PENDING_ORDERS_FILTERS,
+    serialize: serializePendingOrdersFilters,
+    parse: parsePendingOrdersFilters,
+  });
   const [page, setPage] = useState(1);
   const handleApplyFilters = () => {
     setPage(1);
     applyFilters();
+  };
+  const handleClearFilters = () => {
+    setPage(1);
+    clearFilters();
   };
 
   const { data, isLoading, isError, error } = useRenewalRequests({
@@ -170,19 +179,7 @@ export default function PendingOrdersView() {
         );
       },
     },
-    {
-      id: "status",
-      header: t("table.status"),
-      cell: (row) => (
-        <Badge className="inline-flex items-center gap-1.5 rounded-xl border-transparent bg-[#FDF2F8] p-5 text-xs font-medium text-[#D946EF]">
-          <span
-            className="size-1.5 shrink-0 rounded-full bg-[#D946EF]"
-            aria-hidden
-          />
-          <span>{row.status_label || t("table.statusPending")}</span>
-        </Badge>
-      ),
-    },
+
     {
       id: "suspendedBy",
       header: t("table.suspendedBy"),
@@ -276,6 +273,7 @@ export default function PendingOrdersView() {
           value={draftFilters}
           onChange={setDraftFilters}
           onApply={handleApplyFilters}
+          onClear={handleClearFilters}
         />
 
         <DataTable

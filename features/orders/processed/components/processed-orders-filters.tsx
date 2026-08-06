@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import ConfirmFilterButton from "@/components/confirm-filter-button";
+import FilterActionButtons from "@/components/filter-action-buttons";
 import DateField from "@/components/date-field";
 import SearchBar from "@/components/search-bar";
 import OrderTypeFilter from "@/features/orders/components/order-type-filter";
@@ -12,12 +12,14 @@ type ProcessedOrdersFiltersProps = {
   value: ProcessedOrdersFilterValues;
   onChange: (next: ProcessedOrdersFilterValues) => void;
   onApply: () => void;
+  onClear: () => void;
 };
 
 export default function ProcessedOrdersFilters({
   value,
   onChange,
   onApply,
+  onClear,
 }: ProcessedOrdersFiltersProps) {
   const t = useTranslations("Orders.Processed");
 
@@ -89,7 +91,11 @@ export default function ProcessedOrdersFilters({
         manualLabel={t("filters.typeManual")}
       />
 
-      <ConfirmFilterButton label={t("filters.apply")} onClick={onApply} />
+      <FilterActionButtons
+        applyLabel={t("filters.apply")}
+        onApply={onApply}
+        onClear={onClear}
+      />
     </div>
   );
 }
