@@ -23,8 +23,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { useConfirmPayment } from "@/features/orders/payment/queries/use-payment-orders";
+import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 const MAX_FILE_BYTES = 3 * 1024 * 1024;
@@ -53,6 +55,7 @@ export default function ConfirmPaymentDialog({
   orderNumber,
 }: ConfirmPaymentDialogProps) {
   const t = useTranslations("Orders.Payment.confirmPaymentDialog");
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploaded, setUploaded] = useState<UploadedProof | null>(null);
   const [notificationText, setNotificationText] = useState(() =>
@@ -63,6 +66,7 @@ export default function ConfirmPaymentDialog({
   const [error, setError] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const confirmPayment = useConfirmPayment();
+  const isPending = confirmPayment.isPending;
 
   const resetForm = () => {
     setUploaded((current) => {
@@ -85,7 +89,7 @@ export default function ConfirmPaymentDialog({
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
-      if (confirmPayment.isPending) return;
+      if (isPending) return;
       resetForm();
     }
     onOpenChange(nextOpen);
@@ -132,18 +136,35 @@ export default function ConfirmPaymentDialog({
     setPreviewOpen(true);
   };
 
-  const canApprove = Boolean(uploaded) && confirmed && !confirmPayment.isPending;
+  const canApprove = Boolean(uploaded) && confirmed && !isPending;
 
   const handleApprove = () => {
-    if (!canApprove) return;
+    if (!uploaded || !confirmed || !orderId || isPending) return;
 
-    confirmPayment.mutate(orderId, {
-      onSuccess: () => {
-        toast.success(t("toastSuccess"));
-        resetForm();
-        onOpenChange(false);
+    confirmPayment.mutate(
+      {
+        renewalRequestId: orderId,
+        paymentProof: uploaded.file,
+        confirmed,
+        notificationText: notificationText.trim(),
       },
-    });
+      {
+        onSuccess: () => {
+          toast.success(t("toastSuccess"));
+          resetForm();
+          onOpenChange(false);
+          router.push("/orders/completed");
+          router.refresh();
+        },
+        onError: (err) => {
+          toast.error(
+            err instanceof Error && err.message
+              ? err.message
+              : t("errorToast"),
+          );
+        },
+      },
+    );
   };
 
   return (
@@ -219,11 +240,13 @@ export default function ConfirmPaymentDialog({
               setIsDragging(false);
               handleFiles(event.dataTransfer.files);
             }}
+            disabled={isPending}
             className={cn(
               "flex w-full flex-col items-center gap-3 rounded-[1.5rem] border border-dashed bg-brand-background/80 px-4 py-8 transition-colors",
               isDragging
                 ? "border-brand-primary bg-brand-primary/10"
-                : "border-brand-primary/30 hover:border-brand-primary/50"
+                : "border-brand-primary/30 hover:border-brand-primary/50",
+              isPending && "pointer-events-none opacity-60"
             )}
           >
             <span className="flex size-14 items-center justify-center rounded-full bg-white shadow-sm">
@@ -272,6 +295,7 @@ export default function ConfirmPaymentDialog({
                     variant="ghost"
                     aria-label={t("viewFile")}
                     onClick={handleViewFile}
+                    disabled={isPending}
                     className="size-8 rounded-full p-0 text-brand-gris hover:bg-brand-primary/10 hover:text-brand-primary"
                   >
                     <Eye className="size-4" strokeWidth={1.75} />
@@ -281,6 +305,7 @@ export default function ConfirmPaymentDialog({
                     variant="ghost"
                     aria-label={t("removeFile")}
                     onClick={handleRemoveFile}
+                    disabled={isPending}
                     className="size-8 rounded-full p-0 text-brand-accent hover:bg-brand-accent/10 hover:text-brand-accent"
                   >
                     <CustomIcon
@@ -307,15 +332,22 @@ export default function ConfirmPaymentDialog({
                 value={notificationText}
                 onChange={(event) => setNotificationText(event.target.value)}
                 rows={4}
-                className="min-h-24 rounded-2xl border-black/10 bg-[#F5F5F5] px-4 py-3 text-sm leading-relaxed text-brand-black focus-visible:border-brand-primary/40"
+                disabled={isPending}
+                className="min-h-24 rounded-2xl border-black/10 bg-[#F5F5F5] px-4 py-3 text-sm leading-relaxed text-brand-black focus-visible:border-brand-primary/40 disabled:opacity-60"
               />
             </div>
           ) : null}
 
-          <label className="flex cursor-pointer items-start gap-3 text-start">
+          <label
+            className={cn(
+              "flex cursor-pointer items-start gap-3 text-start",
+              isPending && "pointer-events-none opacity-60"
+            )}
+          >
             <Checkbox
               checked={confirmed}
               onCheckedChange={(checked) => setConfirmed(checked === true)}
+              disabled={isPending}
               className="mt-0.5 size-5 rounded-full border-brand-gris/40 data-checked:border-brand-success data-checked:bg-brand-success"
             />
             <span className="text-sm font-medium leading-relaxed text-brand-black">
@@ -329,7 +361,7 @@ export default function ConfirmPaymentDialog({
             type="button"
             variant="ghost"
             onClick={() => handleOpenChange(false)}
-            disabled={confirmPayment.isPending}
+            disabled={isPending}
             className="h-12 flex-1 rounded-full bg-[#F5F5F5] font-semibold text-brand-black hover:bg-[#EBEBEB]"
           >
             {t("cancel")}
@@ -340,25 +372,31 @@ export default function ConfirmPaymentDialog({
             disabled={!canApprove}
             className="group relative h-12 flex-[1.6] items-center justify-center gap-2 overflow-hidden rounded-full border-none bg-brand-primary px-5 font-semibold text-brand-white shadow-sm transition-all duration-300 hover:bg-brand-primary/90 hover:shadow-md hover:shadow-brand-primary/20 disabled:opacity-50 active:scale-[0.98]"
           >
-            <span
-              className="confirm-chevron-start inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsLeft
-                className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
-            <span className="tracking-wide">{t("approve")}</span>
-            <span
-              className="confirm-chevron-end inline-flex items-center"
-              aria-hidden
-            >
-              <ChevronsRight
-                className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
-                strokeWidth={2.25}
-              />
-            </span>
+            {isPending ? (
+              <Spinner className="size-5 text-brand-white" />
+            ) : (
+              <>
+                <span
+                  className="confirm-chevron-start inline-flex items-center"
+                  aria-hidden
+                >
+                  <ChevronsLeft
+                    className="size-4 transition-transform duration-300 group-hover:-translate-x-0.5 ltr:rotate-180"
+                    strokeWidth={2.25}
+                  />
+                </span>
+                <span className="tracking-wide">{t("approve")}</span>
+                <span
+                  className="confirm-chevron-end inline-flex items-center"
+                  aria-hidden
+                >
+                  <ChevronsRight
+                    className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 ltr:rotate-180"
+                    strokeWidth={2.25}
+                  />
+                </span>
+              </>
+            )}
           </Button>
         </div>
       </DialogContent>

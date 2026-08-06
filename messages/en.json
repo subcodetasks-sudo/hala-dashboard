@@ -154,6 +154,7 @@
     },
     "table": {
       "employeeNumber": "Employee Number",
+      "idNumber": "ID Number",
       "employee": "Employee Name / Mobile",
       "email": "Email",
       "role": "Job Role",
@@ -238,9 +239,9 @@
       "errorToastCreate": "Unable to add employee. Please try again.",
       "validation": {
         "idNumberRequired": "ID number is required",
-        "idNumberFormat": "ID number must be 10 digits starting with 1 or 2",
+        "idNumberFormat": "ID number must be 10 digits",
         "nationalIdRequired": "National ID is required",
-        "nationalIdFormat": "National ID must be 10 digits starting with 1 or 2",
+        "nationalIdFormat": "National ID must be 10 digits",
         "nameRequired": "Employee name is required",
         "phoneRequired": "Mobile number is required",
         "phoneFormat": "Enter a valid Saudi mobile number (10 digits starting with 05)",
@@ -255,6 +256,166 @@
         "confirmPasswordRequired": "Confirm password is required",
         "passwordsMismatch": "Passwords do not match"
       }
+    }
+  },
+  "Permissions": {
+    "title": "Permissions",
+    "description": "Manage job roles, assign permissions, and control what each role can access in the system.",
+    "listTitle": "Permissions List",
+    "addRole": "Add New Role",
+    "periodWeek": "This week",
+    "indicators": {
+      "totalRoles": "Total Roles",
+      "activeRoles": "Active Roles",
+      "totalEmployees": "Total Employees"
+    },
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by job role...",
+      "role": "Role",
+      "roleAll": "All",
+      "status": "Status",
+      "statusAll": "All",
+      "statusActive": "Active",
+      "statusInactive": "Stopped",
+      "apply": "Apply Filter"
+    },
+    "roles": {
+      "systemAdmin": {
+        "name": "System Admin",
+        "description": "Full access to all system pages and actions"
+      },
+      "review": {
+        "name": "Reviewer Employee",
+        "description": "Review new requests and approve or suspend them"
+      },
+      "dataProcessing": {
+        "name": "Data Entry Employee",
+        "description": "Create requests and enter employer and worker data"
+      },
+      "contractFollowUp": {
+        "name": "Contract Employee",
+        "description": "Review contracts and send them for authentication"
+      },
+      "contractApproval": {
+        "name": "Contract Approval Employee",
+        "description": "Upload the final contract and activate the payment stage"
+      },
+      "contractPayments": {
+        "name": "Contract / Payment Employee",
+        "description": "Confirm payments and view invoices"
+      }
+    },
+    "loadError": "Unable to load roles. Please try again.",
+    "table": {
+      "role": "Job Roles",
+      "permissionsCount": "{count} permissions",
+      "permissionsCountHeader": "Permissions Count",
+      "status": "Role Status",
+      "statusActive": "Active",
+      "statusInactive": "Stopped",
+      "updatedAt": "Last Update",
+      "action": "Action",
+      "view": "View {name}",
+      "edit": "Edit {name}",
+      "deactivate": "Deactivate {name}"
+    },
+    "empty": {
+      "title": "No job roles yet",
+      "description": "No roles have been created yet. Start by adding the first role and defining its permissions."
+    },
+    "disableDialog": {
+      "title": "Disable Job Role",
+      "heading": "Disable Job Role!",
+      "description": "Are you sure you want to disable this role? This may affect the employees linked to it.",
+      "permissionsCount": "Permissions Count",
+      "roleName": "Role Name",
+      "confirm": "Confirm Disable",
+      "cancel": "Back and Cancel",
+      "close": "Close",
+      "successToast": "Job role disabled successfully."
+    },
+    "Details": {
+      "title": "Role Permissions: {roleName}",
+      "back": "Back",
+      "close": "Close",
+      "disable": "Disable Role",
+      "editPermissions": "Edit Permissions",
+      "info": {
+        "title": "Role Information",
+        "permissionsCount": "Permissions Count",
+        "status": "Status",
+        "updatedAt": "Last Update"
+      },
+      "permissions": {
+        "title": "Permissions Linked to the Role",
+        "enabledCount": "{count} enabled permissions",
+        "empty": "No permissions are linked to this role."
+      }
+    },
+    "Create": {
+      "breadcrumbHome": "Home",
+      "breadcrumbPermissions": "Permissions",
+      "breadcrumbCurrent": "Add New Role",
+      "title": "Add New Role",
+      "subtitle": "Create a new job role",
+      "save": "Save and Create Role",
+      "selectAll": "Select All",
+      "activateAll": "Activate all permissions for this role",
+      "permissionsTitle": "Permissions List",
+      "fields": {
+        "name": "Role Name",
+        "namePlaceholder": "Example: Follow-up employee",
+        "description": "Role Description",
+        "descriptionPlaceholder": "Brief description of this role's tasks...",
+        "status": "Role Status",
+        "statusActive": "Active",
+        "statusInactive": "Inactive"
+      },
+      "emptyPermissions": "No permissions available to assign.",
+      "validation": {
+        "nameRequired": "Role name is required",
+        "descriptionRequired": "Role description is required",
+        "statusRequired": "Role status is required"
+      },
+      "successToast": "Role created successfully.",
+      "errorToast": "Unable to create role. Please try again."
+    },
+    "Edit": {
+      "title": "Edit Role",
+      "subtitle": "Update role details and permissions",
+      "save": "Save Changes",
+      "close": "Close",
+      "selectAll": "Select All",
+      "activateAll": "Activate all permissions for this role",
+      "permissionsTitle": "Permissions List",
+      "fields": {
+        "name": "Role Name",
+        "namePlaceholder": "Example: Follow-up employee",
+        "description": "Role Description",
+        "descriptionPlaceholder": "Brief description of this role's tasks...",
+        "status": "Role Status",
+        "statusActive": "Active",
+        "statusInactive": "Inactive"
+      },
+      "emptyPermissions": "No permissions available to assign.",
+      "validation": {
+        "nameRequired": "Role name is required",
+        "descriptionRequired": "Role description is required",
+        "statusRequired": "Role status is required"
+      },
+      "successToast": "Role updated successfully.",
+      "errorToast": "Unable to update role. Please try again."
+    },
+    "route": {
+      "unauthorized": "Unauthorized",
+      "invalidJson": "Invalid request body",
+      "invalidRoleId": "Role ID is required",
+      "unableToFetchGroupedPermissions": "Unable to load permissions. Please try again.",
+      "unableToFetchRoles": "Unable to load roles. Please try again.",
+      "unableToFetchRole": "Unable to load role details. Please try again.",
+      "unableToCreateRole": "Unable to create role. Please try again.",
+      "unableToUpdateRole": "Unable to update role. Please try again."
     }
   },
   "Orders": {
@@ -604,9 +765,19 @@
           "reviewed": "Processed",
           "suspend": "Suspend Order",
           "showContract": "View Contract",
+          "confirmPayment": "Confirm Payment",
           "sendForAuth": "Send for Authentication",
           "uploadFinalContract": "Upload Final Contract",
+          "viewFinalContract": "View Final Contract Copy",
+          "qrCode": "QR Code",
           "cities": "Cities and Issuance places"
+        },
+        "contractQrCodeDialog": {
+          "title": "Contract QR Code",
+          "description": "Scan this QR code to open the contract link.",
+          "close": "Close",
+          "generating": "Generating QR code…",
+          "unavailable": "Contract link is not available for this order."
         },
         "validation": {
           "employerNameArRequired": "Employer name in Arabic is required",
@@ -769,6 +940,8 @@
         "close": "Close",
         "print": "Print",
         "downloadPdf": "Download PDF",
+        "downloadingPdf": "Preparing PDF…",
+        "downloadError": "Unable to download the contract PDF. Please try again.",
         "confirmSend": "Confirm Send for Authentication"
       },
       "sendForAuthDialog": {
@@ -927,7 +1100,16 @@
         "confirmLinked": "It has been confirmed that the proof of payment is linked to the correct order.",
         "cancel": "Back and Cancel",
         "approve": "Approve Payment",
-        "toastSuccess": "Payment confirmed successfully!"
+        "toastSuccess": "Payment confirmed successfully!",
+        "errorToast": "Unable to confirm payment. Please try again.",
+        "route": {
+          "unauthorized": "Unauthorized",
+          "invalidId": "Renewal request ID is required",
+          "invalidForm": "Invalid payment confirmation form data",
+          "fileRequired": "A payment proof image is required",
+          "confirmedRequired": "Payment confirmation checkbox is required",
+          "unableToComplete": "Unable to confirm payment. Please try again."
+        }
       },
       "empty": {
         "title": "No payment orders",
@@ -1265,7 +1447,8 @@
   },
   "Common": {
     "Filters": {
-      "clearFilter": "Clear filters"
+      "clearFilter": "Clear filters",
+      "clearFilterTooltip": "Clear all filters"
     },
     "Pagination": {
       "previous": "Previous",

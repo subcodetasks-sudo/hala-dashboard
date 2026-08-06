@@ -60,6 +60,14 @@ function buildSearchParams(filters: RenewalRequestsFilters): URLSearchParams {
     params.set("created_to", filters.createdTo);
   }
 
+  if (filters.finalContractFrom) {
+    params.set("final_contract_from", filters.finalContractFrom);
+  }
+
+  if (filters.finalContractTo) {
+    params.set("final_contract_to", filters.finalContractTo);
+  }
+
   if (filters.paidFrom) {
     params.set("paid_from", filters.paidFrom);
   }

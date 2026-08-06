@@ -6,7 +6,6 @@ import { useLocale } from "next-intl";
 import { seedOrderDetail } from "@/features/orders/queries/use-orders";
 import {
   orderKeys,
-  paymentOrderKeys,
   verificationOrderKeys,
 } from "@/features/orders/query-keys";
 import type {
@@ -76,9 +75,6 @@ export function useUploadFinalContract() {
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
       queryClient.invalidateQueries({
         queryKey: verificationOrderKeys.lists(),
-      });
-      queryClient.invalidateQueries({
-        queryKey: paymentOrderKeys.lists(),
       });
       queryClient.invalidateQueries({
         queryKey: orderKeys.renewalRequestAuthenticationSentStats(),

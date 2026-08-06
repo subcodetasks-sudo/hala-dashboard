@@ -143,6 +143,7 @@ function ProcessedInlineActions({
       <ViewDownloadContractDialog
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
+        orderId={orderId}
         orderNumber={orderNumber}
       />
 
@@ -200,6 +201,7 @@ function VerificationInlineActions({
       <ViewDownloadContractDialog
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
+        orderId={orderId}
         orderNumber={orderNumber}
         confirmLabel={t("confirmUploadFinalContract")}
         onConfirmSend={() => {

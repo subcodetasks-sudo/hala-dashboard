@@ -112,11 +112,11 @@ export default function EmployeesView() {
 
   const columns: DataTableColumn<EmployeeRow>[] = [
     {
-      id: "employeeNumber",
-      header: t("table.employeeNumber"),
+      id: "idNumber",
+      header: t("table.idNumber"),
       cell: (row) => (
         <CopyableEmployeeNumber
-          employeeNumber={row.employeeNumber}
+          employeeNumber={row.idNumber || row.employeeNumber || "—"}
           className="font-semibold text-brand-black"
         />
       ),

@@ -3,8 +3,6 @@ import { z } from "zod";
 import { toSaudiPhoneLocal } from "@/features/orders/mock-data";
 
 export type EmployeeFormMessages = {
-  idNumberRequired: string;
-  idNumberFormat: string;
   nationalIdRequired: string;
   nationalIdFormat: string;
   nameRequired: string;
@@ -23,9 +21,10 @@ export type EmployeeFormMessages = {
 };
 
 export type EmployeeFormValues = {
-  /** Backend `id_number` (رقم الهوية). */
-  idNumber: string;
-  /** Backend `national_id` (رقم الهوية الوطنية). */
+  /**
+   * Backend `national_id` / `id_number` (رقم الهوية الوطنية).
+   * Sent as both fields on create/update — the form only exposes one ID input.
+   */
   nationalId: string;
   name: string;
   phone: string;
@@ -43,10 +42,9 @@ type CreateEmployeeFormSchemaOptions = {
 };
 
 /**
- * Saudi ID: exactly 10 digits starting with 1 or 2 (`/^[12]\d{9}$/`).
- * Used for both `id_number` and `national_id`.
+ * 10-digit National / Employee ID (`/^\d{10}$/`).
  */
-const SAUDI_ID_REGEX = /^[12]\d{9}$/;
+const SAUDI_ID_REGEX = /^\d{10}$/;
 
 const PASSWORD_HAS_UPPERCASE = /[A-Z]/;
 const PASSWORD_HAS_LOWERCASE = /[a-z]/;
@@ -121,10 +119,6 @@ export function createEmployeeFormSchema({
 
   return z
     .object({
-      idNumber: saudiIdField(
-        messages.idNumberRequired,
-        messages.idNumberFormat,
-      ),
       nationalId: saudiIdField(
         messages.nationalIdRequired,
         messages.nationalIdFormat,
@@ -148,9 +142,14 @@ export function createEmployeeFormSchema({
       confirmPassword: confirmPasswordField,
     })
     .superRefine((values, ctx) => {
+      const trimmedPass = values.password ? values.password.trim() : "";
+      const trimmedConfirm = values.confirmPassword
+        ? values.confirmPassword.trim()
+        : "";
+
       if (passwordOptional) {
-        const hasPassword = values.password.length > 0;
-        const hasConfirm = values.confirmPassword.length > 0;
+        const hasPassword = trimmedPass.length > 0;
+        const hasConfirm = trimmedConfirm.length > 0;
 
         if (hasPassword && !hasConfirm) {
           ctx.addIssue({
@@ -158,14 +157,16 @@ export function createEmployeeFormSchema({
             message: messages.confirmPasswordRequired,
             path: ["confirmPassword"],
           });
+          return;
         }
 
-        if (hasPassword && values.password !== values.confirmPassword) {
+        if (hasPassword && trimmedPass !== trimmedConfirm) {
           ctx.addIssue({
             code: "custom",
             message: messages.passwordsMismatch,
             path: ["confirmPassword"],
           });
+          return;
         }
 
         if (!hasPassword && hasConfirm) {
@@ -174,12 +175,13 @@ export function createEmployeeFormSchema({
             message: messages.passwordRequired,
             path: ["password"],
           });
+          return;
         }
 
         return;
       }
 
-      if (values.password !== values.confirmPassword) {
+      if (trimmedPass !== trimmedConfirm) {
         ctx.addIssue({
           code: "custom",
           message: messages.passwordsMismatch,

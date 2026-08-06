@@ -14,6 +14,7 @@ export * from "../processed/queries/use-send-for-authentication";
 export * from "../verification/queries/use-renewal-request-authentication-sent-stats";
 export * from "../verification/queries/use-upload-final-contract";
 export * from "../payment/queries/use-renewal-request-payment-stats";
+export * from "../payment/queries/use-payment-orders";
 export * from "../completed/queries/use-renewal-request-completed-stats";
 export * from "../cancelled/queries/use-renewal-request-cancelled-stats";
 export * from "../cancelled/queries/use-cancellation-reasons";

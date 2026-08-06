@@ -3,7 +3,6 @@ import type {
   CompletedOrdersFilterValues,
   OrdersFilterValues,
   PassportIssuePlacesListFilters,
-  PaymentOrdersFilterValues,
   RefundOrdersFilterValues,
   RenewalRequestsFilters,
   VerificationOrdersFilterValues,
@@ -52,14 +51,6 @@ export const verificationOrderKeys = {
   list: (filters?: VerificationOrdersFilterValues) =>
     [...verificationOrderKeys.lists(), { filters }] as const,
   indicators: () => [...verificationOrderKeys.all, "indicators"] as const,
-};
-
-export const paymentOrderKeys = {
-  all: [...orderKeys.all, "payment"] as const,
-  lists: () => [...paymentOrderKeys.all, "list"] as const,
-  list: (filters?: PaymentOrdersFilterValues) =>
-    [...paymentOrderKeys.lists(), { filters }] as const,
-  indicators: () => [...paymentOrderKeys.all, "indicators"] as const,
 };
 
 export const completedOrderKeys = {

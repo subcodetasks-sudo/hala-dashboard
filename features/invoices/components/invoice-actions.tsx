@@ -105,6 +105,7 @@ export default function InvoiceActions({
       <ViewDownloadContractDialog
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
+        orderId={orderId}
         orderNumber={orderNumber}
         showConfirmAction={false}
       />

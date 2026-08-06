@@ -225,6 +225,10 @@ export function mapOrderDetailToReview(
     linkedToRefund: detail.linked_to_refund,
     planId: detail.plan_id,
     plan: detail.plan,
+    hasFinalContract: detail.has_final_contract,
+    finalContractUrl: detail.final_contract_url,
+    contractUrl: detail.contract_url,
+    contractQrCode: detail.contract_qr_code,
     changeHistory: detail.activities.map((activity) => ({
       id: String(activity.id),
       employee: pickRefName(locale, activity.admin ?? activity.performed_by),

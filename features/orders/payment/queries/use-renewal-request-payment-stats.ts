@@ -46,5 +46,6 @@ export function useRenewalRequestPaymentStats() {
   return {
     ...query,
     awaitingPayment: query.data?.awaiting_payment,
+    paidToday: query.data?.paid_today,
   };
 }

@@ -132,6 +132,7 @@ export default function VerificationOrderActions({
       <ViewDownloadContractDialog
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
+        orderId={orderId}
         orderNumber={orderNumber}
         showConfirmAction={!alreadyUploaded}
         confirmLabel={t("confirmUploadFinalContract")}

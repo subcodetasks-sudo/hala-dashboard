@@ -1,90 +1,104 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocale } from "next-intl";
 
-import { paymentOrderKeys } from "@/features/orders/query-keys";
-import type {
-  PaymentOrderRow,
-  PaymentOrdersFilterValues,
-} from "@/features/orders/types";
+import { seedOrderDetail } from "@/features/orders/queries/use-orders";
 import {
-  DEFAULT_PAYMENT_ORDERS_FILTERS,
-  filterPaymentOrders,
-  PAYMENT_ORDERS,
-} from "@/features/orders/payment/mock-data";
+  completedOrderKeys,
+  orderKeys,
+} from "@/features/orders/query-keys";
+import type {
+  ConfirmPaymentResponse,
+  OrderReviewDetail,
+} from "@/features/orders/types";
+import { mapOrderDetailToReview } from "@/features/orders/utils/map-order-detail";
 
-export type PaymentIndicators = {
-  paidToday: number;
-  awaitingConfirmation: number;
-  change: string;
+export type ConfirmPaymentInput = {
+  renewalRequestId: string;
+  paymentProof: File;
+  confirmed: boolean;
+  notificationText: string;
 };
 
-let paymentOrdersStore: PaymentOrderRow[] = [...PAYMENT_ORDERS];
-let paidTodayCount = 5;
+async function confirmPayment(
+  locale: string,
+  input: ConfirmPaymentInput,
+): Promise<OrderReviewDetail | null> {
+  const formData = new FormData();
+  formData.append("payment_proof", input.paymentProof, input.paymentProof.name);
+  formData.append("confirmed", input.confirmed ? "1" : "0");
+  formData.append("notification_text", input.notificationText);
 
-export async function fetchPaymentOrders(
-  filters: PaymentOrdersFilterValues = DEFAULT_PAYMENT_ORDERS_FILTERS
-): Promise<PaymentOrderRow[]> {
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  return filterPaymentOrders(paymentOrdersStore, filters);
-}
+  const response = await fetch(
+    `/api/orders/renewal-requests/${encodeURIComponent(input.renewalRequestId)}/confirm-payment`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-Language": locale,
+      },
+      body: formData,
+    },
+  );
 
-export async function fetchPaymentIndicators(): Promise<PaymentIndicators> {
-  await new Promise((resolve) => setTimeout(resolve, 150));
-  return {
-    paidToday: paidTodayCount,
-    awaitingConfirmation: paymentOrdersStore.length,
-    change: "+24%",
-  };
-}
+  const payload = (await response.json().catch(() => null)) as
+    | ConfirmPaymentResponse
+    | { success?: false; message?: string }
+    | null;
 
-export async function confirmPayment(id: string): Promise<PaymentOrderRow> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  const order = paymentOrdersStore.find((item) => item.id === id);
-  if (!order) {
-    throw new Error(`Payment order with ID ${id} not found`);
+  if (!response.ok || !payload?.success) {
+    throw new Error(
+      payload && "message" in payload && typeof payload.message === "string"
+        ? payload.message
+        : "Unable to confirm payment",
+    );
   }
-  paymentOrdersStore = paymentOrdersStore.filter((item) => item.id !== id);
-  paidTodayCount += 1;
-  return order;
+
+  const result = payload as ConfirmPaymentResponse;
+  if (!result.data) {
+    return null;
+  }
+
+  const appLocale = locale.startsWith("en") ? "en" : "ar";
+  return mapOrderDetailToReview(result.data, appLocale);
 }
 
 /**
- * Lists payment-stage orders with optional filter criteria.
- */
-export function usePaymentOrders(
-  filters: PaymentOrdersFilterValues = DEFAULT_PAYMENT_ORDERS_FILTERS
-) {
-  return useQuery({
-    queryKey: paymentOrderKeys.list(filters),
-    queryFn: () => fetchPaymentOrders(filters),
-  });
-}
-
-/**
- * Summary indicator cards for the payment page.
- */
-export function usePaymentIndicators() {
-  return useQuery({
-    queryKey: paymentOrderKeys.indicators(),
-    queryFn: fetchPaymentIndicators,
-  });
-}
-
-/**
- * Confirms payment for an order and removes it from the payment list.
+ * Confirms payment for an order
+ * (`POST .../confirm-payment` multipart with `payment_proof`, `confirmed`, `notification_text`).
  */
 export function useConfirmPayment() {
+  const locale = useLocale();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: confirmPayment,
-    onSuccess: () => {
+    mutationFn: (input: ConfirmPaymentInput) =>
+      confirmPayment(locale, input),
+    onSuccess: (detail, input) => {
+      queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
       queryClient.invalidateQueries({
-        queryKey: paymentOrderKeys.lists(),
+        queryKey: completedOrderKeys.lists(),
       });
       queryClient.invalidateQueries({
-        queryKey: paymentOrderKeys.indicators(),
+        queryKey: orderKeys.renewalRequestPaymentStats(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: orderKeys.renewalRequestCompletedStats(),
+      });
+
+      const detailId = detail?.id ?? input.renewalRequestId;
+
+      if (detail) {
+        seedOrderDetail(detail);
+        queryClient.setQueryData(
+          [...orderKeys.detail(detailId), locale],
+          detail,
+        );
+      }
+
+      queryClient.invalidateQueries({
+        queryKey: orderKeys.detail(detailId),
       });
     },
   });

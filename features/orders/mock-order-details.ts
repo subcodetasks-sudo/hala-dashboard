@@ -157,7 +157,10 @@ function buildDetail(seed: MockDetailSeed): OrderDetail {
     hold_reason_label: null,
     hold_notes: null,
     contract_number: `CNT-${seed.numericId}`,
-    contract_qr_code: null,
+    contract_qr_code:
+      seed.status === "completed"
+        ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=CNT-${seed.numericId}`
+        : null,
     contract_generated_at: seed.processedAt,
     contract_url: "/svg/receipt-2.svg",
     sent_for_authentication_at: seed.sentForAuthenticationAt,

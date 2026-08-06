@@ -137,6 +137,7 @@ export default function IndicatorsSection() {
                 iconSrc={indicator.iconSrc}
                 bgClassName={indicator.bgClassName}
                 valueClassName={indicator.valueClassName}
+                href={indicator.route}
               />
             );
           })}

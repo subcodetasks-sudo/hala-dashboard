@@ -244,7 +244,7 @@ export type OrderListItem = {
   payment_date: string | null;
   payment_method: OrderPaymentType | null;
   payment_method_label: string | null;
-  fees_due: string | null;
+  fees_due: string | number | null;
   has_final_contract: boolean;
   final_contract_url: string | null;
   payment_proof_url: string | null;
@@ -362,6 +362,8 @@ export type OrderListQueryParams = {
   search?: string;
   created_from?: string;
   created_to?: string;
+  final_contract_from?: string;
+  final_contract_to?: string;
   paid_from?: string;
   paid_to?: string;
   expected_completion_date?: string;
@@ -396,6 +398,8 @@ export type RenewalRequestsFilters = {
   search?: string;
   createdFrom?: string;
   createdTo?: string;
+  finalContractFrom?: string;
+  finalContractTo?: string;
   paidFrom?: string;
   paidTo?: string;
   expectedCompletionDate?: string;
@@ -425,6 +429,9 @@ export type SendForAuthenticationResponse = OrderDetailResponse;
 
 /** `POST /admin/renewal-requests/:id/final-contract` (multipart) */
 export type UploadFinalContractResponse = OrderDetailResponse;
+
+/** `POST /admin/renewal-requests/:id/confirm-payment` (multipart) */
+export type ConfirmPaymentResponse = OrderDetailResponse;
 
 /** `POST /admin/renewal-requests/:id/hold` */
 export type HoldRenewalRequestBody = {
@@ -721,26 +728,6 @@ export type VerificationOrdersFilterValues = {
 
 export type DeliveryStatus = "required" | "notRequired";
 
-export type PaymentOrderRow = {
-  id: string;
-  orderNumber: string;
-  employerName: string;
-  employerPhone: string;
-  workerName: string;
-  createdDate: string;
-  createdTime: string;
-  createdAtIso: string;
-  processedDate: string;
-  processedTime: string;
-  processedAtIso: string;
-  contractUploadedDate: string;
-  contractUploadedTime: string;
-  contractUploadedAtIso: string;
-  source: OrderSource;
-  dueFees: number;
-  deliveryStatus: DeliveryStatus;
-};
-
 export type PaymentOrdersFilterValues = {
   createdAt: Date | undefined;
   contractUploadedAt: Date | undefined;
@@ -922,6 +909,11 @@ export type OrderReviewDetail = {
   linkedToRefund: boolean;
   planId: number | null;
   plan: OrderPlan | null;
+  hasFinalContract: boolean;
+  finalContractUrl: string | null;
+  /** Generated/source contract file URL (pre-final). */
+  contractUrl: string | null;
+  contractQrCode: string | null;
   changeHistory: ChangeHistoryRow[];
   documents: OrderDocument[];
 };

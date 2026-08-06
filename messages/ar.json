@@ -154,6 +154,7 @@
     },
     "table": {
       "employeeNumber": "الرقم الوظيفي",
+      "idNumber": "رقم الهوية",
       "employee": "اسم الموظف / الجوال",
       "email": "البريد الإلكتروني",
       "role": "الدور الوظيفي",
@@ -238,9 +239,9 @@
       "errorToastCreate": "تعذر إضافة الموظف. يرجى المحاولة مرة أخرى.",
       "validation": {
         "idNumberRequired": "رقم الهوية مطلوب",
-        "idNumberFormat": "رقم الهوية يجب أن يكون 10 أرقام ويبدأ بـ 1 أو 2",
+        "idNumberFormat": "يجب أن يتكون رقم الهوية من 10 أرقام",
         "nationalIdRequired": "رقم الهوية الوطنية مطلوب",
-        "nationalIdFormat": "يجب أن يتكون رقم الهوية الوطنية من 10 أرقام ويبدأ بـ 1 أو 2",
+        "nationalIdFormat": "يجب أن يتكون رقم الهوية الوطنية من 10 أرقام",
         "nameRequired": "اسم الموظف مطلوب",
         "phoneRequired": "رقم الجوال مطلوب",
         "phoneFormat": "أدخل رقم جوال سعودي صحيح (10 أرقام يبدأ بـ 05)",
@@ -255,6 +256,166 @@
         "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
         "passwordsMismatch": "كلمتا المرور غير متطابقتين"
       }
+    }
+  },
+  "Permissions": {
+    "title": "الصلاحيات",
+    "description": "إدارة الأدوار الوظيفية، وتعيين الصلاحيات، والتحكم في ما يمكن لكل دور الوصول إليه في النظام.",
+    "listTitle": "قائمة الصلاحيات",
+    "addRole": "إضافة دور جديد",
+    "periodWeek": "منذ الأسبوع",
+    "indicators": {
+      "totalRoles": "إجمالي الأدوار",
+      "activeRoles": "الأدوار النشطة",
+      "totalEmployees": "إجمالي الموظفين"
+    },
+    "filters": {
+      "searchLabel": "البحث",
+      "searchPlaceholder": "ابحث بالدور الوظيفي...",
+      "role": "الدور",
+      "roleAll": "الكل",
+      "status": "الحالة",
+      "statusAll": "الكل",
+      "statusActive": "نشط",
+      "statusInactive": "موقوف",
+      "apply": "تطبيق الفلترة"
+    },
+    "roles": {
+      "systemAdmin": {
+        "name": "مدير النظام",
+        "description": "وصول كامل لجميع صفحات وإجراءات النظام"
+      },
+      "review": {
+        "name": "موظف مراجعة",
+        "description": "مراجعة الطلبات الجديدة واعتمادها أو تعليقها"
+      },
+      "dataProcessing": {
+        "name": "موظف إدخال بيانات",
+        "description": "إنشاء الطلبات وإدخال بيانات صاحب العمل والعامل"
+      },
+      "contractFollowUp": {
+        "name": "موظف عقود",
+        "description": "مراجعة العقود وإرسالها للمصادقة"
+      },
+      "contractApproval": {
+        "name": "موظف اعتماد العقود",
+        "description": "رفع العقد النهائي وتفعيل مرحلة الدفع"
+      },
+      "contractPayments": {
+        "name": "موظف عقود / مدفوعات",
+        "description": "تأكيد المدفوعات وعرض الفواتير"
+      }
+    },
+    "loadError": "تعذر تحميل الأدوار. يرجى المحاولة مرة أخرى.",
+    "table": {
+      "role": "الأدوار الوظيفية",
+      "permissionsCount": "{count} صلاحيات",
+      "permissionsCountHeader": "عدد الصلاحيات",
+      "status": "حالة الدور",
+      "statusActive": "نشط",
+      "statusInactive": "موقوف",
+      "updatedAt": "آخر تحديث",
+      "action": "إجراء",
+      "view": "عرض {name}",
+      "edit": "تعديل {name}",
+      "deactivate": "إيقاف {name}"
+    },
+    "empty": {
+      "title": "لا توجد أدوار وظيفية",
+      "description": "لم يتم إنشاء أي أدوار حتى الآن، ابدأ بإضافة أول دور وتحديد صلاحياته."
+    },
+    "disableDialog": {
+      "title": "إيقاف الدور الوظيفي",
+      "heading": "إيقاف الدور الوظيفي !",
+      "description": "هل أنت متأكد من إيقاف هذا الدور؟ قد يؤثر ذلك على الموظفين المرتبطين به.",
+      "permissionsCount": "عدد الصلاحيات",
+      "roleName": "اسم الدور",
+      "confirm": "تأكيد الإيقاف",
+      "cancel": "تراجع وإلغاء",
+      "close": "إغلاق",
+      "successToast": "تم إيقاف الدور الوظيفي بنجاح."
+    },
+    "Details": {
+      "title": "صلاحيات الدور: {roleName}",
+      "back": "رجوع",
+      "close": "إغلاق",
+      "disable": "إيقاف الدور",
+      "editPermissions": "تعديل الصلاحيات",
+      "info": {
+        "title": "معلومات الدور",
+        "permissionsCount": "عدد الصلاحيات",
+        "status": "الحالة",
+        "updatedAt": "آخر تحديث"
+      },
+      "permissions": {
+        "title": "الصلاحيات المرتبطة بالدور",
+        "enabledCount": "{count} صلاحيات مفعّلة",
+        "empty": "لا توجد صلاحيات مرتبطة بهذا الدور."
+      }
+    },
+    "Create": {
+      "breadcrumbHome": "الرئيسية",
+      "breadcrumbPermissions": "الصلاحيات",
+      "breadcrumbCurrent": "إضافة دور جديد",
+      "title": "إضافة دور جديد",
+      "subtitle": "إنشاء دور وظيفي جديد",
+      "save": "حفظ وإنشاء الدور",
+      "selectAll": "تحديد الكل",
+      "activateAll": "تفعيل كافة الصلاحيات لهذا الدور",
+      "permissionsTitle": "قائمة الصلاحيات",
+      "fields": {
+        "name": "اسم الدور",
+        "namePlaceholder": "مثال: موظف متابعة",
+        "description": "وصف الدور",
+        "descriptionPlaceholder": "وصف مختصر لمهام هذا الدور...",
+        "status": "حالة الدور",
+        "statusActive": "نشط",
+        "statusInactive": "موقوف"
+      },
+      "emptyPermissions": "لا توجد صلاحيات متاحة للتعيين.",
+      "validation": {
+        "nameRequired": "اسم الدور مطلوب",
+        "descriptionRequired": "وصف الدور مطلوب",
+        "statusRequired": "حالة الدور مطلوبة"
+      },
+      "successToast": "تم إنشاء الدور بنجاح.",
+      "errorToast": "تعذر إنشاء الدور. يرجى المحاولة مرة أخرى."
+    },
+    "Edit": {
+      "title": "تعديل الدور",
+      "subtitle": "تحديث بيانات الدور والصلاحيات",
+      "save": "حفظ التعديلات",
+      "close": "إغلاق",
+      "selectAll": "تحديد الكل",
+      "activateAll": "تفعيل كافة الصلاحيات لهذا الدور",
+      "permissionsTitle": "قائمة الصلاحيات",
+      "fields": {
+        "name": "اسم الدور",
+        "namePlaceholder": "مثال: موظف متابعة",
+        "description": "وصف الدور",
+        "descriptionPlaceholder": "وصف مختصر لمهام هذا الدور...",
+        "status": "حالة الدور",
+        "statusActive": "نشط",
+        "statusInactive": "موقوف"
+      },
+      "emptyPermissions": "لا توجد صلاحيات متاحة للتعيين.",
+      "validation": {
+        "nameRequired": "اسم الدور مطلوب",
+        "descriptionRequired": "وصف الدور مطلوب",
+        "statusRequired": "حالة الدور مطلوبة"
+      },
+      "successToast": "تم تحديث الدور بنجاح.",
+      "errorToast": "تعذر تحديث الدور. يرجى المحاولة مرة أخرى."
+    },
+    "route": {
+      "unauthorized": "غير مصرح",
+      "invalidJson": "نص الطلب غير صالح",
+      "invalidRoleId": "معرّف الدور مطلوب",
+      "unableToFetchGroupedPermissions": "تعذر تحميل الصلاحيات. يرجى المحاولة مرة أخرى.",
+      "unableToFetchRoles": "تعذر تحميل الأدوار. يرجى المحاولة مرة أخرى.",
+      "unableToFetchRole": "تعذر تحميل تفاصيل الدور. يرجى المحاولة مرة أخرى.",
+      "unableToCreateRole": "تعذر إنشاء الدور. يرجى المحاولة مرة أخرى.",
+      "unableToUpdateRole": "تعذر تحديث الدور. يرجى المحاولة مرة أخرى."
     }
   },
   "Orders": {
@@ -604,9 +765,19 @@
           "reviewed": "تمت المعالجة",
           "suspend": "تعليق الطلب",
           "showContract": "عرض العقد",
+          "confirmPayment": "تأكيد الدفع",
           "sendForAuth": "إرسال العقد للمصادقة",
           "uploadFinalContract": "رفع العقد النهائي",
+          "viewFinalContract": "عرض نسخة العقد النهائية",
+          "qrCode": "رمز QR",
           "cities": "المدن و اماكن الإصدار"
+        },
+        "contractQrCodeDialog": {
+          "title": "رمز QR للعقد",
+          "description": "امسح رمز QR لفتح رابط العقد.",
+          "close": "إغلاق",
+          "generating": "جاري إنشاء رمز QR…",
+          "unavailable": "رابط العقد غير متوفر لهذا الطلب."
         },
         "validation": {
           "employerNameArRequired": "اسم صاحب العمل بالعربية مطلوب",
@@ -769,6 +940,8 @@
         "close": "إغلاق",
         "print": "طباعة",
         "downloadPdf": "تحميل PDF",
+        "downloadingPdf": "جاري تجهيز ملف PDF…",
+        "downloadError": "تعذر تحميل عقد PDF. يرجى المحاولة مرة أخرى.",
         "confirmSend": "تأكيد الإرسال للمصادقة"
       },
       "sendForAuthDialog": {
@@ -927,7 +1100,16 @@
         "confirmLinked": "تم التأكد من ربط إثبات الدفع بالطلب الصحيح.",
         "cancel": "تراجع وإلغاء",
         "approve": "اعتماد الدفع",
-        "toastSuccess": "تم تأكيد الدفع بنجاح!"
+        "toastSuccess": "تم تأكيد الدفع بنجاح!",
+        "errorToast": "تعذر تأكيد الدفع. يرجى المحاولة مرة أخرى.",
+        "route": {
+          "unauthorized": "غير مصرح",
+          "invalidId": "معرّف طلب التجديد مطلوب",
+          "invalidForm": "بيانات نموذج تأكيد الدفع غير صالحة",
+          "fileRequired": "صورة إثبات الدفع مطلوبة",
+          "confirmedRequired": "يجب تأكيد ربط إثبات الدفع بالطلب",
+          "unableToComplete": "تعذر تأكيد الدفع. يرجى المحاولة مرة أخرى."
+        }
       },
       "empty": {
         "title": "لا توجد طلبات دفع",
@@ -1265,7 +1447,8 @@
   },
   "Common": {
     "Filters": {
-      "clearFilter": "مسح الفلاتر"
+      "clearFilter": "مسح الفلاتر",
+      "clearFilterTooltip": "امسح جميع الفلاتر"
     },
     "Pagination": {
       "previous": "السابق",

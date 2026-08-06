@@ -50,7 +50,6 @@ const SELECT_TRIGGER_CLASS =
   "h-11! w-full rounded-full border-black/10 bg-[#FBFBFB] px-4 text-sm font-medium text-brand-black [&_svg]:text-brand-accent";
 
 const EMPTY_FORM_VALUES: EmployeeFormValues = {
-  idNumber: "",
   nationalId: "",
   name: "",
   phone: "",
@@ -76,11 +75,18 @@ function getInitials(name: string): string {
 }
 
 function toFormValues(employee: EmployeeRow): EmployeeFormValues {
+  const rawPhone = employee.phone === "—" ? "" : employee.phone.replace(/\D/g, "");
+  // Local input expects 9-digit mobile (e.g. 531321321), stripping leading 0 or 966 prefix
+  const phone = rawPhone.startsWith("966")
+    ? rawPhone.slice(3)
+    : rawPhone.startsWith("0")
+      ? rawPhone.slice(1)
+      : rawPhone;
+
   return {
-    idNumber: employee.idNumber || "",
-    nationalId: employee.nationalId || "",
-    name: employee.name,
-    phone: employee.phone === "—" ? "" : employee.phone,
+    nationalId: employee.nationalId || employee.idNumber || "",
+    name: employee.name === "—" ? "" : employee.name,
+    phone,
     email: employee.email === "—" ? "" : employee.email,
     role: mapJobRoleToApiFilter(employee.role),
     password: "",
@@ -126,8 +132,6 @@ export default function EmployeeFormDialog({
       createEmployeeFormSchema({
         passwordOptional: !isCreate,
         messages: {
-          idNumberRequired: t("validation.idNumberRequired"),
-          idNumberFormat: t("validation.idNumberFormat"),
           nationalIdRequired: t("validation.nationalIdRequired"),
           nationalIdFormat: t("validation.nationalIdFormat"),
           nameRequired: t("validation.nameRequired"),
@@ -214,63 +218,76 @@ export default function EmployeeFormDialog({
     setAvatarPreview(URL.createObjectURL(file));
   };
 
-  const onSubmit = handleSubmit(async (values) => {
-    setIsSubmitting(true);
-    try {
-      if (isCreate) {
-        const result = await createAdmin.mutateAsync({
-          name: values.name.trim(),
-          email: values.email.trim(),
-          idNumber: values.idNumber.trim(),
-          nationalId: values.nationalId.trim(),
-          phone: toSaudiMobileApi(values.phone),
-          password: values.password,
-          confirmPassword: values.confirmPassword,
-          status: "active",
-          role: values.role.trim(),
-          avatar: avatarFile,
+  const onSubmit = handleSubmit(
+    async (values) => {
+      setIsSubmitting(true);
+      try {
+        // UI has one ID field; backend accepts both `id_number` and `national_id`.
+        const nationalId = values.nationalId.trim();
+
+        if (isCreate) {
+          const result = await createAdmin.mutateAsync({
+            name: values.name.trim(),
+            email: values.email.trim(),
+            idNumber: nationalId,
+            nationalId,
+            phone: toSaudiMobileApi(values.phone),
+            password: values.password,
+            confirmPassword: values.confirmPassword,
+            status: "active",
+            role: values.role.trim(),
+            avatar: avatarFile,
+          });
+
+          toast.success(result.message || t("successToastCreate"));
+          onOpenChange(false);
+          return;
+        }
+
+        if (!employee?.id) {
+          toast.error(t("errorToastEdit"));
+          return;
+        }
+
+        const result = await updateAdmin.mutateAsync({
+          adminId: employee.id,
+          input: {
+            name: values.name.trim(),
+            email: values.email.trim(),
+            // Keep existing employee number (e.g. EMP-009); national ID is separate.
+            idNumber: employee.idNumber?.trim() || nationalId,
+            nationalId,
+            phone: toSaudiMobileApi(values.phone),
+            password: values.password,
+            confirmPassword: values.confirmPassword,
+            status: employee.status,
+            role: values.role.trim(),
+            avatar: avatarFile,
+          },
         });
 
-        toast.success(result.message || t("successToastCreate"));
+        toast.success(result.message || t("successToastEdit"));
         onOpenChange(false);
-        return;
+      } catch (error) {
+        toast.error(
+          error instanceof Error && error.message
+            ? error.message
+            : isCreate
+              ? t("errorToastCreate")
+              : t("errorToastEdit"),
+        );
+      } finally {
+        setIsSubmitting(false);
       }
-
-      if (!employee?.id) {
-        toast.error(t("errorToastEdit"));
-        return;
+    },
+    (invalidErrors) => {
+      console.warn("Employee form validation failed:", invalidErrors);
+      const firstError = Object.values(invalidErrors)[0];
+      if (firstError?.message) {
+        toast.error(firstError.message);
       }
-
-      const result = await updateAdmin.mutateAsync({
-        adminId: employee.id,
-        input: {
-          name: values.name.trim(),
-          email: values.email.trim(),
-          idNumber: values.idNumber.trim(),
-          nationalId: values.nationalId.trim(),
-          phone: toSaudiMobileApi(values.phone),
-          password: values.password,
-          confirmPassword: values.confirmPassword,
-          status: employee.status,
-          role: values.role.trim(),
-          avatar: avatarFile,
-        },
-      });
-
-      toast.success(result.message || t("successToastEdit"));
-      onOpenChange(false);
-    } catch (error) {
-      toast.error(
-        error instanceof Error && error.message
-          ? error.message
-          : isCreate
-            ? t("errorToastCreate")
-            : t("errorToastEdit"),
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  });
+    },
+  );
 
   const avatarAlt =
     employee?.name ||
@@ -375,31 +392,6 @@ export default function EmployeeFormDialog({
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Field
-              id="employee-form-id-number"
-              label={t("idNumber")}
-              required
-              error={errors.idNumber?.message}
-            >
-              <Input
-                id="employee-form-id-number"
-                disabled={isSubmitting}
-                dir="ltr"
-                inputMode="numeric"
-                maxLength={10}
-                placeholder={t("idNumberPlaceholder")}
-                className={cn(FIELD_CLASS, "font-clash")}
-                aria-invalid={Boolean(errors.idNumber)}
-                {...register("idNumber", {
-                  onChange: (event) => {
-                    event.target.value = event.target.value
-                      .replace(/\D/g, "")
-                      .slice(0, 10);
-                  },
-                })}
-              />
-            </Field>
-
             <Field
               id="employee-form-national-id"
               label={t("nationalId")}

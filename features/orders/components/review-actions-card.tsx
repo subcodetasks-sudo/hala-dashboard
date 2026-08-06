@@ -28,7 +28,7 @@ const VARIANT_CLASS: Record<ReviewActionButton["variant"], string> = {
 
 /**
  * Shared “Review Actions” sidebar card used for processed /
- * sent_for_authentication (and any similar pill-button stage actions).
+ * sent_for_authentication / awaiting_payment (and any similar pill-button stage actions).
  */
 export default function ReviewActionsCard({
   title,

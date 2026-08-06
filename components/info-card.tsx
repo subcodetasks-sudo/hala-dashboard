@@ -2,6 +2,7 @@ import { ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
 
 import CustomIcon from "@/components/custom-svg";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 type InfoCardProps = {
@@ -15,6 +16,8 @@ type InfoCardProps = {
   /** Value text color class, e.g. `text-brand-accent` */
   valueClassName?: string;
   className?: string;
+  /** Destination path for navigation when clicked */
+  href?: string;
 };
 
 export default function InfoCard({
@@ -26,15 +29,10 @@ export default function InfoCard({
   bgClassName = "bg-brand-primary/10",
   valueClassName = "text-brand-black",
   className,
+  href,
 }: InfoCardProps) {
-  return (
-    <article
-      className={cn(
-        "flex flex-col gap-5 rounded-[2.25rem] p-5 text-start",
-        bgClassName,
-        className
-      )}
-    >
+  const content = (
+    <>
       <div className="flex items-start justify-between gap-3">
         <h3 className="min-w-0 flex-1 text-sm font-medium leading-snug text-brand-black">
           {title}
@@ -62,6 +60,23 @@ export default function InfoCard({
         </span>
         <span className="text-brand-gris">{period}</span>
       </div>
-    </article>
+    </>
   );
+
+  const containerClassName = cn(
+    "flex flex-col gap-5 rounded-[2.25rem] p-5 text-start transition-shadow hover:shadow-md",
+    bgClassName,
+    className
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className={cn(containerClassName, "block")}>
+        <article className="flex flex-col gap-5">{content}</article>
+      </Link>
+    );
+  }
+
+  return <article className={containerClassName}>{content}</article>;
 }
+

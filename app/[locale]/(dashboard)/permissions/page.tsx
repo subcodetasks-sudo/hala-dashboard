@@ -1,5 +1,5 @@
-import DashboardPagePlaceholder from "@/components/dashboard-page-placeholder";
+import PermissionsView from "@/features/permissions/components/permissions-view";
 
 export default function PermissionsPage() {
-  return <DashboardPagePlaceholder titleKey="permissions" />;
+  return <PermissionsView />;
 }

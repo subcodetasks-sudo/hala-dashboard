@@ -120,6 +120,7 @@ export function mapAdminToEmployeeRow(
     daily_target?: number | string | null;
     employeeNumber?: string | null;
     employee_number?: string | null;
+    id_number?: string | null;
     nationalId?: string | null;
     national_id?: string | null;
   };
@@ -135,15 +136,20 @@ export function mapAdminToEmployeeRow(
     (typeof raw.employee_number === "string" && raw.employee_number.trim()) ||
     String(admin.id);
 
+  const idNumber =
+    (typeof admin.idNumber === "string" && admin.idNumber.trim()) ||
+    (typeof raw.id_number === "string" && raw.id_number.trim()) ||
+    "";
+
   const nationalId =
     (typeof raw.nationalId === "string" && raw.nationalId.trim()) ||
     (typeof raw.national_id === "string" && raw.national_id.trim()) ||
-    "";
+    idNumber;
 
   return {
     id: String(admin.id),
     employeeNumber,
-    idNumber: admin.idNumber?.trim() || "",
+    idNumber,
     nationalId,
     name: admin.name?.trim() || "—",
     phone: admin.phone?.trim() || "—",

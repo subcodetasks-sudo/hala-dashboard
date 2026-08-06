@@ -22,8 +22,10 @@ import {
 import ApproveProcessDialog from "@/features/orders/new/components/approve-process-dialog";
 import PendOrderDialog from "@/features/orders/new/components/pend-order-dialog";
 import MarkProcessedDialog from "@/features/orders/pending/components/mark-processed-dialog";
+import ConfirmPaymentDialog from "@/features/orders/payment/components/confirm-payment-dialog";
 import SendContractForAuthDialog from "@/features/orders/processed/components/send-contract-for-auth-dialog";
 import ReviewActionsCard from "@/features/orders/components/review-actions-card";
+import ContractQrCodeDialog from "@/features/orders/components/contract-qr-code-dialog";
 import ViewDownloadContractDialog from "@/features/orders/components/view-download-contract-dialog";
 import UploadFinalContractDialog from "@/features/orders/verification/components/upload-final-contract-dialog";
 import {
@@ -61,8 +63,11 @@ export default function ReviewOrderSidebar({
   const [isMarkProcessedOpen, setMarkProcessedOpen] = useState(false);
   const [isPendOrderOpen, setPendOrderOpen] = useState(false);
   const [isContractDialogOpen, setContractDialogOpen] = useState(false);
+  const [isFinalContractDialogOpen, setFinalContractDialogOpen] = useState(false);
+  const [isQrCodeDialogOpen, setQrCodeDialogOpen] = useState(false);
   const [isSendForAuthOpen, setSendForAuthOpen] = useState(false);
   const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [isConfirmPaymentOpen, setConfirmPaymentOpen] = useState(false);
 
   if (!order) {
     return null;
@@ -76,6 +81,7 @@ export default function ReviewOrderSidebar({
     order.status === "new" || order.status === "under_review";
   const isProcessed = order.status === "processed";
   const isSentForAuth = order.status === "sent_for_authentication";
+  const isAwaitingPayment = order.status === "awaiting_payment";
   const isReviewableStatus = isNewOrUnderReview || isHeld;
   const canReview = canMutate && isReviewableStatus;
   const showChecklist = !isCancelled;
@@ -84,6 +90,8 @@ export default function ReviewOrderSidebar({
   // covers new / under_review / held). Anyone who can open the detail page may act.
   const showProcessedActions = isProcessed && !isEditing;
   const showSentForAuthActions = isSentForAuth && !isEditing;
+  const showPaymentActions = isAwaitingPayment && !isEditing;
+  const showCompletedActions = isCompleted && !isEditing;
   const statusLabel = tStatus(ORDER_STATUS_LABEL_KEYS[order.status]);
 
   const relativeTime = order.relativeTimeLabel;
@@ -355,6 +363,48 @@ export default function ReviewOrderSidebar({
         />
       ) : null}
 
+      {showPaymentActions ? (
+        <ReviewActionsCard
+          title={t("actions")}
+          actions={[
+            {
+              label: t("confirmPayment"),
+              iconSrc: "/svg/money-send.svg",
+              variant: "primary",
+              onClick: () => setConfirmPaymentOpen(true),
+            },
+            {
+              label: t("showContract"),
+              iconSrc: "/svg/receipt-item.svg",
+              variant: "secondary",
+              onClick: () => setContractDialogOpen(true),
+            },
+          ]}
+        />
+      ) : null}
+
+      {showCompletedActions ? (
+        <ReviewActionsCard
+          title={t("actions")}
+          actions={[
+            {
+              label: t("viewFinalContract"),
+              iconSrc: "/svg/receipt-item.svg",
+              variant: "primary",
+              disabled: !order.hasFinalContract,
+              onClick: () => setFinalContractDialogOpen(true),
+            },
+            {
+              label: t("qrCode"),
+              iconSrc: "/svg/scan-barcode.svg",
+              variant: "secondary",
+              disabled: !(order.finalContractUrl || order.contractUrl),
+              onClick: () => setQrCodeDialogOpen(true),
+            },
+          ]}
+        />
+      ) : null}
+
       <ApproveProcessDialog
         open={isApproveProcessOpen}
         onOpenChange={setApproveProcessOpen}
@@ -382,6 +432,7 @@ export default function ReviewOrderSidebar({
       <ViewDownloadContractDialog
         open={isContractDialogOpen}
         onOpenChange={setContractDialogOpen}
+        orderId={order.id}
         orderNumber={order.orderNumber}
         showConfirmAction={showProcessedActions}
         onConfirmSend={
@@ -392,6 +443,20 @@ export default function ReviewOrderSidebar({
               }
             : undefined
         }
+      />
+
+      <ViewDownloadContractDialog
+        open={isFinalContractDialogOpen}
+        onOpenChange={setFinalContractDialogOpen}
+        orderId={order.id}
+        orderNumber={order.orderNumber}
+        showConfirmAction={false}
+      />
+
+      <ContractQrCodeDialog
+        open={isQrCodeDialogOpen}
+        onOpenChange={setQrCodeDialogOpen}
+        contractLink={order.finalContractUrl || order.contractUrl}
       />
 
       <UploadFinalContractDialog
@@ -408,6 +473,13 @@ export default function ReviewOrderSidebar({
         orderNumber={order.orderNumber}
         employerName={order.employerName}
         workerName={order.workerName}
+      />
+
+      <ConfirmPaymentDialog
+        open={isConfirmPaymentOpen}
+        onOpenChange={setConfirmPaymentOpen}
+        orderId={order.id}
+        orderNumber={order.orderNumber}
       />
     </aside>
   );
