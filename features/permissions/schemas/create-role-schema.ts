@@ -11,7 +11,7 @@ export function createRoleFormSchema(messages: CreateRoleSchemaMessages) {
     name: z.string().trim().min(1, messages.nameRequired),
     description: z.string().trim().min(1, messages.descriptionRequired),
     status: z.enum(["active", "inactive"], {
-      required_error: messages.statusRequired,
+      message: messages.statusRequired,
     }),
   });
 }
