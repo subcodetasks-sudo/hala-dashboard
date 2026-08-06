@@ -1239,6 +1239,7 @@
         "contentManagement": "إدارة المحتوى",
         "accountManagement": "إدارة الحساب",
         "cities": "المدن و اماكن الإصدار",
+        "settings": "الإعدادات",
         "logout": "تسجيل الخروج"
       }
     },
@@ -3036,6 +3037,77 @@
           "emptyDescription": "اربط واجهة الطلبات لمراجعة الاستفسارات من هنا."
         }
       }
+    }
+  },
+  "Settings": {
+    "title": "الإعدادات",
+    "description": "إدارة بيانات الشركة ومعلومات التواصل وروابط التواصل الاجتماعي والضرائب.",
+    "save": "حفظ الإعدادات",
+    "reset": "إعادة التعيين",
+    "toastSaved": "تم حفظ الإعدادات بنجاح",
+    "errorToast": "تعذر حفظ الإعدادات. حاول مرة أخرى.",
+    "loadError": "تعذر تحميل الإعدادات.",
+    "retry": "إعادة المحاولة",
+    "sections": {
+      "company": "وصف الشركة",
+      "contact": "معلومات التواصل",
+      "social": "روابط التواصل",
+      "business": "البيانات التجارية",
+      "logo": "شعار الشركة"
+    },
+    "descriptionArLabel": "الوصف (عربي)",
+    "descriptionEnLabel": "الوصف (إنجليزي)",
+    "descriptionArPlaceholder": "اكتب وصف الشركة بالعربية...",
+    "descriptionEnPlaceholder": "اكتب وصف الشركة بالإنجليزية...",
+    "phoneLabel": "الهاتف",
+    "phonePlaceholder": "مثال: +966500000000",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "مثال: info@company.com",
+    "whatsappLabel": "واتساب",
+    "whatsappPlaceholder": "مثال: https://wa.me/966500000000",
+    "facebookLabel": "فيسبوك",
+    "facebookPlaceholder": "https://facebook.com/...",
+    "twitterLabel": "إكس (تويتر)",
+    "twitterPlaceholder": "https://x.com/...",
+    "instagramLabel": "إنستغرام",
+    "instagramPlaceholder": "https://instagram.com/...",
+    "linkedinLabel": "لينكدإن",
+    "linkedinPlaceholder": "https://linkedin.com/...",
+    "youtubeLabel": "يوتيوب",
+    "youtubePlaceholder": "https://youtube.com/...",
+    "tiktokLabel": "تيك توك",
+    "tiktokPlaceholder": "https://tiktok.com/@...",
+    "snapchatLabel": "سناب شات",
+    "snapchatPlaceholder": "https://snapchat.com/add/...",
+    "commercialRegisterLabel": "السجل التجاري",
+    "commercialRegisterPlaceholder": "مثال: 1010123456",
+    "taxNumberLabel": "الرقم الضريبي",
+    "taxNumberPlaceholder": "مثال: 300123456700003",
+    "taxAmountLabel": "نسبة الضريبة (%)",
+    "taxAmountPlaceholder": "مثال: 15",
+    "logoLabel": "الشعار",
+    "logoUploadTitle": "رفع شعار الشركة",
+    "logoUploadHint": "JPG أو PNG أو WEBP أو GIF أو SVG",
+    "logoLoadError": "تعذر تحميل هذا الشعار. اختر ملفًا آخر.",
+    "logoPreviewAlt": "معاينة شعار الشركة",
+    "changeLogo": "تغيير الشعار",
+    "removeLogo": "إزالة الشعار",
+    "validation": {
+      "descriptionArRequired": "الوصف بالعربية مطلوب",
+      "descriptionEnRequired": "الوصف بالإنجليزية مطلوب",
+      "phoneRequired": "الهاتف مطلوب",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailInvalid": "أدخل بريدًا إلكترونيًا صالحًا",
+      "taxAmountInvalid": "نسبة الضريبة يجب أن تكون رقمًا صالحًا"
+    },
+    "route": {
+      "unauthorized": "غير مصرح. يرجى تسجيل الدخول مرة أخرى.",
+      "unableToFetch": "تعذر تحميل الإعدادات. حاول مرة أخرى.",
+      "unableToSave": "تعذر حفظ الإعدادات. حاول مرة أخرى.",
+      "invalidForm": "بيانات نموذج الإعدادات غير صالحة.",
+      "required": "الوصف والهاتف والبريد الإلكتروني مطلوبة بالعربية والإنجليزية.",
+      "emailInvalid": "أدخل بريدًا إلكترونيًا صالحًا.",
+      "taxAmountInvalid": "نسبة الضريبة يجب أن تكون رقمًا صالحًا."
     }
   },
   "Tracking": {

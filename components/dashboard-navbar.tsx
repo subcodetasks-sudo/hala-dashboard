@@ -131,6 +131,7 @@ export default function DashboardNavbar() {
                 <Button
                   type="button"
                   aria-label={t("settings")}
+                  onClick={() => router.push("/settings")}
                   className={iconButtonClass}
                 >
                   <Settings className="size-5" />

@@ -1239,6 +1239,7 @@
         "cities": "Cities and Issuance places",
         "contentManagement": "Content Management",
         "accountManagement": "Account Management",
+        "settings": "Settings",
         "logout": "Log Out"
       }
     },
@@ -3036,6 +3037,77 @@
           "emptyDescription": "Connect the submissions API to review inquiries here."
         }
       }
+    }
+  },
+  "Settings": {
+    "title": "Settings",
+    "description": "Manage company details, contact info, social links, and tax information.",
+    "save": "Save Settings",
+    "reset": "Reset",
+    "toastSaved": "Settings saved successfully",
+    "errorToast": "Unable to save settings. Please try again.",
+    "loadError": "Unable to load settings.",
+    "retry": "Retry",
+    "sections": {
+      "company": "Company Description",
+      "contact": "Contact Information",
+      "social": "Social Links",
+      "business": "Business Details",
+      "logo": "Company Logo"
+    },
+    "descriptionArLabel": "Description (Arabic)",
+    "descriptionEnLabel": "Description (English)",
+    "descriptionArPlaceholder": "Write the company description in Arabic...",
+    "descriptionEnPlaceholder": "Write the company description in English...",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "Example: +966500000000",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Example: info@company.com",
+    "whatsappLabel": "WhatsApp",
+    "whatsappPlaceholder": "Example: https://wa.me/966500000000",
+    "facebookLabel": "Facebook",
+    "facebookPlaceholder": "https://facebook.com/...",
+    "twitterLabel": "X (Twitter)",
+    "twitterPlaceholder": "https://x.com/...",
+    "instagramLabel": "Instagram",
+    "instagramPlaceholder": "https://instagram.com/...",
+    "linkedinLabel": "LinkedIn",
+    "linkedinPlaceholder": "https://linkedin.com/...",
+    "youtubeLabel": "YouTube",
+    "youtubePlaceholder": "https://youtube.com/...",
+    "tiktokLabel": "TikTok",
+    "tiktokPlaceholder": "https://tiktok.com/@...",
+    "snapchatLabel": "Snapchat",
+    "snapchatPlaceholder": "https://snapchat.com/add/...",
+    "commercialRegisterLabel": "Commercial Register",
+    "commercialRegisterPlaceholder": "Example: 1010123456",
+    "taxNumberLabel": "Tax Number",
+    "taxNumberPlaceholder": "Example: 300123456700003",
+    "taxAmountLabel": "Tax Amount (%)",
+    "taxAmountPlaceholder": "Example: 15",
+    "logoLabel": "Logo",
+    "logoUploadTitle": "Upload company logo",
+    "logoUploadHint": "JPG, PNG, WEBP, GIF or SVG",
+    "logoLoadError": "Could not load this logo. Choose another file.",
+    "logoPreviewAlt": "Company logo preview",
+    "changeLogo": "Change logo",
+    "removeLogo": "Remove logo",
+    "validation": {
+      "descriptionArRequired": "Arabic description is required",
+      "descriptionEnRequired": "English description is required",
+      "phoneRequired": "Phone is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email address",
+      "taxAmountInvalid": "Tax amount must be a valid number"
+    },
+    "route": {
+      "unauthorized": "Unauthorized. Please sign in again.",
+      "unableToFetch": "Unable to load settings. Please try again.",
+      "unableToSave": "Unable to save settings. Please try again.",
+      "invalidForm": "Invalid settings form data.",
+      "required": "Description, phone, and email are required in Arabic and English.",
+      "emailInvalid": "Enter a valid email address.",
+      "taxAmountInvalid": "Tax amount must be a valid number."
     }
   },
   "Tracking": {
